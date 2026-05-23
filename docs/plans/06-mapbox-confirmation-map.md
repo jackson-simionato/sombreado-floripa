@@ -1,8 +1,8 @@
-# 06 - Mapbox Route Preview
+# 06 - Mapbox Confirmation Map
 
 ## Goal
 
-Add a lazy-loaded Mapbox route confirmation map after route selection.
+Add a lazy-loaded Mapbox route confirmation map after the rider selects a route and chooses direction.
 
 ## Inputs
 
@@ -12,15 +12,15 @@ Add a lazy-loaded Mapbox route confirmation map after route selection.
 
 ## Work
 
-- Create an isolated Mapbox route preview component.
-- Load Mapbox only when the rider reaches route confirmation.
+- Create an isolated Mapbox route confirmation component.
+- Load Mapbox only when the rider reaches route confirmation after route selection and direction choice.
 - Render the selected route line, rider location, and direction cue.
 - Handle missing token, failed map load, and missing geometry gracefully.
 - Keep map styling aligned with the brand guide.
 
 ## Deliverable
 
-- Compact Mapbox route confirmation inside the onboard flow.
+- Compact Mapbox route confirmation inside the onboard-first flow.
 
 ## Acceptance Criteria
 

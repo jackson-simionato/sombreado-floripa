@@ -7,7 +7,7 @@ Refine the v1 frontend until it feels trustworthy, joyful, and reliable on mobil
 ## Inputs
 
 - API-integrated frontend
-- Mapbox route preview
+- Mapbox confirmation map
 - Brand guide
 - Wireframes
 
@@ -18,7 +18,8 @@ Refine the v1 frontend until it feels trustworthy, joyful, and reliable on mobil
 - Verify the bus orientation diagram is understandable without relying only on color.
 - Audit accessibility labels, contrast, focus states, and reduced-motion behavior.
 - Test on small and medium mobile viewports.
-- Verify slow loading, denied geolocation, no candidates, API errors, and off-route responses.
+- Verify manual route search, route selection, direction choice, and route confirmation on mobile.
+- Verify slow loading, denied geolocation, no candidates, route-without-directions, API errors, preview-with-warning, true withheld, and Mapbox confirmation fallback responses.
 
 ## Deliverable
 
@@ -29,4 +30,5 @@ Refine the v1 frontend until it feels trustworthy, joyful, and reliable on mobil
 - The app looks intentionally designed, not just functional.
 - The result screen is clear at a glance.
 - All core states work on mobile without layout overlap.
+- Onboard advice and route preview advice are visibly distinct without relying on color alone.
 - Manual QA findings are documented before release.

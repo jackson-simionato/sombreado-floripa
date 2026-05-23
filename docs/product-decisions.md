@@ -10,11 +10,13 @@ This document records current product and design decisions for Sombreado Floripa
 - The main result should be a positive action, such as "Sente à esquerda", rather than making riders mentally invert an exposed-side warning.
 - Left/right orientation should be explained primarily through a bus sun/shade diagram, with accessible text for assistive technology.
 - The app asks riders to tap a location action before triggering browser geolocation permission.
-- Nearby route direction candidates are the default selection flow; text search is a fallback, not the primary path.
-- The app includes a compact route confirmation map after route selection, not a map-led home screen.
+- Nearby route candidates are the default selection flow; manual route search is also available as a secondary path.
+- Route selection happens before direction selection. Direction must be chosen explicitly before confirmation.
+- The app includes a compact route confirmation map after route selection and direction choice, not a map-led home screen.
+- Off-route or exploratory usage can show preview advice with a clear warning when the app can estimate a useful point near the selected route; true withheld states are reserved for cases where useful advice cannot be computed.
 - Mapbox GL JS is the preferred v1 map provider, lazy-loaded only when the confirmation map is shown.
 - Branding should combine Airbnb-like warmth with Anthropic/Claude Code-like restraint: clean, joyful, spacious, human, polished, and calm.
-- The v1 scope is core-only: locate, choose route/direction, confirm, receive advice, and handle empty/error/withheld states.
+- The v1 scope is core-only: locate or search, choose route, choose direction, confirm, receive advice, and handle empty/error/preview/withheld states.
 - The frontend calls `sombreado-service` directly from the browser with `NEXT_PUBLIC_API_URL`.
 - `sombreado-floripa` should become frontend-only; the scraper and advisory backend remain separate projects.
 

@@ -9,7 +9,7 @@ The passenger-facing mobile web app for onboard sun-side guidance on Florianopol
 _Avoid_: Scraper, backend service, bus stop planner
 
 **Rider**:
-A person using Sombreado Floripa while riding or boarding a bus.
+A person using Sombreado Floripa while riding, boarding, or previewing a bus route.
 _Avoid_: User, account, driver
 
 **Onboard Flow**:
@@ -29,12 +29,20 @@ A simple visual that clarifies left and right from the rider's perspective insid
 _Avoid_: Technical compass, map bearing
 
 **Route Candidate**:
-A nearby route direction the rider can select before requesting sun-side advice.
-_Avoid_: Automatically confirmed route, timetable row
+A nearby route the rider can select before choosing direction and requesting sun-side advice.
+_Avoid_: Automatically confirmed route direction, timetable row
+
+**Direction Choice**:
+The rider-facing step where a selected route is narrowed to a direction using destination or neighborhood labels.
+_Avoid_: Debug headsign, raw shape id, automatic direction confirmation
 
 **Route Confirmation Map**:
 A compact map used to help the rider confirm the selected route direction.
 _Avoid_: Map-first navigation, route editor
+
+**Route Preview**:
+A clearly labeled preview of sun-side advice when the rider is not currently onboard or near the selected route, using an estimated point on or near the route.
+_Avoid_: Live onboard advice, trip planner, guaranteed recommendation
 
 **Playful Sunny Brand**:
 The visual and voice direction for Sombreado Floripa: clean, warm, joyful, and trustworthy.
@@ -48,8 +56,9 @@ _Avoid_: Legal disclaimer wall, hidden limitation
 
 - **Sombreado Floripa** is designed for **Riders**.
 - The first version of **Sombreado Floripa** prioritizes the **Onboard Flow**.
-- The **Onboard Flow** starts with rider location, presents **Route Candidates**, and ends with **Sun-side Advice**.
+- The **Onboard Flow** starts with rider location or manual route search, presents **Route Candidates**, asks for a **Direction Choice**, and ends with **Sun-side Advice**.
 - **Sun-side Advice** is presented as a **Seat-side Recommendation** when possible.
+- A **Route Preview** can show exploratory **Sun-side Advice** with a clear warning when live onboard context is not available.
 - A **Bus Orientation Diagram** helps explain the **Seat-side Recommendation** without relying only on text.
 - A **Route Confirmation Map** helps a **Rider** confirm a selected **Route Candidate** before trusting advice.
 - A **Geometric Estimate Notice** must stay visible enough to preserve trust without overwhelming the advice.
@@ -58,7 +67,7 @@ _Avoid_: Legal disclaimer wall, hidden limitation
 ## Example Dialogue
 
 > **Dev:** "Should the home screen ask riders to search a timetable?"
-> **Domain expert:** "No. The first version starts with the **Onboard Flow**: find where the rider is, help them choose the nearby bus route direction, then show **Sun-side Advice**."
+> **Domain expert:** "No. The first version starts with the **Onboard Flow**: find where the rider is, help them choose the nearby route and direction, then show **Sun-side Advice**."
 >
 > **Dev:** "Can we say the app finds guaranteed shade?"
 > **Domain expert:** "No. It gives a **Seat-side Recommendation** from direct sun geometry, with a **Geometric Estimate Notice** explaining the limits."
