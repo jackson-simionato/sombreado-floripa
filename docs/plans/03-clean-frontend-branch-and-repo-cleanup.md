@@ -6,12 +6,12 @@ Prepare `sombreado-floripa` as a clean frontend-only repo before implementing th
 
 ## Inputs
 
-- Current `main` branch
+- Current `develop` branch
 - `docs/product-decisions.md`
 
 ## Work
 
-- Start the implementation branch from `main`.
+- Start the implementation branch from `develop`.
 - Keep existing unrelated work out of the frontend rewrite branch.
 - Remove or archive stale in-repo backend assumptions.
 - Update README and agent guidance so they describe:
