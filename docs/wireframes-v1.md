@@ -57,11 +57,9 @@ V1 helps a rider locate or search for a route, choose the route, choose the dire
   v
 [Computing Advice]
   +-- onboard point usable -------------------------> [Onboard Advice Result]
-  +-- off-route but estimated route point usable ---> [Preview With Warning]
+  +-- off-route but estimated route point usable ---> [Route Preview Advice Result]
   +-- no useful advice possible --------------------> [True Withheld]
   +-- API error ------------------------------------> [API Error]
-
-[Preview With Warning] --> [Route Preview Advice Result]
 
 [No Nearby Routes] -- primary: manual search --> [Manual Route Search]
 [No Nearby Routes] -- secondary: retry location --> [Location Request]
@@ -87,8 +85,7 @@ V1 helps a rider locate or search for a route, choose the route, choose the dire
 | Route Confirmation Fallback | Map token, geometry, or map load unavailable | Confirmar mesmo assim | Trocar sentido | "Mapa indisponível" / "Ainda é possível confirmar pela linha e pelo sentido." | Mapbox token/geometry/map load |
 | Computing Advice | Confirmation submitted | None while loading | Trocar linha | "Calculando pelo sol direto..." / "Vamos comparar esquerda e direita no sentido escolhido." | Advisory endpoint |
 | Onboard Advice Result | Advice computed with live onboard context | Atualizar localização | Trocar linha | "Agora no ônibus" / "Sente à esquerda" or "Melhor sentar à direita" | Advisory endpoint and rider location |
-| Preview With Warning | Rider is off route, but service can estimate a useful point near selected route | Ver prévia da linha | Atualizar localização | "Você parece fora da linha" / "Mostrando uma prévia para um ponto estimado do trajeto." | Requires service support for estimated route point; location refresh is the primary recovery action |
-| Route Preview Advice Result | Preview advice computed from estimated route point | Atualizar localização | Trocar linha | "Prévia da linha" / "Sente à esquerda" or "Melhor sentar à direita" | Advisory endpoint preview mode |
+| Route Preview Advice Result | Rider is off route, but service can compute preview advice from an estimated route point | Atualizar localização | Trocar linha | "Prévia da linha" / "Sente à esquerda" or "Melhor sentar à direita" | Advisory endpoint preview mode; requires service support for estimated route point |
 | True Withheld | No useful side recommendation can be computed | Trocar linha | Tentar de novo | "Não é possível recomendar agora" / Reason-specific copy explaining why advice was withheld | Advisory endpoint withheld response |
 | API Error | Network/server failure in route or advice calls | Tentar de novo | Procurar linha manualmente | "Algo deu errado" / "Não consegui carregar as informações agora." | Frontend network/error handling |
 
@@ -541,36 +538,7 @@ Notes:
 - Use color plus labels, check mark, hatching, and "sol direto" text. Do not rely on color alone.
 - The same diagram structure is reused for preview mode.
 
-### 14. Preview With Warning
-
-```text
-┌──────────────────────────────┐
-│ Você parece fora da linha    │
-│ Mostrando uma prévia para um │
-│ ponto estimado do trajeto.   │
-│                              │
-│ 124 TICEN - Lagoa            │
-│ Sentido Lagoa                │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ Ver prévia da linha      │ │
-│ └──────────────────────────┘ │
-│ Atualizar localização        │
-└──────────────────────────────┘
-```
-
-Minimum copy:
-
-- Heading: "Você parece fora da linha"
-- Body: "Mostrando uma prévia para um ponto estimado do trajeto."
-- Primary: "Ver prévia da linha"
-- Secondary: "Atualizar localização"
-
-Dependency note:
-
-- Preview-with-warning depends on `sombreado-service` returning advice for an automatic estimated point on or near the selected route. V1 does not expose stop, segment, or point picking to riders.
-
-### 15. Route Preview Advice Result
+### 14. Route Preview Advice Result
 
 ```text
 ┌──────────────────────────────┐
@@ -615,8 +583,10 @@ Notes:
 - Keep selected route and direction visible.
 - Location refresh is the primary recovery action.
 - Diagram structure matches onboard advice; only labels and notice copy distinguish preview.
+- This state is shown directly after advice computation when the rider appears off route but preview advice can be computed. Do not add a separate preview-warning step.
+- Preview advice depends on `sombreado-service` returning advice for an automatic estimated point on or near the selected route. V1 does not expose stop, segment, or point picking to riders.
 
-### 16. True Withheld
+### 15. True Withheld
 
 ```text
 ┌──────────────────────────────┐
@@ -655,7 +625,7 @@ Notes:
 - True withheld is reserved for cases where useful advice cannot be computed at all.
 - Do not use this state for ordinary off-route usage when preview advice can be computed.
 
-### 17. API Error
+### 16. API Error
 
 ```text
 ┌──────────────────────────────┐
@@ -701,7 +671,7 @@ Notes:
 - Direction labels must be rider-facing destinations or neighborhoods. If the service exposes only raw IDs or technical headsigns, frontend implementation should document the gap for `sombreado-service`.
 - Route confirmation map depends on Mapbox GL JS, a public token, and route geometry. The fallback confirmation state is required whenever those are unavailable.
 - Advisory results need a mode field or equivalent frontend inference for onboard advice, preview advice, and true withheld.
-- Preview-with-warning requires service support for automatic estimated point selection on or near the selected route. V1 must not ask riders to choose a stop, segment, or map point.
+- Route preview advice requires service support for automatic estimated point selection on or near the selected route. V1 must not ask riders to choose a stop, segment, or map point.
 - The geometric estimate notice is visible in result states and should not be hidden in settings.
 
 ## Acceptance Checklist
@@ -711,7 +681,7 @@ Notes:
 - Route selection happens before Direction Choice.
 - Direction is explicit before Route Confirmation.
 - Route Confirmation is mandatory, including when the map is unavailable.
-- Off-route usage becomes preview-with-warning when an estimated route point can produce advice.
+- Off-route usage goes directly to a clearly labeled route preview result when an estimated route point can produce advice.
 - True withheld is reserved for cases where no useful advice can be computed.
 - Onboard and preview results share the same bus orientation diagram structure.
 - Preview is distinguished through the mode label and warning/notice copy.
