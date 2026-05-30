@@ -340,6 +340,24 @@ describe("flow reducer", () => {
     expect(changedRoute.selectedDirection).toBeUndefined();
     expect(changedRoute.advice).toBeUndefined();
   });
+
+  test("change route returns to manual search when the selected route came from manual results", () => {
+    const manualState = flowReducer(
+      {
+        ...initialFlowState,
+        screen: "directionChoice",
+        manualQuery: "lagoa",
+        manualCandidates: [route],
+        selectedRoute: { ...route, source: "manual" },
+        directionChoices: [direction]
+      },
+      { type: "changeRoute" }
+    );
+
+    expect(manualState.screen).toBe("manualRouteSearch");
+    expect(manualState.manualQuery).toBe("lagoa");
+    expect(manualState.manualCandidates).toEqual([route]);
+  });
 });
 
 function selectDirection(requestId: string): FlowState {

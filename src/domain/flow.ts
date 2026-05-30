@@ -30,6 +30,7 @@ export const initialFlowState: FlowState = {
 
 export type FlowEvent =
   | { type: "locationRequested" }
+  | { type: "manualSearchOpened" }
   | {
       type: "locationResolved";
       requestId: RequestId;
@@ -65,6 +66,13 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         screen: "locationRequest",
         requestStatus: "idle",
         locationIssue: undefined
+      });
+
+    case "manualSearchOpened":
+      return clearError({
+        ...state,
+        screen: "manualRouteSearch",
+        requestStatus: "idle"
       });
 
     case "locationResolved":
@@ -256,7 +264,8 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         ...state,
         screen: "apiError",
         requestStatus: "error",
-        error: normalizeFlowError(event.error)
+        error: normalizeFlowError(event.error),
+        pendingRequests: clearPendingRequests(state.pendingRequests, event.requestId)
       });
 
     case "retryRequested":
@@ -271,7 +280,7 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
     case "changeRoute":
       return clearAdviceAndGeometry({
         ...state,
-        screen: state.nearbyCandidates.length > 0 ? "routeCandidateSelection" : "manualRouteSearch",
+        screen: state.selectedRoute?.source === "manual" ? "manualRouteSearch" : "routeCandidateSelection",
         requestStatus: "idle",
         selectedRoute: undefined,
         selectedDirection: undefined,
@@ -337,6 +346,12 @@ function geometryAllowsConfirmation(geometry: RouteGeometryResponse, mapAvailabi
 
 function requestIsPending(state: FlowState, requestId: RequestId): boolean {
   return Object.values(state.pendingRequests).includes(requestId);
+}
+
+function clearPendingRequests(pendingRequests: FlowState["pendingRequests"], requestId: RequestId): FlowState["pendingRequests"] {
+  return Object.fromEntries(
+    Object.entries(pendingRequests).map(([key, value]) => [key, value === requestId ? undefined : value])
+  ) as FlowState["pendingRequests"];
 }
 
 function toSelectedRoute(route: RouteCandidate, source: RouteSelectionSource): SelectedRoute {
