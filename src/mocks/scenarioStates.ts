@@ -32,15 +32,14 @@ const nearbyCandidates = toRouteCandidates(
 
 const manualCandidates = toRouteCandidates(
   {
-    routes: routesResponse.routes.filter((route) =>
-      [fixtureIds.routes.lagoa, fixtureIds.routes.missingGeometry].includes(route.route_id)
+    routes: routesResponse.routes.filter(
+      (route) => route.route_id === fixtureIds.routes.lagoa || route.route_id === fixtureIds.routes.missingGeometry
     )
   },
   { source: "manual" }
 );
 
 const selectedNearbyRoute = toSelectedRoute(nearbyCandidates[0], "nearby");
-const selectedManualRoute = toSelectedRoute(manualCandidates[0], "manual");
 const selectedMissingGeometryRoute = toSelectedRoute(
   manualCandidates.find((route) => route.routeId === fixtureIds.routes.missingGeometry) ?? manualCandidates[0],
   "manual"

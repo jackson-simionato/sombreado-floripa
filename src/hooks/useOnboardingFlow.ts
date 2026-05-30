@@ -146,7 +146,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     dispatch({ type: "manualSearchOpened" });
   }, []);
 
-  const useLocation = useCallback(async () => {
+  const requestLocation = useCallback(async () => {
     dispatch({ type: "locationRequested" });
 
     const requestId = nextRequestId("nearby");
@@ -265,7 +265,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     }
 
     if (retryTarget.kind === "nearbyRoutes") {
-      void useLocation();
+      void requestLocation();
       return;
     }
 
@@ -302,7 +302,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         routeVersionId
       });
     }
-  }, [requestAdvisory, selectDirection, selectRoute, state, useLocation]);
+  }, [requestAdvisory, requestLocation, selectDirection, selectRoute, state]);
 
   useEffect(() => {
     if (!manualSearchEnabled) {
@@ -370,7 +370,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         void selectRoute(route, source);
       },
       useLocation() {
-        void useLocation();
+        void requestLocation();
       }
     }
   };
