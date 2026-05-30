@@ -1,12 +1,45 @@
 import React from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import HomePage from "../app/page";
 import { HomePageApp } from "../src/app/HomePageApp";
 
 describe("home screen flow", () => {
+  test("renders the default location screen without calling browser geolocation before rider action", async () => {
+    const user = userEvent.setup();
+    const geolocationSpy = vi.fn();
+    const originalGeolocation = navigator.geolocation;
+
+    Object.defineProperty(navigator, "geolocation", {
+      configurable: true,
+      value: {
+        getCurrentPosition: geolocationSpy,
+        watchPosition: vi.fn(),
+        clearWatch: vi.fn()
+      }
+    });
+
+    render(<HomePage />);
+
+    expect(screen.getByRole("heading", { name: "De que lado sentar?" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Usar minha localização" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Procurar linha manualmente" })).toBeInTheDocument();
+    expect(screen.getByLabelText(/Diagrama do ônibus visto de cima/i)).toBeInTheDocument();
+    expect(geolocationSpy).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: "Procurar linha manualmente" }));
+
+    expect(await screen.findByRole("heading", { name: "Procurar linha" })).toBeInTheDocument();
+    expect(geolocationSpy).not.toHaveBeenCalled();
+
+    Object.defineProperty(navigator, "geolocation", {
+      configurable: true,
+      value: originalGeolocation
+    });
+  });
+
   test("runs the nearby route flow through final onboard advice", async () => {
     const user = userEvent.setup();
 
@@ -219,6 +252,54 @@ describe("home screen flow", () => {
     expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Usar minha localização" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Procurar linha manualmente" })).not.toBeInTheDocument();
+  });
+
+  test("exposes route cards and direction rows as accessible buttons before confirmation", async () => {
+    const user = userEvent.setup();
+
+    render(<HomePage />);
+
+    await user.click(screen.getByRole("button", { name: "Usar minha localização" }));
+
+    const routeButton = await screen.findByRole("button", {
+      name: "Selecionar linha 124 TICEN - Lagoa"
+    });
+    expect(routeButton).toBeInTheDocument();
+
+    await user.click(routeButton);
+
+    const directionButton = await screen.findByRole("button", {
+      name: "Selecionar sentido TICEN para Lagoa"
+    });
+    expect(directionButton).toBeInTheDocument();
+    expect(screen.queryByText(/sentido escolhido/i)).not.toBeInTheDocument();
+  });
+
+  test("keeps onboard advice text-distinct with an accessible diagram summary", async () => {
+    const user = userEvent.setup();
+
+    render(<HomePageApp scenarioId="advice-exposure-right-recommends-left" />);
+
+    await completeNearbyFlow(user);
+    await user.click(screen.getByRole("button", { name: "Confirmar esta linha" }));
+
+    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Sente à esquerda" })).toBeInTheDocument();
+    expect(screen.getByLabelText(/Recomendação: sente à esquerda/i)).toBeInTheDocument();
+    expect(screen.queryByText("Prévia")).not.toBeInTheDocument();
+  });
+
+  test("keeps preview advice text-distinct with an accessible diagram summary", async () => {
+    const user = userEvent.setup();
+
+    render(<HomePageApp scenarioId="advice-preview-left" />);
+
+    await completeNearbyFlow(user);
+    await user.click(screen.getByRole("button", { name: "Confirmar esta linha" }));
+
+    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(screen.getByText("Prévia")).toBeInTheDocument();
+    expect(screen.getByLabelText(/Recomendação: sente à direita/i)).toBeInTheDocument();
   });
 });
 
