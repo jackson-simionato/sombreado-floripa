@@ -20,6 +20,13 @@ Refine the v1 frontend until it feels trustworthy, joyful, and reliable on mobil
 - Test on small and medium mobile viewports.
 - Verify manual route search, route selection, direction choice, and route confirmation on mobile.
 - Verify slow loading, denied geolocation, no candidates, route-without-directions, API errors, preview-with-warning, true withheld, and Mapbox confirmation fallback responses.
+- Consider adding a small Playwright mobile smoke suite once the runtime is no longer a mocked-only prototype:
+  - run Chromium at a 360px-wide mobile viewport
+  - walk the default onboard flow end to end
+  - verify scenario or QA-state reachability if a dev-only switcher still exists
+  - assert no horizontal overflow in core states
+  - confirm sticky actions are visible and clickable
+  - check core text and ARIA labels without using brittle visual snapshots
 
 ## Deliverable
 

@@ -18,7 +18,7 @@ Harden the mocked prototype with focused tests and final readiness checks before
 
 - Expand focused component/integration tests around the full mocked flow.
 - Minimum test coverage:
-  - default location screen does not depend on real geolocation
+  - default location screen renders without a geolocation mock and does not call browser geolocation before rider action
   - manual search selects route, then direction, then confirmation
   - nearby route selection stays route-only before direction choice
   - route confirmation shows the normal placeholder map and fallback variant
@@ -27,29 +27,35 @@ Harden the mocked prototype with focused tests and final readiness checks before
   - withheld, API error, no candidates, no directions, and map fallback render correct primary actions
   - `front`, `back`, `overhead`, and `none` variants do not pretend to be left/right seat recommendations
   - scenario switcher can reach required mocked states
+- Test assertion policy:
+  - assert contractual headings and primary/fallback action labels exactly from `docs/wireframes-v1.md`
+  - use looser semantic or regex assertions for supporting explanatory copy that may still be polished
+  - use table-driven tests for required edge-state primary/fallback actions, not exhaustive navigation from every edge state
 - Audit accessibility basics:
-  - route cards and direction rows use semantic button behavior
-  - visible focus states
-  - accessible labels for route and direction choices
-  - accessible text equivalents for every bus diagram
-  - no color-only sun/shade distinction
-  - reduced-motion support if animation exists
-  - sticky actions do not trap focus or cover content
+  - automate stable DOM semantics: route cards and direction rows use semantic button behavior, route and direction choices have accessible labels, every bus diagram has an accessible text equivalent, and onboard/preview advice is text-distinct
+  - manually audit visual behavior: visible focus states, no color-only sun/shade distinction, reduced-motion support if animation exists, and sticky actions do not trap focus or cover content
 - Audit mobile usability at small viewport width:
   - core flow is usable around 360px wide
   - Portuguese copy fits without overflow
   - sticky actions remain reachable
   - advisory result feels like the main product moment
+- Treat manual mobile QA as a hard readiness gate for this plan. If it cannot be run, document the blocker instead of marking 04f complete.
+- Inspect every scenario-switcher entry once during manual QA, because the switcher is itself the mocked prototype QA surface.
 - Confirm deferred integrations are still deferred:
   - no live service calls
-  - no real geolocation call by default
+  - no real geolocation implementation yet; location stays mocked through 04f
   - no Mapbox package, token, or initialization
   - no backend, scraper, advisory computation, or route-data processing in this repo
-- Update any Plan 05 notes if the prototype revealed a contract gap that API integration must resolve.
+- Keep the scenario switcher visible by default for 04f, but document its lifecycle for Plan 05: it must be removed from product runtime or gated behind a prototype/dev condition before real API integration is considered product-ready.
+- Keep `/` as the mocked prototype runtime for 04f, and state that explicitly in the readiness note.
+- Do not add Playwright in 04f. Browser automation is deferred to Plan 07.
+- Update Plan 05 only if the prototype reveals a concrete contract gap that API integration must resolve.
+- Update Plan 07 with the deferred Playwright/mobile-smoke follow-up.
 
 ## Deliverable
 
 - A tested mocked prototype ready for API integration work in Plan 05.
+- A written readiness note at `docs/qa/04f-prototype-readiness.md` recording commands run, manual QA scope, viewport, scenario-switcher coverage, deferred-scope search results, known blockers, and any Plan 05 contract gaps.
 
 ## Acceptance Criteria
 
@@ -58,12 +64,25 @@ Harden the mocked prototype with focused tests and final readiness checks before
 - Manual mobile QA finds no blocking layout overlap or unreadable copy in the required states.
 - The scenario switcher reaches all required QA states.
 - The prototype remains frontend-only and mocked by default.
-- Any known follow-up for API integration is documented in Plan 05 or a clear implementation note.
+- The readiness note exists and records:
+  - default flow checked around a 360px viewport
+  - every scenario-switcher entry inspected once
+  - reduced-motion and focus-state audit outcome
+  - deferred-scope search command and result
+  - `/` is still the mocked prototype runtime for 04f
+  - scenario switcher lifecycle recommendation for Plan 05
+- Any discovered API integration contract gap is documented in Plan 05 or explicitly recorded as "none found" in the readiness note.
 
 ## Verification
 
 - Run `npm test`.
-- Run the scaffold's type/lint/check command if one exists.
+- Run scaffold checks:
+
+  ```bash
+  npm run lint
+  npm run typecheck
+  ```
+
 - Manually verify the default flow and scenario switcher on a 360px-wide viewport.
 - Run targeted searches for accidental deferred-scope work:
 
