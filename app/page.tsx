@@ -1,5 +1,5 @@
-import { HomePageApp } from "../src/app/HomePageApp";
+import { PrototypeHomePage } from "../src/app/PrototypeHomePage";
 
 export default function HomePage() {
-  return <HomePageApp />;
+  return <PrototypeHomePage />;
 }

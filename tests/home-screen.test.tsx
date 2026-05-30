@@ -189,10 +189,36 @@ describe("home screen flow", () => {
     await completeNearbyFlow(user);
     await user.click(screen.getByRole("button", { name: "Confirmar esta linha" }));
 
-    expect(await screen.findByRole("heading", { name: "Não dá para recomendar agora" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Não é possível recomendar agora" })).toBeInTheDocument();
     expect(screen.queryByText("4 de 4")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Trocar linha" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeInTheDocument();
+  });
+
+  test("shows the prototype scenario switcher on the page and can jump to the slow loading state", async () => {
+    const user = userEvent.setup();
+
+    render(<HomePage />);
+
+    const scenarioSelect = screen.getByRole("combobox", { name: "Protótipo" });
+    await user.selectOptions(scenarioSelect, "location-slow-loading");
+
+    expect(await screen.findByRole("heading", { name: "Ainda buscando..." })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Continuar aguardando" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Procurar linha manualmente" })).toBeInTheDocument();
+  });
+
+  test("uses location as the fallback action for manual-search API errors", async () => {
+    const user = userEvent.setup();
+
+    render(<HomePage />);
+
+    await user.selectOptions(screen.getByRole("combobox", { name: "Protótipo" }), "error-manual-search");
+
+    expect(await screen.findByRole("heading", { name: "Algo deu errado" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Usar minha localização" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Procurar linha manualmente" })).not.toBeInTheDocument();
   });
 });
 
