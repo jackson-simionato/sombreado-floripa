@@ -31,6 +31,7 @@ export type OnboardingFlowController = {
     changeRoute(): void;
     confirmRoute(): void;
     openManualSearch(): void;
+    refreshAdvice(): void;
     retry(): void;
     searchManually(query: string): void;
     selectDirection(direction: DirectionChoice): void;
@@ -51,7 +52,12 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     () =>
       createMockApi({
         scenarioId,
-        delays: scenarioId === "nearby-slow" ? { nearbyMs: 900 } : undefined
+        delays:
+          scenarioId === "nearby-slow"
+            ? { nearbyMs: 900 }
+            : scenarioId === "computing-advice"
+              ? { advisoryMs: 900 }
+              : undefined
       }),
     [scenarioId]
   );
@@ -79,6 +85,51 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       dispatch({ type: "operationFailed", requestId, error: flowError });
     },
     []
+  );
+
+  const requestAdvisory = useCallback(
+    async (input: {
+      includeFreshLocation: boolean;
+      fallbackLocation?: { lat: number; lng: number };
+      routeDirectionId: string;
+      routeVersionId: string;
+    }) => {
+      const requestId = nextRequestId("advisory");
+      const locationResult = input.includeFreshLocation ? await locationProvider.getCurrentLocation() : undefined;
+      const referenceLocation =
+        locationResult?.kind === "granted"
+          ? { lat: locationResult.lat, lng: locationResult.lng }
+          : (input.fallbackLocation ?? { lat: -27.5969, lng: -48.5488 });
+
+      const advisoryRequest = buildTargetAdvisoryRequest({
+        lat: referenceLocation.lat,
+        lng: referenceLocation.lng,
+        routeVersionId: input.routeVersionId,
+        routeDirectionId: input.routeDirectionId
+      });
+
+      dispatch({
+        type: "routeConfirmed",
+        requestId,
+        advisoryRequest,
+        referenceLocation
+      });
+
+      try {
+        const advice = await api.createOnboardAdvisory(advisoryRequest);
+        dispatch({
+          type: "advisorySucceeded",
+          requestId,
+          advice
+        });
+      } catch (error) {
+        failOperation(requestId, error, {
+          kind: "advisory",
+          request: advisoryRequest
+        });
+      }
+    },
+    [api, failOperation, locationProvider, nextRequestId]
   );
 
   const openManualSearch = useCallback(() => {
@@ -176,19 +227,26 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       return;
     }
 
-    const referenceLocation = state.latestLocation ?? { lat: -27.5969, lng: -48.5488 };
-    const requestId = nextRequestId("advisory");
-    dispatch({
-      type: "routeConfirmed",
-      requestId,
-      advisoryRequest: buildTargetAdvisoryRequest({
-        lat: referenceLocation.lat,
-        lng: referenceLocation.lng,
-        routeVersionId: state.selectedRoute.routeVersionId,
-        routeDirectionId: state.selectedDirection.routeDirectionId
-      })
+    void requestAdvisory({
+      includeFreshLocation: false,
+      fallbackLocation: state.latestLocation,
+      routeDirectionId: state.selectedDirection.routeDirectionId,
+      routeVersionId: state.selectedRoute.routeVersionId
     });
-  }, [nextRequestId, state.latestLocation, state.selectedDirection, state.selectedRoute]);
+  }, [requestAdvisory, state.latestLocation, state.selectedDirection, state.selectedRoute]);
+
+  const refreshAdvice = useCallback(() => {
+    if (state.selectedRoute === undefined || state.selectedDirection === undefined) {
+      return;
+    }
+
+    void requestAdvisory({
+      includeFreshLocation: true,
+      fallbackLocation: state.latestLocation,
+      routeDirectionId: state.selectedDirection.routeDirectionId,
+      routeVersionId: state.selectedRoute.routeVersionId
+    });
+  }, [requestAdvisory, state.latestLocation, state.selectedDirection, state.selectedRoute]);
 
   const retry = useCallback(() => {
     const retryTarget = state.error?.retryTarget;
@@ -220,8 +278,20 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       if (direction !== undefined) {
         void selectDirection(direction);
       }
+      return;
     }
-  }, [selectDirection, selectRoute, state, useLocation]);
+
+    if (retryTarget.kind === "advisory") {
+      const routeVersionId = state.selectedRoute?.routeVersionId ?? retryTarget.request.route_version_id;
+      const routeDirectionId = state.selectedDirection?.routeDirectionId ?? retryTarget.request.route_direction_id;
+      void requestAdvisory({
+        includeFreshLocation: false,
+        fallbackLocation: { lat: retryTarget.request.lat, lng: retryTarget.request.lng },
+        routeDirectionId,
+        routeVersionId
+      });
+    }
+  }, [requestAdvisory, selectDirection, selectRoute, state, useLocation]);
 
   useEffect(() => {
     if (state.screen !== "manualRouteSearch" && state.screen !== "noManualResults") {
@@ -266,6 +336,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       },
       confirmRoute,
       openManualSearch,
+      refreshAdvice,
       retry,
       searchManually(query: string) {
         if (state.screen !== "manualRouteSearch" && state.screen !== "noManualResults") {

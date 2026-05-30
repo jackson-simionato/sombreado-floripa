@@ -1,12 +1,13 @@
 import { useMemo, useRef } from "react";
 import type { ReactNode } from "react";
 
+import { AdviceBusDiagram } from "../components/AdviceBusDiagram";
 import { AppShell } from "../components/AppShell";
 import { BusSplitDiagram } from "../components/BusSplitDiagram";
 import { Button } from "../components/Button";
 import { StickyActions } from "../components/StickyActions";
 import { toRoutePolyline } from "../domain/adapters";
-import type { DirectionChoice, RouteCandidate } from "../domain/types";
+import type { AdvisoryReasonCode, DirectionChoice, RouteCandidate, UiAdviceState } from "../domain/types";
 import type { OnboardingFlowController } from "../hooks/useOnboardingFlow";
 
 import styles from "./OnboardingFlowScreen.module.css";
@@ -269,13 +270,52 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
     case "computingAdvice":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
+          <p className={styles.progress}>4 de 4</p>
           <h1 id="screen-title" className={styles.titleCompact}>
             Calculando pelo sol direto...
           </h1>
-          <p className={styles.body}>Vamos comparar esquerda e direita no sentido escolhido.</p>
+          <p className={styles.body}>Estou estimando parte do ônibus com menos sol direto para esse sentido.</p>
           <RouteSummary directionLabel={state.selectedDirection?.name} routeLabel={selectedRouteLabel} />
         </section>
       );
+      stickySecondary = (
+        <Button onClick={actions.changeRoute} variant="secondary">
+          Trocar linha
+        </Button>
+      );
+      break;
+
+    case "onboardAdviceResult":
+    case "routePreviewAdviceResult":
+      if (state.advice !== undefined && state.advice.mode !== "withheld") {
+        content = renderAdviceResult({
+          advice: state.advice,
+          directionLabel: state.selectedDirection?.name,
+          routeLabel: selectedRouteLabel
+        });
+      } else {
+        content = null;
+      }
+      stickyPrimary = <Button onClick={actions.refreshAdvice}>Atualizar localização</Button>;
+      stickySecondary = (
+        <Button onClick={actions.changeRoute} variant="secondary">
+          Trocar linha
+        </Button>
+      );
+      break;
+
+    case "trueWithheld":
+      content = (
+        <section className={styles.stack} aria-labelledby="screen-title">
+          <p className={styles.resultEyebrow}>Sem recomendação útil</p>
+          <h1 id="screen-title" className={styles.titleCompact}>
+            Não dá para recomendar agora
+          </h1>
+          <p className={styles.body}>{withheldReasonCopy(state.advice?.mode === "withheld" ? state.advice.reasonCode : undefined)}</p>
+          <RouteSummary directionLabel={state.selectedDirection?.name} routeLabel={selectedRouteLabel} />
+        </section>
+      );
+      stickyPrimary = <Button onClick={actions.retry}>Tentar de novo</Button>;
       stickySecondary = (
         <Button onClick={actions.changeRoute} variant="secondary">
           Trocar linha
@@ -349,6 +389,38 @@ function renderLoadingScreen(
         </h1>
         <p className={styles.body}>{body}</p>
         {selectedRouteLabel !== undefined ? <RouteSummary routeLabel={selectedRouteLabel} /> : null}
+      </div>
+    </section>
+  );
+}
+
+function renderAdviceResult({
+  advice,
+  directionLabel,
+  routeLabel
+}: {
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>;
+  directionLabel?: string;
+  routeLabel?: string;
+}) {
+  const variant = adviceVariantCopy(advice);
+
+  return (
+    <section className={styles.stack} aria-labelledby="screen-title">
+      <p className={styles.progress}>4 de 4</p>
+      <div className={styles.resultCard}>
+        <div className={styles.resultHeader}>
+          <p className={styles.resultEyebrow}>{variant.eyebrow}</p>
+          {variant.badge !== undefined ? <span className={styles.resultBadge}>{variant.badge}</span> : null}
+        </div>
+        <h1 id="screen-title" className={styles.titleCompact}>
+          {variant.title}
+        </h1>
+        <p className={styles.body}>{variant.body}</p>
+        <RouteSummary directionLabel={directionLabel} label="Linha confirmada" routeLabel={routeLabel} />
+        {variant.previewNote !== undefined ? <p className={styles.metaText}>{variant.previewNote}</p> : null}
+        <AdviceBusDiagram advice={advice} summary={variant.accessibleSummary} />
+        <p className={styles.estimateNotice}>{ESTIMATE_NOTICE}</p>
       </div>
     </section>
   );
@@ -466,5 +538,108 @@ function locationIssueLabel(issue: OnboardingFlowController["state"]["locationIs
     case "denied":
     default:
       return "Você pode seguir sem localização e escolher a linha manualmente.";
+  }
+}
+
+const ESTIMATE_NOTICE = "Estimativa pelo sol direto. Pode variar no caminho.";
+
+function adviceVariantCopy(advice: Exclude<UiAdviceState, { mode: "withheld" }>): {
+  eyebrow: string;
+  title: string;
+  body: string;
+  accessibleSummary: string;
+  badge?: string;
+  previewNote?: string;
+} {
+  if (advice.mode === "preview") {
+    return {
+      ...directionalAdviceCopy(advice.recommendedSeatArea),
+      eyebrow: "Prévia da linha",
+      badge: "Prévia",
+      previewNote: previewDistanceCopy(advice.distanceFromRouteMeters)
+    };
+  }
+
+  if (advice.mode === "neutralComputed") {
+    if (advice.directSunExposure === "overhead") {
+      return {
+        eyebrow: "Resultado calculado",
+        title: "Sem lado melhor agora",
+        body: "Sol alto demais para uma lateral se destacar neste trecho.",
+        accessibleSummary: "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora."
+      };
+    }
+
+    return {
+      eyebrow: "Resultado calculado",
+      title: "Sem sol direto relevante agora",
+      body: "Não há sol direto suficiente para recomendar uma lateral neste trecho.",
+      accessibleSummary: "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora."
+    };
+  }
+
+  return {
+    ...directionalAdviceCopy(advice.recommendedSeatArea),
+    eyebrow: "Agora no ônibus"
+  };
+}
+
+function directionalAdviceCopy(recommendedSeatArea: "left" | "right" | "front" | "back") {
+  switch (recommendedSeatArea) {
+    case "left":
+      return {
+        title: "Sente à esquerda",
+        body: "Esse lado deve pegar menos sol direto neste sentido.",
+        accessibleSummary:
+          "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus."
+      };
+    case "right":
+      return {
+        title: "Melhor sentar à direita",
+        body: "Esse lado deve pegar menos sol direto neste sentido.",
+        accessibleSummary:
+          "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus."
+      };
+    case "front":
+      return {
+        title: "Prefira sentar mais à frente",
+        body: "Parte da frente deve pegar menos sol direto neste sentido.",
+        accessibleSummary:
+          "Recomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus."
+      };
+    case "back":
+      return {
+        title: "Prefira sentar mais atrás",
+        body: "Parte de trás deve pegar menos sol direto neste sentido.",
+        accessibleSummary:
+          "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus."
+      };
+  }
+}
+
+function previewDistanceCopy(distanceFromRouteMeters?: number): string {
+  if (distanceFromRouteMeters === undefined) {
+    return "Prévia estimada para linha confirmada.";
+  }
+
+  return `Prévia estimada para linha confirmada, cerca de ${Math.round(distanceFromRouteMeters)} m fora da rota.`;
+}
+
+function withheldReasonCopy(reasonCode?: AdvisoryReasonCode): string {
+  switch (reasonCode) {
+    case "direction_unconfirmed":
+      return "Ainda não consegui confirmar esse sentido com segurança.";
+    case "missing_route_geometry":
+      return "Essa linha não trouxe trajeto suficiente para calcular recomendação.";
+    case "off_route_no_preview_point":
+      return "Você parece estar fora da linha confirmada e não encontrei ponto confiável para prévia.";
+    case "insufficient_sun_signal":
+      return "Sinal de sol direto fraco demais para recomendar parte do ônibus agora.";
+    case "service_unavailable":
+      return "Serviço de recomendação não respondeu agora.";
+    case "off_route_preview_available":
+      return "Há indício de prévia possível, mas resultado útil não ficou pronto agora.";
+    default:
+      return "Não consegui calcular recomendação útil para essa linha neste momento.";
   }
 }

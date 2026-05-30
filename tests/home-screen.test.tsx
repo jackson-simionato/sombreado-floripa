@@ -7,7 +7,7 @@ import HomePage from "../app/page";
 import { HomePageApp } from "../src/app/HomePageApp";
 
 describe("home screen flow", () => {
-  test("runs the nearby route flow through direction choice and route confirmation", async () => {
+  test("runs the nearby route flow through final onboard advice", async () => {
     const user = userEvent.setup();
 
     render(<HomePage />);
@@ -33,10 +33,27 @@ describe("home screen flow", () => {
 
     await user.click(screen.getByRole("button", { name: "Confirmar esta linha" }));
 
-    expect(await screen.findByRole("heading", { name: "Calculando pelo sol direto..." })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Sente à esquerda" })).toBeInTheDocument();
+    expect(screen.getByText("4 de 4")).toBeInTheDocument();
+    expect(screen.getByText("Agora no ônibus")).toBeInTheDocument();
+    expect(screen.getByText("Estimativa pelo sol direto. Pode variar no caminho.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Atualizar localização" })).toBeInTheDocument();
+    expect(screen.getByLabelText(/Recomendação: sente à esquerda/i)).toBeInTheDocument();
   });
 
-  test("runs the manual search flow through missing-geometry fallback and computing advice", async () => {
+  test("shows computing state before advice when advisory mock is delayed", async () => {
+    const user = userEvent.setup();
+
+    render(<HomePageApp scenarioId="computing-advice" />);
+
+    await completeNearbyFlow(user);
+    await user.click(screen.getByRole("button", { name: "Confirmar esta linha" }));
+
+    expect(await screen.findByRole("heading", { name: "Calculando pelo sol direto..." })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Sente à esquerda" })).toBeInTheDocument();
+  });
+
+  test("runs manual flow through missing-geometry fallback into final advice", async () => {
     const user = userEvent.setup();
 
     render(<HomePage />);
@@ -59,7 +76,7 @@ describe("home screen flow", () => {
 
     await user.click(screen.getByRole("button", { name: "Confirmar mesmo assim" }));
 
-    expect(await screen.findByRole("heading", { name: "Calculando pelo sol direto..." })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Sente à esquerda" })).toBeInTheDocument();
   });
 
   test("returns to the correct source when changing route", async () => {
@@ -115,4 +132,73 @@ describe("home screen flow", () => {
     expect(await screen.findByText("Mapa indisponível")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Confirmar mesmo assim" })).toBeInTheDocument();
   });
+
+  test("renders preview advice as lightweight distinct result", async () => {
+    const user = userEvent.setup();
+
+    render(<HomePageApp scenarioId="advice-preview-left" />);
+
+    await completeNearbyFlow(user);
+    await user.click(screen.getByRole("button", { name: "Confirmar esta linha" }));
+
+    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(screen.getByText("Prévia")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Melhor sentar à direita" })).toBeInTheDocument();
+    expect(screen.getByText(/Prévia estimada para linha confirmada/i)).toBeInTheDocument();
+  });
+
+  test.each([
+    ["advice-exposure-front-recommends-back", "Prefira sentar mais atrás", /sente mais atrás/i],
+    ["advice-exposure-back-recommends-front", "Prefira sentar mais à frente", /sente mais à frente/i]
+  ] as const)("renders %s without left-right seat copy", async (scenarioId, heading, summaryLabel) => {
+    const user = userEvent.setup();
+
+    render(<HomePageApp scenarioId={scenarioId} />);
+
+    await completeNearbyFlow(user);
+    await user.click(screen.getByRole("button", { name: "Confirmar esta linha" }));
+
+    expect(await screen.findByRole("heading", { name: heading })).toBeInTheDocument();
+    expect(screen.queryByText("Sente à esquerda")).not.toBeInTheDocument();
+    expect(screen.queryByText("Melhor sentar à direita")).not.toBeInTheDocument();
+    expect(screen.getByLabelText(summaryLabel)).toBeInTheDocument();
+  });
+
+  test.each([
+    ["advice-neutral-overhead", "Sem lado melhor agora"],
+    ["advice-neutral-none", "Sem sol direto relevante agora"]
+  ] as const)("renders %s as neutral result without claiming best side", async (scenarioId, heading) => {
+    const user = userEvent.setup();
+
+    render(<HomePageApp scenarioId={scenarioId} />);
+
+    await completeNearbyFlow(user);
+    await user.click(screen.getByRole("button", { name: "Confirmar esta linha" }));
+
+    expect(await screen.findByRole("heading", { name: heading })).toBeInTheDocument();
+    expect(screen.queryByText("Sente à esquerda")).not.toBeInTheDocument();
+    expect(screen.queryByText("Melhor sentar à direita")).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/Diagrama neutro do ônibus/i)).toBeInTheDocument();
+  });
+
+  test("renders withheld state without progress and with retry actions", async () => {
+    const user = userEvent.setup();
+
+    render(<HomePageApp scenarioId="advice-withheld" />);
+
+    await completeNearbyFlow(user);
+    await user.click(screen.getByRole("button", { name: "Confirmar esta linha" }));
+
+    expect(await screen.findByRole("heading", { name: "Não dá para recomendar agora" })).toBeInTheDocument();
+    expect(screen.queryByText("4 de 4")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Tentar de novo" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Trocar linha" })).toBeInTheDocument();
+  });
 });
+
+async function completeNearbyFlow(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole("button", { name: "Usar minha localização" }));
+  await user.click(await screen.findByRole("button", { name: "Selecionar linha 124 TICEN - Lagoa" }));
+  await user.click(await screen.findByRole("button", { name: "Selecionar sentido TICEN para Lagoa" }));
+  await screen.findByRole("heading", { name: "Confirme sua linha" });
+}

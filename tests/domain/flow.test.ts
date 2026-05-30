@@ -259,6 +259,9 @@ describe("flow reducer", () => {
     expect(neutralState.screen).toBe("onboardAdviceResult");
     expect(neutralState.advice).toEqual({ mode: "neutralComputed", directSunExposure: "overhead" });
 
+    const noSunState = advisoryState(advisoryResponse("on_route", "none"));
+    expect(noSunState.advice).toEqual({ mode: "neutralComputed", directSunExposure: "none" });
+
     expect(
       advisoryScreen({
         status: "withheld",
@@ -357,6 +360,18 @@ describe("flow reducer", () => {
     expect(manualState.screen).toBe("manualRouteSearch");
     expect(manualState.manualQuery).toBe("lagoa");
     expect(manualState.manualCandidates).toEqual([route]);
+  });
+
+  test("route confirmation can refresh latest location before computing advice", () => {
+    const state = flowReducer(selectDirection("geometry-1"), {
+      type: "routeConfirmed",
+      requestId: "advisory-2",
+      advisoryRequest,
+      referenceLocation: { lat: -27.61, lng: -48.51 }
+    });
+
+    expect(state.screen).toBe("computingAdvice");
+    expect(state.latestLocation).toEqual({ lat: -27.61, lng: -48.51 });
   });
 });
 

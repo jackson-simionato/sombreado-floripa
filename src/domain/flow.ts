@@ -51,7 +51,12 @@ export type FlowEvent =
       geometry: RouteGeometryResponse;
       mapAvailability: MapAvailability;
     }
-  | { type: "routeConfirmed"; requestId: RequestId; advisoryRequest: TargetAdvisoryRequest }
+  | {
+      type: "routeConfirmed";
+      requestId: RequestId;
+      advisoryRequest: TargetAdvisoryRequest;
+      referenceLocation?: { lat: number; lng: number };
+    }
   | { type: "advisorySucceeded"; requestId: RequestId; advice: TargetAdvisoryResponse }
   | { type: "operationFailed"; requestId: RequestId; error: FlowError }
   | { type: "retryRequested"; requestId: RequestId; retryTarget: RetryTarget }
@@ -230,6 +235,7 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         ...state,
         screen: "computingAdvice",
         requestStatus: "loading",
+        latestLocation: event.referenceLocation ?? state.latestLocation,
         advisoryRequest: { ...event.advisoryRequest },
         pendingRequests: {
           ...state.pendingRequests,

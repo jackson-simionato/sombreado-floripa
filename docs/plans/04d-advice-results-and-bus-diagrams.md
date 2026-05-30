@@ -15,6 +15,7 @@ Build the advisory result experience, including computing state, onboard advice,
 ## Work
 
 - Implement `Computing Advice` after route confirmation.
+- Wire route confirmation to call the mocked advisory API and transition from `computingAdvice` to the returned result state.
 - Implement `Onboard Advice Result` with route and direction context.
 - Implement `Route Preview Advice Result` as a clearly labeled preview result. Do not add a separate preview-warning screen.
 - Implement `True Withheld` only for cases where useful advice cannot be computed.
@@ -33,6 +34,21 @@ Build the advisory result experience, including computing state, onboard advice,
   - front/back copy that recommends seats farther forward or farther back without pretending it is a left/right result
 - Keep the geometric estimate notice visible on advice results.
 - Add tests for left/right, front/back, overhead/none, preview, and withheld rendering.
+
+## Clarified Decisions
+
+- Treat `front` and `back` as actionable seat-area recommendations, not side recommendations:
+  - `front` direct sun should recommend sitting farther back.
+  - `back` direct sun should recommend sitting farther forward.
+  - Do not show left/right recommendation copy for front/back results.
+- Treat `overhead` and `none` as successful neutral computed results, not withheld states.
+- Omit progress text from `trueWithheld`; keep route and direction context visible with reason-specific recovery copy.
+- Keep preview lightweight: reuse the relevant advice diagram, but add a compact preview label or badge. Do not make preview warning dominate the result screen.
+- Use one concise geometric estimate notice across computed advice results. Keep it visible, but avoid overly defensive limitation copy.
+- Implement `Atualizar localização` as a real recompute action for result states: request location again, rebuild the advisory request for the selected route and direction, pass through `computingAdvice`, then render the updated result.
+- Do not force an extra artificial delay for `computingAdvice`; let the mocked advisory promise control the state duration.
+- Prefer one result diagram component with internal variants for side, front/back, and neutral diagrams.
+- Test one full default click-through to onboard advice, then use targeted rendering or scenario-based tests for the remaining result variants.
 
 ## Deliverable
 
