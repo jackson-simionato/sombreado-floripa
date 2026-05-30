@@ -199,17 +199,13 @@ export const mockAdvisories = {
 } as const satisfies Record<string, TargetAdvisoryResponse>;
 
 export const mockScenarios: ReadonlyArray<{ id: MockScenarioId }> = [
-  { id: "location-request" },
-  { id: "finding-nearby-routes" },
   { id: "nearby-routes" },
-  { id: "nearby-empty" },
   { id: "nearby-slow" },
+  { id: "nearby-empty" },
   { id: "location-denied" },
   { id: "manual-search" },
   { id: "manual-empty" },
-  { id: "direction-choice" },
   { id: "route-no-directions" },
-  { id: "confirmation-map" },
   { id: "confirmation-fallback-missing-geometry" },
   { id: "confirmation-fallback-map-unavailable" },
   { id: "computing-advice" },
@@ -221,7 +217,12 @@ export const mockScenarios: ReadonlyArray<{ id: MockScenarioId }> = [
   { id: "advice-neutral-none" },
   { id: "advice-preview-left" },
   { id: "advice-withheld" },
-  { id: "api-error" }
+  { id: "api-error" },
+  { id: "api-error-nearby-routes" },
+  { id: "api-error-manual-search" },
+  { id: "api-error-directions" },
+  { id: "api-error-geometry" },
+  { id: "api-error-advice" }
 ];
 
 function advisory(

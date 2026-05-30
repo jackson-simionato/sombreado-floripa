@@ -8,14 +8,15 @@ describe("mock fixtures and API", () => {
     expect(fixtureIds.routes.lagoa).toBe("00000000-0000-0000-0000-000000000124");
     expect(mockScenarios.map((scenario) => scenario.id)).toEqual(
       expect.arrayContaining([
-        "location-request",
         "nearby-routes",
         "nearby-empty",
         "confirmation-fallback-map-unavailable",
         "advice-exposure-right-recommends-left",
         "advice-preview-left",
         "advice-withheld",
-        "api-error"
+        "api-error",
+        "api-error-manual-search",
+        "api-error-advice"
       ])
     );
   });

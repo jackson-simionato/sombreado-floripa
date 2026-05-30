@@ -42,6 +42,7 @@ export type FlowEvent =
   | { type: "nearbyRoutesSucceeded"; requestId: RequestId; candidates: RouteCandidate[] }
   | { type: "manualSearchRequested"; requestId: RequestId; query: string; limit?: number }
   | { type: "manualSearchSucceeded"; requestId: RequestId; candidates: RouteCandidate[] }
+  | { type: "continueWaiting" }
   | { type: "routeSelected"; route: RouteCandidate; source: RouteSelectionSource; requestId: RequestId }
   | { type: "directionsSucceeded"; requestId: RequestId; directions: DirectionChoice[] }
   | { type: "directionSelected"; direction: DirectionChoice; requestId: RequestId }
@@ -155,6 +156,15 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
           ...state.pendingRequests,
           manualSearch: undefined
         }
+      });
+
+    case "continueWaiting":
+      if (state.screen !== "slowLoadingNotice") {
+        return state;
+      }
+      return compactState({
+        ...state,
+        screen: "findingNearbyRoutes"
       });
 
     case "routeSelected":

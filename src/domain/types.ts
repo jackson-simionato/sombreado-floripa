@@ -143,17 +143,13 @@ export type RouteSelectionSource = "nearby" | "manual";
 export type MapAvailability = "available" | "unavailable";
 
 export type MockScenarioId =
-  | "location-request"
-  | "finding-nearby-routes"
   | "nearby-routes"
-  | "nearby-empty"
   | "nearby-slow"
+  | "nearby-empty"
   | "location-denied"
   | "manual-search"
   | "manual-empty"
-  | "direction-choice"
   | "route-no-directions"
-  | "confirmation-map"
   | "confirmation-fallback-missing-geometry"
   | "confirmation-fallback-map-unavailable"
   | "computing-advice"
@@ -165,7 +161,40 @@ export type MockScenarioId =
   | "advice-neutral-none"
   | "advice-preview-left"
   | "advice-withheld"
-  | "api-error";
+  | "api-error"
+  | "api-error-nearby-routes"
+  | "api-error-manual-search"
+  | "api-error-directions"
+  | "api-error-geometry"
+  | "api-error-advice";
+
+export type PrototypeScenarioId =
+  | "location-request"
+  | "location-finding-nearby"
+  | "location-slow-loading"
+  | "location-denied"
+  | "routes-nearby"
+  | "routes-none-nearby"
+  | "manual-search"
+  | "manual-search-empty"
+  | "direction-choice"
+  | "direction-unavailable"
+  | "confirmation"
+  | "confirmation-fallback"
+  | "advice-computing"
+  | "advice-onboard-left"
+  | "advice-onboard-right"
+  | "advice-onboard-front"
+  | "advice-onboard-back"
+  | "advice-neutral-overhead"
+  | "advice-neutral-none"
+  | "advice-preview"
+  | "advice-withheld"
+  | "error-nearby-routes"
+  | "error-manual-search"
+  | "error-directions"
+  | "error-geometry"
+  | "error-advice";
 
 export type ScreenStateName =
   | "locationRequest"

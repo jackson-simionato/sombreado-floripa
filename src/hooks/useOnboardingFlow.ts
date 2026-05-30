@@ -11,14 +11,18 @@ import type {
   MapAvailability,
   MockLocationResult,
   MockScenarioId,
+  PrototypeScenarioId,
   RequestId,
   RetryTarget,
   RouteCandidate
 } from "../domain/types";
 import { MockApiError, createMockApi, createMockLocationProvider } from "../mocks/mockApi";
+import { getPrototypeScenario } from "../mocks/scenarioStates";
 
 type UseOnboardingFlowOptions = {
+  mockScenarioId?: MockScenarioId;
   scenarioId?: MockScenarioId;
+  prototypeScenarioId?: PrototypeScenarioId;
   locationResult?: MockLocationResult;
   mapAvailabilityOverride?: MapAvailability;
 };
@@ -29,6 +33,7 @@ export type OnboardingFlowController = {
   actions: {
     changeDirection(): void;
     changeRoute(): void;
+    continueWaiting(): void;
     confirmRoute(): void;
     openManualSearch(): void;
     refreshAdvice(): void;
@@ -41,12 +46,15 @@ export type OnboardingFlowController = {
 };
 
 export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
-  const [state, dispatch] = useReducer(flowReducer, initialFlowState);
-  const [manualQueryDraft, setManualQueryDraft] = useState(initialFlowState.manualQuery);
+  const seededScenario = options.prototypeScenarioId === undefined ? undefined : getPrototypeScenario(options.prototypeScenarioId).seed;
+  const [state, dispatch] = useReducer(flowReducer, seededScenario?.state ?? initialFlowState);
+  const [manualQueryDraft, setManualQueryDraft] = useState(seededScenario?.manualQueryDraft ?? initialFlowState.manualQuery);
+  const [manualSearchEnabled, setManualSearchEnabled] = useState(seededScenario === undefined);
   const requestSequenceRef = useRef(0);
 
-  const scenarioId = options.scenarioId ?? "nearby-routes";
-  const mapAvailability = options.mapAvailabilityOverride ?? mapAvailabilityForScenario(scenarioId);
+  const scenarioId = options.mockScenarioId ?? options.scenarioId ?? seededScenario?.mockScenarioId ?? "nearby-routes";
+  const mapAvailability =
+    options.mapAvailabilityOverride ?? seededScenario?.mapAvailabilityOverride ?? mapAvailabilityForScenario(scenarioId);
 
   const api = useMemo(
     () =>
@@ -65,9 +73,11 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   const locationProvider = useMemo(
     () =>
       createMockLocationProvider(
-        options.locationResult ?? (scenarioId === "location-denied" ? { kind: "denied" } : { kind: "granted", lat: -27.5969, lng: -48.5488 })
+        options.locationResult ??
+          seededScenario?.locationResult ??
+          (scenarioId === "location-denied" ? { kind: "denied" } : { kind: "granted", lat: -27.5969, lng: -48.5488 })
       ),
-    [options.locationResult, scenarioId]
+    [options.locationResult, scenarioId, seededScenario?.locationResult]
   );
 
   const nextRequestId = useCallback((prefix: string): RequestId => {
@@ -262,6 +272,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     if (retryTarget.kind === "manualSearch") {
       dispatch({ type: "manualSearchOpened" });
       setManualQueryDraft(retryTarget.query);
+      setManualSearchEnabled(true);
       return;
     }
 
@@ -294,6 +305,10 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   }, [requestAdvisory, selectDirection, selectRoute, state, useLocation]);
 
   useEffect(() => {
+    if (!manualSearchEnabled) {
+      return;
+    }
+
     if (state.screen !== "manualRouteSearch" && state.screen !== "noManualResults") {
       return;
     }
@@ -322,7 +337,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     return () => {
       window.clearTimeout(timerId);
     };
-  }, [api, failOperation, manualQueryDraft, nextRequestId, state.screen]);
+  }, [api, failOperation, manualQueryDraft, manualSearchEnabled, nextRequestId, state.screen]);
 
   return {
     manualQueryDraft,
@@ -334,6 +349,9 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       changeRoute() {
         dispatch({ type: "changeRoute" });
       },
+      continueWaiting() {
+        dispatch({ type: "continueWaiting" });
+      },
       confirmRoute,
       openManualSearch,
       refreshAdvice,
@@ -342,6 +360,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         if (state.screen !== "manualRouteSearch" && state.screen !== "noManualResults") {
           dispatch({ type: "manualSearchOpened" });
         }
+        setManualSearchEnabled(true);
         setManualQueryDraft(query);
       },
       selectDirection(direction: DirectionChoice) {

@@ -57,7 +57,7 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
   return {
     async listRoutes(params) {
       await delay(params.query === undefined ? delays.nearbyMs : delays.manualSearchMs);
-      rejectIfApiError(scenarioId);
+      rejectIfApiError(scenarioId, params.query === undefined ? "nearbyRoutes" : "manualSearch");
 
       if (scenarioId === "nearby-empty" && params.query === undefined) {
         return emptyRoutesResponse;
@@ -74,7 +74,7 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
 
     async getRouteDirections(routeId) {
       await delay(delays.directionsMs);
-      rejectIfApiError(scenarioId);
+      rejectIfApiError(scenarioId, "directions");
 
       if (scenarioId === "route-no-directions" || routeId === fixtureIds.routes.noDirections) {
         return { directions: [] };
@@ -85,7 +85,7 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
 
     async getRouteGeometry(routeDirectionId, routeVersionId) {
       await delay(delays.geometryMs);
-      rejectIfApiError(scenarioId);
+      rejectIfApiError(scenarioId, "geometry");
 
       if (scenarioId === "confirmation-fallback-missing-geometry") {
         return {
@@ -106,7 +106,7 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
 
     async createOnboardAdvisory() {
       await delay(delays.advisoryMs);
-      rejectIfApiError(scenarioId);
+      rejectIfApiError(scenarioId, "advisory");
 
       return advisoryForScenario(scenarioId);
     }
@@ -181,8 +181,18 @@ function advisoryForScenario(scenarioId: MockScenarioId): TargetAdvisoryResponse
   }
 }
 
-function rejectIfApiError(scenarioId: MockScenarioId): void {
-  if (scenarioId === "api-error") {
+function rejectIfApiError(
+  scenarioId: MockScenarioId,
+  operation: "nearbyRoutes" | "manualSearch" | "directions" | "geometry" | "advisory"
+): void {
+  if (
+    scenarioId === "api-error" ||
+    (scenarioId === "api-error-nearby-routes" && operation === "nearbyRoutes") ||
+    (scenarioId === "api-error-manual-search" && operation === "manualSearch") ||
+    (scenarioId === "api-error-directions" && operation === "directions") ||
+    (scenarioId === "api-error-geometry" && operation === "geometry") ||
+    (scenarioId === "api-error-advice" && operation === "advisory")
+  ) {
     throw new MockApiError({
       kind: "api",
       message: "Mock API failure"

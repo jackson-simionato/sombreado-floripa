@@ -57,6 +57,8 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
     case "findingNearbyRoutes":
     case "slowLoadingNotice":
       content = renderLoadingScreen(state, selectedRouteLabel);
+      stickyPrimary =
+        state.screen === "slowLoadingNotice" ? <Button onClick={actions.continueWaiting}>Continuar aguardando</Button> : null;
       stickySecondary =
         state.selectedRoute === undefined ? (
           <Button onClick={actions.openManualSearch} variant="secondary">
@@ -274,7 +276,7 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           <h1 id="screen-title" className={styles.titleCompact}>
             Calculando pelo sol direto...
           </h1>
-          <p className={styles.body}>Estou estimando parte do ônibus com menos sol direto para esse sentido.</p>
+          <p className={styles.body}>Vamos comparar esquerda e direita no sentido escolhido.</p>
           <RouteSummary directionLabel={state.selectedDirection?.name} routeLabel={selectedRouteLabel} />
         </section>
       );
@@ -309,16 +311,16 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
         <section className={styles.stack} aria-labelledby="screen-title">
           <p className={styles.resultEyebrow}>Sem recomendação útil</p>
           <h1 id="screen-title" className={styles.titleCompact}>
-            Não dá para recomendar agora
+            Não é possível recomendar agora
           </h1>
           <p className={styles.body}>{withheldReasonCopy(state.advice?.mode === "withheld" ? state.advice.reasonCode : undefined)}</p>
           <RouteSummary directionLabel={state.selectedDirection?.name} routeLabel={selectedRouteLabel} />
         </section>
       );
-      stickyPrimary = <Button onClick={actions.retry}>Tentar de novo</Button>;
+      stickyPrimary = <Button onClick={actions.changeRoute}>Trocar linha</Button>;
       stickySecondary = (
-        <Button onClick={actions.changeRoute} variant="secondary">
-          Trocar linha
+        <Button onClick={actions.retry} variant="secondary">
+          Tentar de novo
         </Button>
       );
       break;
@@ -336,11 +338,7 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
         </section>
       );
       stickyPrimary = <Button onClick={actions.retry}>Tentar de novo</Button>;
-      stickySecondary = (
-        <Button onClick={actions.openManualSearch} variant="secondary">
-          Procurar linha manualmente
-        </Button>
-      );
+      stickySecondary = renderApiErrorFallbackAction(state, actions);
       break;
 
     default:
@@ -378,7 +376,8 @@ function renderLoadingScreen(
     heading = "Preparando confirmação...";
     body = "Estou montando o resumo da linha e do sentido.";
   } else if (state.screen === "slowLoadingNotice") {
-    body = "Isso está demorando um pouco mais do que o normal.";
+    heading = "Ainda buscando...";
+    body = "A conexão pode estar lenta. Você pode continuar ou procurar a linha manualmente.";
   }
 
   return (
@@ -642,4 +641,23 @@ function withheldReasonCopy(reasonCode?: AdvisoryReasonCode): string {
     default:
       return "Não consegui calcular recomendação útil para essa linha neste momento.";
   }
+}
+
+function renderApiErrorFallbackAction(
+  state: OnboardingFlowController["state"],
+  actions: OnboardingFlowController["actions"]
+) {
+  if (state.error?.retryTarget?.kind === "manualSearch") {
+    return (
+      <Button onClick={actions.useLocation} variant="secondary">
+        Usar minha localização
+      </Button>
+    );
+  }
+
+  return (
+    <Button onClick={actions.openManualSearch} variant="secondary">
+      Procurar linha manualmente
+    </Button>
+  );
 }
