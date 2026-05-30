@@ -1,0 +1,154 @@
+.screen {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.brand,
+.progress,
+.summaryLabel,
+.metaText,
+.searchLabel {
+  margin: 0;
+  color: var(--color-muted-ink);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.brand,
+.progress {
+  font-weight: 750;
+}
+
+.hero,
+.stack,
+.copyBlock {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.title,
+.titleCompact {
+  margin: 0;
+  font-weight: 780;
+  letter-spacing: 0;
+}
+
+.title {
+  max-width: 12ch;
+  font-size: clamp(2rem, 12vw, 2.55rem);
+  line-height: 1.02;
+}
+
+.titleCompact {
+  font-size: 1.85rem;
+  line-height: 1.08;
+}
+
+.body {
+  margin: 0;
+  color: var(--color-muted-ink);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.choiceCard {
+  width: 100%;
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+  background: var(--color-paper);
+  box-shadow: var(--shadow-soft);
+  color: var(--color-ink);
+  text-align: left;
+}
+
+.choiceCard strong,
+.summaryPanel strong {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.choiceCard span,
+.summaryPanel span {
+  color: var(--color-muted-ink);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.summaryPanel,
+.noticePanel,
+.mapShell {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+  background: var(--color-paper);
+}
+
+.noticePanel {
+  background: var(--color-sun-100);
+}
+
+.noticePanel p {
+  margin: 0;
+  color: var(--color-ink);
+  line-height: 1.45;
+}
+
+.searchField {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.searchInput {
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.inlineActions {
+  display: flex;
+}
+
+.mapShell {
+  padding: 0;
+  overflow: hidden;
+}
+
+.mapSvg {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: block;
+}
+
+.mapBackdrop {
+  fill: #f7f4ee;
+  stroke: var(--color-line);
+  stroke-width: 1;
+}
+
+.mapLine {
+  stroke: var(--color-shade-500);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 5;
+}
+
+.mapStart {
+  fill: var(--color-success);
+}
+
+.mapEnd {
+  fill: var(--color-sun-500);
+}
