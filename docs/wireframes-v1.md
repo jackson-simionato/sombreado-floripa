@@ -685,5 +685,5 @@ Notes:
 - True withheld is reserved for cases where no useful advice can be computed.
 - Onboard and preview results share the same bus orientation diagram structure.
 - Preview is distinguished through the mode label and warning/notice copy.
-- The result screen leads with a positive seat-side recommendation.
+- The result screen leads with a positive seat-area recommendation.
 - Empty, slow, denied, map fallback, API error, no directions, preview, and withheld states are all designed.

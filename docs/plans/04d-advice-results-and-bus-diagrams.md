@@ -56,7 +56,7 @@ Build the advisory result experience, including computing state, onboard advice,
 
 ## Acceptance Criteria
 
-- `left` and `right` produce seat-side recommendations.
+- `left` and `right` produce left/right seat-area recommendations.
 - `front` and `back` use front/back presentation and copy.
 - `overhead` and `none` are neutral computed results and do not claim a best side.
 - `withheld` is reserved for cases where useful advice cannot be computed.

@@ -20,12 +20,12 @@ _Avoid_: Timetable planning, stop planning
 The rider-facing instruction that says where to sit or which bus side is less exposed to direct sun.
 _Avoid_: Temperature forecast, weather forecast, guaranteed shade
 
-**Seat-side Recommendation**:
-The positive action shown to a rider, such as sitting on the less exposed side of the bus.
-_Avoid_: Raw exposure result, debug direction
+**Seat-area Recommendation**:
+The positive action shown to a rider, such as sitting on the left, right, front, or back area of the bus, or a neutral result when no area meaningfully improves direct sun exposure.
+_Avoid_: Raw exposure result, debug direction, guaranteed shade
 
 **Bus Orientation Diagram**:
-A simple visual that clarifies left and right from the rider's perspective inside the bus.
+A simple visual that clarifies left, right, front, and back from the rider's perspective inside the bus.
 _Avoid_: Technical compass, map bearing
 
 **Route Candidate**:
@@ -57,9 +57,9 @@ _Avoid_: Legal disclaimer wall, hidden limitation
 - **Sombreado Floripa** is designed for **Riders**.
 - The first version of **Sombreado Floripa** prioritizes the **Onboard Flow**.
 - The **Onboard Flow** starts with rider location or manual route search, presents **Route Candidates**, asks for a **Direction Choice**, and ends with **Sun-side Advice**.
-- **Sun-side Advice** is presented as a **Seat-side Recommendation** when possible.
+- **Sun-side Advice** is presented as a **Seat-area Recommendation** when possible.
 - A **Route Preview** can show exploratory **Sun-side Advice** with a clear warning when live onboard context is not available.
-- A **Bus Orientation Diagram** helps explain the **Seat-side Recommendation** without relying only on text.
+- A **Bus Orientation Diagram** helps explain the **Seat-area Recommendation** without relying only on text.
 - A **Route Confirmation Map** helps a **Rider** confirm a selected **Route Candidate** before trusting advice.
 - A **Geometric Estimate Notice** must stay visible enough to preserve trust without overwhelming the advice.
 - The **Playful Sunny Brand** should make the app feel joyful while keeping the advice clear and practical.
@@ -70,11 +70,11 @@ _Avoid_: Legal disclaimer wall, hidden limitation
 > **Domain expert:** "No. The first version starts with the **Onboard Flow**: find where the rider is, help them choose the nearby route and direction, then show **Sun-side Advice**."
 >
 > **Dev:** "Can we say the app finds guaranteed shade?"
-> **Domain expert:** "No. It gives a **Seat-side Recommendation** from direct sun geometry, with a **Geometric Estimate Notice** explaining the limits."
+> **Domain expert:** "No. It gives a **Seat-area Recommendation** from direct sun geometry, with a **Geometric Estimate Notice** explaining the limits."
 
 ## Flagged Ambiguities
 
 - "Shade" in public copy means less direct sun exposure, not guaranteed physical shade.
-- "Left" and "right" mean rider-facing bus sides, clarified by the **Bus Orientation Diagram**.
+- "Left", "right", "front", and "back" mean rider-facing bus areas, clarified by the **Bus Orientation Diagram**.
 - "Map" means a compact **Route Confirmation Map**, not a map-led transit navigation app.
 - "Frontend" means **Sombreado Floripa** only; scraper ingestion and advisory computation live in separate projects.

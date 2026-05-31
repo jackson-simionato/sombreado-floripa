@@ -107,7 +107,7 @@ Estimativa pelo sol direto. Não considera prédios, nuvens, películas ou corti
 
 Rules:
 
-- Lead with the seat-side recommendation, not a raw exposure result.
+- Lead with the seat-area recommendation, not a raw exposure result.
 - Place the bus orientation diagram directly below the recommendation copy.
 - Keep route confirmation separate from the recommendation card unless space or context requires a compact supporting cue.
 - Keep the limitation visible below the diagram, not hidden in settings.
@@ -151,7 +151,7 @@ The bus orientation diagram is a trust feature, not decoration.
 - Label both sides when space allows: "sente à esquerda" or "sente à direita" for the recommendation, and "sol direto" for the side to avoid.
 - Use at least two cues per state: color plus label, icon, hatch, outline, or pattern.
 - Sun side uses warm fill, hatch, or ray marks.
-- Recommended side uses the strongest action cue: explicit seat-side text, a check mark, and cool fill.
+- Recommended area uses the strongest action cue: explicit recommendation text, a check mark, and cool fill.
 - Do not use compass-only language. "Esquerda" and "direita" must be clear from the rider perspective.
 - Provide accessible text equivalent, for example: "Recomendação: sente à esquerda. O sol direto está do lado direito do ônibus."
 
@@ -219,7 +219,7 @@ Motion can add companion-like warmth, but it should feel like simple 2D GIF-styl
 A wireframe is on-brand when:
 
 - The first screen supports the onboard flow.
-- The main result is a positive seat-side recommendation.
+- The main result is a positive seat-area recommendation.
 - The bus orientation diagram clarifies left/right without relying only on color.
 - The copy is short Brazilian Portuguese.
 - Route selection feels like confirmation, not trip planning.

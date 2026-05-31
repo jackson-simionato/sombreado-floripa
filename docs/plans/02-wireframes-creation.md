@@ -49,7 +49,7 @@ Create low-fidelity mobile wireframes for the complete v1 onboard-first flow, in
 - `docs/wireframes-v1.md` includes a compact screen-state contract that later implementation can follow without re-deciding flow behavior.
 - `docs/wireframes-v1.md` includes a flow diagram for the complete v1 onboard and preview flow.
 - Every core v1 state has a sketched layout and primary action.
-- The result screen makes the seat-side recommendation obvious within a few seconds.
+- The result screen makes the seat-area recommendation obvious within a few seconds.
 - Primary actions and route/direction choices are designed for one-handed mobile use on a moving bus.
 - The bus diagram and preview/onboard distinctions do not rely on color alone.
 - Empty and failure states are designed, not left as generic errors.
