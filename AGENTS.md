@@ -24,3 +24,17 @@ This repository is the Sombreado Floripa frontend. Treat it as a browser app rep
 - Keep route confirmation compact and supporting; the app is not map-led navigation.
 - Distinguish onboard advice from route preview advice without relying on color alone.
 - Do not promise guaranteed shade. Describe the result as less direct sun exposure and keep geometric limitations visible.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and PRDs for this repo live in GitHub Issues for `jackson-simionato/sombreado-floripa`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Triage labels use the canonical skill vocabulary: `bug`, `enhancement`, `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+This is a single-context frontend repo: use root `CONTEXT.md` and future `docs/adr/` records when present. See `docs/agents/domain.md`.
