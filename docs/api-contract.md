@@ -61,7 +61,7 @@ Example:
       "routeCode": "124",
       "routeName": "TICEN - Lagoa",
       "distanceMeters": 320,
-      "directionHints": ["TICEN para Lagoa", "Lagoa para TICEN"]
+      "directionHints": ["TICEN", "Lagoa", "UFSC", "Trindade"]
     }
   ]
 }
@@ -89,7 +89,7 @@ Response order is backend-owned search relevance. The frontend preserves returne
       "routeVersionId": "route-330-current",
       "routeCode": "330",
       "routeName": "TILAG - Centro",
-      "directionHints": ["TILAG para Centro", "Centro para TILAG"]
+      "directionHints": ["TILAG", "Centro"]
     }
   ]
 }
@@ -282,7 +282,8 @@ type WithheldReasonCode =
   | "missingRouteGeometry"
   | "insufficientSunSignal"
   | "unsupportedDirection"
-  | "noAdviceForSelectedHorizon";
+  | "noAdviceForSelectedHorizon"
+  | "locationOffRoute";
 
 type AdviceWithheld = {
   status: "withheld";
@@ -411,11 +412,14 @@ The app should not silently use old browser locations for onboard advice.
 Definitions:
 
 - Fresh location: a current one-shot result or an active watch result with acceptable timestamp and accuracy.
+- Recent fallback location: the last acceptable location fix, used only when refreshing location fails and the app can clearly tell the rider that the advice is based on the last known location.
 - Stale location: an old stored location, a paused watch result, an inaccurate fix, or a fix from before a route/direction change where the rider has not re-confirmed live location.
 
-Initial frontend accuracy threshold:
+Initial frontend thresholds:
 
 - `accuracyMeters <= 100`
+- Fresh location: observed no more than 30 seconds ago.
+- Recent fallback location: observed no more than 2 minutes ago.
 
 Plan 05 should define this as a named frontend constant so real-device QA can tune it.
 
@@ -449,4 +453,3 @@ These are required by the frontend contract and may not exist in current `sombre
 - `status: "advice"` terminology for successful advice responses.
 - Stable non-2xx error envelope and `409 routeVersionStale`.
 - Public browser-safe CORS behavior for frontend origins.
-

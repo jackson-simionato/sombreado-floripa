@@ -14,6 +14,7 @@ This plan should make the product runtime use live API calls by default while pr
 - `docs/brand-guide.md`
 - `docs/product-decisions.md`
 - `NEXT_PUBLIC_API_URL`
+- `sombreado-service` must allow the local Next.js origin `http://localhost:3000` in default CORS settings before local browser smoke testing.
 
 ## Contract Stance
 
@@ -37,10 +38,17 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
 
 ## Work
 
+### Backend Preflight
+
+- In `sombreado-service`, add `http://localhost:3000` to the default CORS origins while keeping the existing local origin.
+- Update backend config coverage for the default CORS origins.
+- Run backend config/API tests before frontend local-service smoke testing.
+
 ### API Boundary
 
 - Add Zod as the runtime validation layer for API transport JSON.
 - Define Zod schemas as the source of truth for API transport types.
+- Add `zod` in the first live API integration slice; do not substitute hand-written transport validators.
 - Keep frontend domain/flow types separate from transport schemas and adapt transport responses into domain state.
 - Use camelCase frontend contract fields.
 - Treat route, version, and direction IDs as opaque strings.
@@ -63,6 +71,8 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
 - Keep a mock implementation of the same interface for tests and prototype scenarios.
 - Fail clearly in live app mode if `NEXT_PUBLIC_API_URL` is missing.
 - Do not silently fall back to fixtures in the product runtime.
+- Make `/` the live product runtime.
+- Move the fixture-driven scenario switcher to `/prototype`.
 
 ### Contract Migration
 
@@ -86,6 +96,7 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
   - nearby radius: `1200m`
   - nearby limit: `5`
 - Keep nearby candidates route-only. Do not include selectable direction IDs in route candidates.
+- Preserve backend order for nearby relevance.
 - Preserve backend order for manual search relevance.
 - Send manual search limit `8`.
 - Preserve manual search as a secondary path that returns route candidates before direction selection.
@@ -96,6 +107,9 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
 - Carry `routeVersionId` from the selected route candidate through directions, geometry, and advice requests.
 - Treat `routeVersionId` as an opaque consistency token, not frontend-owned version-selection logic.
 - If the backend returns `routeVersionStale`, map it to a recovery path that refreshes route choices and uses rider-facing copy such as "Essa linha mudou. Vamos atualizar as opções."
+- Do not silently reselect a route or direction after stale-version recovery. The rider must confirm the refreshed route/direction again.
+- For stale nearby-origin selections, the primary recovery action reruns nearby lookup when a usable current or recent fallback location exists.
+- For stale manual-origin selections, the primary recovery action returns to manual search with the previous query.
 
 ### Direction And Geometry
 
@@ -114,8 +128,9 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
   - `horizon: "upcoming" | "remainingRoute"`
 - Default onboard advice to `mode: "onboard"` and `horizon: "upcoming"`.
 - Default preview advice to `mode: "preview"` and `horizon: "remainingRoute"`.
-- On route confirmation, request onboard advice only when a live or fresh browser location is available.
-- If location is denied, unavailable, paused, stale, or inaccurate, request preview advice.
+- On route confirmation, request onboard advice when a live, fresh browser location is available.
+- If location refresh fails but the last acceptable location is recent, request onboard advice and show rider-facing copy that the app is using the last known location.
+- If location is denied, unavailable, paused, stale, or inaccurate beyond the accepted fallback threshold, request preview advice.
 - For v1 confirmation, onboard requests should include `fallbackToPreview: true`.
 - Render the returned `mode`, not the route-selection source. If the response is preview, show preview copy.
 - Preview advice should use the selected direction start by default and must not be withheld just because the rider is far away.
@@ -131,7 +146,10 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
 - Stop watching when the rider leaves the advice flow or pauses/stops updates.
 - Keep mock location providers for tests and prototype scenarios.
 - Normalize permission denied, unavailable, timeout, low accuracy, stale timestamp, and watch errors into typed frontend state.
-- Define an initial acceptable accuracy constant of `accuracyMeters <= 100`.
+- Define named frontend constants for freshness and accuracy:
+  - acceptable accuracy: `accuracyMeters <= 100`
+  - fresh location: observed no more than 30 seconds ago
+  - recent fallback location: observed no more than 2 minutes ago
 
 ### Advice Refresh Behavior
 
@@ -148,8 +166,11 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
 
 - Preserve all screen states from `docs/wireframes-v1.md`.
 - Loading, empty, route-without-directions, route confirmation fallback, API error, preview, neutral, paused live update, refresh failure, and true withheld states must be visible and understandable.
+- The first live API integration slice must include minimal warning copy when onboard advice uses a recent fallback location, without adding the full live update controls.
 - Do not expose backend diagnostic messages directly to riders.
 - Keep rider-facing copy in Brazilian Portuguese.
+- Keep new copy in the first live API integration slice minimal and functional. Do not use this slice for broad copy polish.
+- Add only the copy required for missing live API configuration, stale route recovery, last-known-location warning, malformed or unexpected API responses, and preview because no usable location exists.
 - Distinguish onboard advice from route preview advice through text, not color alone.
 - Keep geometric limitations visible and do not promise guaranteed shade.
 
@@ -160,8 +181,10 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
 - Add tests for:
   - missing `NEXT_PUBLIC_API_URL` in live mode
   - nearby route lookup through API client
+  - nearby route lookup preserving backend relevance order
   - manual search preserving backend relevance order
   - route version stale error mapping
+  - stale version recovery does not silently reselect the previous route or direction
   - route without directions
   - geometry missing fallback
   - geometry network/API error
@@ -184,6 +207,7 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
 
 - Product runtime connected to the browser-facing API client using `NEXT_PUBLIC_API_URL`.
 - Prototype/test paths preserved through explicit mock wiring.
+- `/prototype` preserves the fixture-driven scenario switcher.
 - Runtime JSON validation through Zod at the API boundary.
 - Real browser geolocation for product runtime, including live result-screen updates.
 - Updated docs:
@@ -194,6 +218,7 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
 ## Acceptance Criteria
 
 - `/` uses live API mode by default.
+- `/prototype` uses fixture-driven scenarios and does not require `NEXT_PUBLIC_API_URL`.
 - The product runtime fails clearly if `NEXT_PUBLIC_API_URL` is missing.
 - Tests and prototype scenarios still use fixtures through explicit mock wiring.
 - Route candidates remain route-only before explicit direction choice.
@@ -203,6 +228,7 @@ Use `NEXT_PUBLIC_API_URL` as the base including version prefix, for example `htt
 - Geometry failure modes distinguish missing geometry fallback from retryable API failure.
 - Advice requests use explicit `mode` and `horizon`.
 - Onboard advice uses fresh/live location; preview advice works without location.
+- Onboard advice based on a recent fallback location is visibly labeled as using the last known location.
 - Live location updates are visible, pausable, throttled, and non-disruptive on refresh failure.
 - The app renders onboard, preview, neutral night, true withheld, API error, and route confirmation fallback states without backend debug language.
 - The UI does not promise guaranteed shade.
