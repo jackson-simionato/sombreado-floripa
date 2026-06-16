@@ -39,6 +39,27 @@ rg "FastAPI|APIRouter|scraper|GTFS|CREATE TABLE|INSERT INTO" app src tests
 
 Expected result: no backend implementation code in `app`, `src`, or `tests`. Mentions in docs are acceptable when they describe repo boundaries or contract gaps.
 
+## Issue #2 Live Runtime Smoke
+
+Issue #2 prepares the smallest live-backed product runtime path. It does not
+complete full Plan 05 API integration.
+
+Expected issue #2 behavior:
+
+- `/` is live-only and requires `NEXT_PUBLIC_API_URL`.
+- `/` shows `Configuração da API ausente` when the public API URL is missing.
+- `/` does not render the fixture-driven prototype scenario switcher.
+- `/prototype` keeps the full mocked flow and scenario switcher for QA.
+- Live route-candidate requests use `credentials: "omit"`.
+- Live smoke covers nearby route candidates and manual route search only.
+- Selecting a live route candidate stops at the unsupported-next-step state
+  until later slices connect direction, confirmation, and advice.
+
+Local live browser smoke is blocked until
+`jackson-simionato/sombreado-service#11` allows the local Next.js origin through
+backend CORS. Do not add backend CORS behavior, API routes, scraper behavior, or
+advisory computation to this frontend repository.
+
 ## Local-Service Smoke Checklist
 
 Mark each state as verified against local service, verified with fixtures only, blocked by backend gap, or not checked.
@@ -126,4 +147,3 @@ Final QA status:
 - Blocked:
 
 Summary:
-

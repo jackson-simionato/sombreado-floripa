@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test } from "vitest";
 
-import HomePage from "../app/page";
+import PrototypePage from "../app/prototype/page";
 import { HomePageApp } from "../src/app/HomePageApp";
 import { prototypeScenarios } from "../src/mocks/scenarioStates";
 
@@ -112,7 +112,7 @@ describe("prototype scenarios", () => {
   test("scenario switcher reaches every mocked prototype state from the home route", async () => {
     const user = userEvent.setup();
 
-    render(<HomePage />);
+    render(<PrototypePage />);
 
     const scenarioSelect = screen.getByRole("combobox", { name: "Protótipo" });
     const optionLabels = screen.getAllByRole("option").map((option) => option.textContent);

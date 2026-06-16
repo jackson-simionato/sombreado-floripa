@@ -1,13 +1,130 @@
 import React from "react";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import HomePage from "../app/page";
+import PrototypePage from "../app/prototype/page";
 import { HomePageApp } from "../src/app/HomePageApp";
 
 describe("home screen flow", () => {
-  test("renders the default location screen without calling browser geolocation before rider action", async () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+  });
+
+  test("renders missing API configuration before the live rider flow", () => {
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "");
+
+    render(<HomePage />);
+
+    expect(screen.getByRole("heading", { name: "Configuração da API ausente" })).toBeInTheDocument();
+    expect(screen.getByText(/precisa de NEXT_PUBLIC_API_URL/i)).toBeInTheDocument();
+    expect(screen.getByText("As informações das linhas não estão disponíveis neste ambiente.")).toBeInTheDocument();
+    expect(screen.queryByRole("combobox", { name: "Protótipo" })).not.toBeInTheDocument();
+  });
+
+  test("keeps the live home route separate from the prototype scenario switcher", () => {
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000/v1");
+
+    render(<HomePage />);
+
+    expect(screen.getByRole("heading", { name: "De que lado sentar?" })).toBeInTheDocument();
+    expect(screen.queryByRole("combobox", { name: "Protótipo" })).not.toBeInTheDocument();
+  });
+
+  test("loads manual route candidates live and stops before mocked directions", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          routes: [
+            {
+              routeId: "route-124",
+              routeVersionId: "version-124",
+              routeCode: "124",
+              routeName: "TICEN - Lagoa",
+              directionHints: ["TICEN", "Lagoa"]
+            }
+          ]
+        }),
+        { headers: { "content-type": "application/json" }, status: 200 }
+      )
+    );
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000/v1");
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<HomePage />);
+
+    await user.click(screen.getByRole("button", { name: "Procurar linha manualmente" }));
+    await user.type(await screen.findByRole("searchbox", { name: "Linha" }), "TICEN Lagoa");
+    await user.click(screen.getByRole("button", { name: "Buscar linha" }));
+
+    const routeButton = await screen.findByRole("button", { name: "Selecionar linha 124 TICEN - Lagoa" });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/v1/route-candidates/search?query=TICEN+Lagoa&limit=8",
+      { credentials: "omit", method: "GET" }
+    );
+
+    await user.click(routeButton);
+
+    expect(await screen.findByRole("heading", { name: "Linha carregada ao vivo" })).toBeInTheDocument();
+    expect(screen.getByText(/Ainda não é possível continuar com dados ao vivo/i)).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Escolha o sentido" })).not.toBeInTheDocument();
+  });
+
+  test("loads nearby route candidates live after rider location action", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          routes: [
+            {
+              routeId: "route-330",
+              routeVersionId: "version-330",
+              routeCode: "330",
+              routeName: "TILAG - Centro",
+              distanceMeters: 420
+            }
+          ]
+        }),
+        { headers: { "content-type": "application/json" }, status: 200 }
+      )
+    );
+    const getCurrentPosition = vi.fn((success: PositionCallback) => {
+      success({
+        coords: {
+          accuracy: 25,
+          altitude: null,
+          altitudeAccuracy: null,
+          heading: null,
+          latitude: -27.5969,
+          longitude: -48.5488,
+          speed: null
+        },
+        timestamp: Date.now()
+      } as GeolocationPosition);
+    });
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000/v1");
+    vi.stubGlobal("fetch", fetchMock);
+    Object.defineProperty(navigator, "geolocation", {
+      configurable: true,
+      value: { clearWatch: vi.fn(), getCurrentPosition, watchPosition: vi.fn() }
+    });
+
+    render(<HomePage />);
+
+    await user.click(screen.getByRole("button", { name: "Usar minha localização" }));
+
+    expect(await screen.findByRole("button", { name: "Selecionar linha 330 TILAG - Centro" })).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/v1/route-candidates/nearby?lat=-27.5969&lng=-48.5488&radiusMeters=1200&limit=5",
+      { credentials: "omit", method: "GET" }
+    );
+  });
+
+  test("prototype route renders the default location screen without calling browser geolocation before rider action", async () => {
     const user = userEvent.setup();
     const geolocationSpy = vi.fn();
     const originalGeolocation = navigator.geolocation;
@@ -21,7 +138,7 @@ describe("home screen flow", () => {
       }
     });
 
-    render(<HomePage />);
+    render(<PrototypePage />);
 
     expect(screen.getByRole("heading", { name: "De que lado sentar?" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Usar minha localização" })).toBeInTheDocument();
@@ -43,7 +160,7 @@ describe("home screen flow", () => {
   test("runs the nearby route flow through final onboard advice", async () => {
     const user = userEvent.setup();
 
-    render(<HomePage />);
+    render(<PrototypePage />);
 
     await user.click(screen.getByRole("button", { name: "Usar minha localização" }));
 
@@ -89,7 +206,7 @@ describe("home screen flow", () => {
   test("runs manual flow through missing-geometry fallback into final advice", async () => {
     const user = userEvent.setup();
 
-    render(<HomePage />);
+    render(<PrototypePage />);
 
     await user.click(screen.getByRole("button", { name: "Procurar linha manualmente" }));
 
@@ -115,7 +232,7 @@ describe("home screen flow", () => {
   test("returns to the correct source when changing route", async () => {
     const user = userEvent.setup();
 
-    render(<HomePage />);
+    render(<PrototypePage />);
 
     await user.click(screen.getByRole("button", { name: "Procurar linha manualmente" }));
     await user.type(await screen.findByRole("searchbox", { name: "Linha" }), "lagoa");
@@ -140,7 +257,7 @@ describe("home screen flow", () => {
   test("keeps the selected route when changing direction from confirmation", async () => {
     const user = userEvent.setup();
 
-    render(<HomePage />);
+    render(<PrototypePage />);
 
     await user.click(screen.getByRole("button", { name: "Usar minha localização" }));
     await user.click(await screen.findByRole("button", { name: "Selecionar linha 124 TICEN - Lagoa" }));
@@ -231,7 +348,7 @@ describe("home screen flow", () => {
   test("shows the prototype scenario switcher on the page and can jump to the slow loading state", async () => {
     const user = userEvent.setup();
 
-    render(<HomePage />);
+    render(<PrototypePage />);
 
     const scenarioSelect = screen.getByRole("combobox", { name: "Protótipo" });
     await user.selectOptions(scenarioSelect, "location-slow-loading");
@@ -244,7 +361,7 @@ describe("home screen flow", () => {
   test("uses location as the fallback action for manual-search API errors", async () => {
     const user = userEvent.setup();
 
-    render(<HomePage />);
+    render(<PrototypePage />);
 
     await user.selectOptions(screen.getByRole("combobox", { name: "Protótipo" }), "error-manual-search");
 
@@ -257,7 +374,7 @@ describe("home screen flow", () => {
   test("exposes route cards and direction rows as accessible buttons before confirmation", async () => {
     const user = userEvent.setup();
 
-    render(<HomePage />);
+    render(<PrototypePage />);
 
     await user.click(screen.getByRole("button", { name: "Usar minha localização" }));
 

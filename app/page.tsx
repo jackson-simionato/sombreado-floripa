@@ -1,5 +1,5 @@
-import { PrototypeHomePage } from "../src/app/PrototypeHomePage";
+import { LiveHomePage } from "../src/app/LiveHomePage";
 
 export default function HomePage() {
-  return <PrototypeHomePage />;
+  return <LiveHomePage apiBaseUrl={process.env.NEXT_PUBLIC_API_URL} />;
 }
