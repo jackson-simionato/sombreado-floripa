@@ -2,11 +2,11 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   esbuild: {
-    jsx: "automatic"
+    jsx: "automatic",
   },
   test: {
     environment: "jsdom",
     globals: true,
-    setupFiles: ["./tests/setup.ts"]
-  }
+    setupFiles: ["./tests/setup.ts"],
+  },
 });

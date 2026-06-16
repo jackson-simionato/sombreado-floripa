@@ -7,7 +7,12 @@ import { BusSplitDiagram } from "../components/BusSplitDiagram";
 import { Button } from "../components/Button";
 import { StickyActions } from "../components/StickyActions";
 import { toRoutePolyline } from "../domain/adapters";
-import type { AdvisoryReasonCode, DirectionChoice, RouteCandidate, UiAdviceState } from "../domain/types";
+import type {
+  AdvisoryReasonCode,
+  DirectionChoice,
+  RouteCandidate,
+  UiAdviceState,
+} from "../domain/types";
 import type { OnboardingFlowController } from "../hooks/useOnboardingFlow";
 
 import styles from "./OnboardingFlowScreen.module.css";
@@ -16,14 +21,21 @@ type OnboardingFlowScreenProps = {
   controller: OnboardingFlowController;
 };
 
-export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) {
+export function OnboardingFlowScreen({
+  controller,
+}: OnboardingFlowScreenProps) {
   const { actions, manualQueryDraft, state } = controller;
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const selectedRouteLabel =
-    state.selectedRoute === undefined ? undefined : `${state.selectedRoute.code} ${state.selectedRoute.name}`;
+    state.selectedRoute === undefined
+      ? undefined
+      : `${state.selectedRoute.code} ${state.selectedRoute.name}`;
 
-  const mapPoints = useMemo(() => (state.geometry === undefined ? [] : toRoutePolyline(state.geometry)), [state.geometry]);
+  const mapPoints = useMemo(
+    () => (state.geometry === undefined ? [] : toRoutePolyline(state.geometry)),
+    [state.geometry]
+  );
 
   let content: ReactNode;
   let stickyPrimary: ReactNode = null;
@@ -39,14 +51,20 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
               <h1 id="screen-title" className={styles.title}>
                 De que lado sentar?
               </h1>
-              <p className={styles.body}>Encontre a melhor lateral do ônibus pelo sol direto.</p>
+              <p className={styles.body}>
+                Encontre a melhor lateral do ônibus pelo sol direto.
+              </p>
             </div>
             <BusSplitDiagram />
           </section>
-          <p className={styles.metaText}>A localização só é usada para encontrar linhas perto de você.</p>
+          <p className={styles.metaText}>
+            A localização só é usada para encontrar linhas perto de você.
+          </p>
         </>
       );
-      stickyPrimary = <Button onClick={actions.useLocation}>Usar minha localização</Button>;
+      stickyPrimary = (
+        <Button onClick={actions.useLocation}>Usar minha localização</Button>
+      );
       stickySecondary = (
         <Button onClick={actions.openManualSearch} variant="secondary">
           Procurar linha manualmente
@@ -58,7 +76,11 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
     case "slowLoadingNotice":
       content = renderLoadingScreen(state, selectedRouteLabel);
       stickyPrimary =
-        state.screen === "slowLoadingNotice" ? <Button onClick={actions.continueWaiting}>Continuar aguardando</Button> : null;
+        state.screen === "slowLoadingNotice" ? (
+          <Button onClick={actions.continueWaiting}>
+            Continuar aguardando
+          </Button>
+        ) : null;
       stickySecondary =
         state.selectedRoute === undefined ? (
           <Button onClick={actions.openManualSearch} variant="secondary">
@@ -73,11 +95,19 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           <h1 id="screen-title" className={styles.title}>
             Localização desativada
           </h1>
-          <p className={styles.body}>Você ainda pode escolher sua linha manualmente.</p>
-          <p className={styles.metaText}>{locationIssueLabel(state.locationIssue)}</p>
+          <p className={styles.body}>
+            Você ainda pode escolher sua linha manualmente.
+          </p>
+          <p className={styles.metaText}>
+            {locationIssueLabel(state.locationIssue)}
+          </p>
         </section>
       );
-      stickyPrimary = <Button onClick={actions.openManualSearch}>Procurar linha manualmente</Button>;
+      stickyPrimary = (
+        <Button onClick={actions.openManualSearch}>
+          Procurar linha manualmente
+        </Button>
+      );
       stickySecondary = (
         <Button onClick={actions.useLocation} variant="secondary">
           Tentar localização de novo
@@ -92,10 +122,17 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           <h1 id="screen-title" className={styles.titleCompact}>
             Escolha sua linha
           </h1>
-          <p className={styles.body}>Mostramos linhas perto de você. O sentido vem no próximo passo.</p>
+          <p className={styles.body}>
+            Mostramos linhas perto de você. O sentido vem no próximo passo.
+          </p>
           <div className={styles.list}>
             {state.nearbyCandidates.map((route) => (
-              <RouteCard key={route.routeId} route={route} meta={nearbyRouteMeta(route)} onSelect={() => actions.selectRoute(route, "nearby")} />
+              <RouteCard
+                key={route.routeId}
+                route={route}
+                meta={nearbyRouteMeta(route)}
+                onSelect={() => actions.selectRoute(route, "nearby")}
+              />
             ))}
           </div>
         </section>
@@ -113,10 +150,16 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           <h1 id="screen-title" className={styles.titleCompact}>
             Não encontrei linhas perto de você
           </h1>
-          <p className={styles.body}>Use a seleção manual para escolher pelo número ou nome da linha.</p>
+          <p className={styles.body}>
+            Use a seleção manual para escolher pelo número ou nome da linha.
+          </p>
         </section>
       );
-      stickyPrimary = <Button onClick={actions.openManualSearch}>Procurar linha manualmente</Button>;
+      stickyPrimary = (
+        <Button onClick={actions.openManualSearch}>
+          Procurar linha manualmente
+        </Button>
+      );
       stickySecondary = (
         <Button onClick={actions.useLocation} variant="secondary">
           Tentar localização de novo
@@ -129,7 +172,9 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
           <h1 id="screen-title" className={styles.titleCompact}>
-            {state.screen === "noManualResults" ? "Nenhuma linha encontrada" : "Procurar linha"}
+            {state.screen === "noManualResults"
+              ? "Nenhuma linha encontrada"
+              : "Procurar linha"}
           </h1>
           <p className={styles.body}>
             {state.screen === "noManualResults"
@@ -149,11 +194,22 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
             />
           </label>
           {manualQueryDraft.trim().length === 0 ? (
-            <p className={styles.metaText}>Busque pelo número, terminal ou destino.</p>
+            <p className={styles.metaText}>
+              Busque pelo número, terminal ou destino.
+            </p>
           ) : state.manualCandidates.length > 0 ? (
-            <div aria-label="Resultados da busca de linhas" className={styles.list} role="list">
+            <div
+              aria-label="Resultados da busca de linhas"
+              className={styles.list}
+              role="list"
+            >
               {state.manualCandidates.map((route) => (
-                <RouteCard key={route.routeId} route={route} meta="linha" onSelect={() => actions.selectRoute(route, "manual")} />
+                <RouteCard
+                  key={route.routeId}
+                  route={route}
+                  meta="linha"
+                  onSelect={() => actions.selectRoute(route, "manual")}
+                />
               ))}
             </div>
           ) : state.screen === "noManualResults" ? (
@@ -184,11 +240,20 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           <h1 id="screen-title" className={styles.titleCompact}>
             Escolha o sentido
           </h1>
-          <p className={styles.body}>Use o destino ou bairro para confirmar para onde o ônibus vai.</p>
-          <RouteSummary label="Linha escolhida" routeLabel={selectedRouteLabel} />
+          <p className={styles.body}>
+            Use o destino ou bairro para confirmar para onde o ônibus vai.
+          </p>
+          <RouteSummary
+            label="Linha escolhida"
+            routeLabel={selectedRouteLabel}
+          />
           <div className={styles.list}>
             {state.directionChoices.map((direction) => (
-              <DirectionCard key={direction.routeDirectionId} direction={direction} onSelect={() => actions.selectDirection(direction)} />
+              <DirectionCard
+                key={direction.routeDirectionId}
+                direction={direction}
+                onSelect={() => actions.selectDirection(direction)}
+              />
             ))}
           </div>
         </section>
@@ -206,11 +271,15 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           <h1 id="screen-title" className={styles.titleCompact}>
             Não é possível confirmar o sentido
           </h1>
-          <p className={styles.body}>Essa linha ainda não tem sentidos disponíveis.</p>
+          <p className={styles.body}>
+            Essa linha ainda não tem sentidos disponíveis.
+          </p>
           <RouteSummary label="Linha" routeLabel={selectedRouteLabel} />
         </section>
       );
-      stickyPrimary = <Button onClick={actions.changeRoute}>Trocar linha</Button>;
+      stickyPrimary = (
+        <Button onClick={actions.changeRoute}>Trocar linha</Button>
+      );
       stickySecondary = (
         <Button onClick={actions.openManualSearch} variant="secondary">
           Procurar linha manualmente
@@ -225,13 +294,23 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           <h1 id="screen-title" className={styles.titleCompact}>
             Confirme sua linha
           </h1>
-          <p className={styles.body}>Confira se a linha e o sentido combinam com o ônibus.</p>
-          <RouteSummary directionLabel={state.selectedDirection?.name} routeLabel={selectedRouteLabel} />
+          <p className={styles.body}>
+            Confira se a linha e o sentido combinam com o ônibus.
+          </p>
+          <RouteSummary
+            directionLabel={state.selectedDirection?.name}
+            routeLabel={selectedRouteLabel}
+          />
           <SchematicRouteMap points={mapPoints} />
-          <p className={styles.metaText}>Se você não estiver nessa linha agora, posso mostrar uma prévia com aviso.</p>
+          <p className={styles.metaText}>
+            Se você não estiver nessa linha agora, posso mostrar uma prévia com
+            aviso.
+          </p>
         </section>
       );
-      stickyPrimary = <Button onClick={actions.confirmRoute}>Confirmar esta linha</Button>;
+      stickyPrimary = (
+        <Button onClick={actions.confirmRoute}>Confirmar esta linha</Button>
+      );
       stickySecondary = (
         <Button onClick={actions.changeDirection} variant="secondary">
           Trocar sentido
@@ -250,7 +329,10 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
             <strong>Mapa indisponível</strong>
             <p>Ainda é possível confirmar pela linha e pelo sentido.</p>
           </div>
-          <RouteSummary directionLabel={state.selectedDirection?.name} routeLabel={selectedRouteLabel} />
+          <RouteSummary
+            directionLabel={state.selectedDirection?.name}
+            routeLabel={selectedRouteLabel}
+          />
           <div className={styles.summaryPanel}>
             <p className={styles.summaryLabel}>Confirmação compacta</p>
             <p className={styles.metaText}>
@@ -261,7 +343,9 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           </div>
         </section>
       );
-      stickyPrimary = <Button onClick={actions.confirmRoute}>Confirmar mesmo assim</Button>;
+      stickyPrimary = (
+        <Button onClick={actions.confirmRoute}>Confirmar mesmo assim</Button>
+      );
       stickySecondary = (
         <Button onClick={actions.changeDirection} variant="secondary">
           Trocar sentido
@@ -276,8 +360,13 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           <h1 id="screen-title" className={styles.titleCompact}>
             Calculando pelo sol direto...
           </h1>
-          <p className={styles.body}>Vamos comparar esquerda e direita no sentido escolhido.</p>
-          <RouteSummary directionLabel={state.selectedDirection?.name} routeLabel={selectedRouteLabel} />
+          <p className={styles.body}>
+            Vamos comparar esquerda e direita no sentido escolhido.
+          </p>
+          <RouteSummary
+            directionLabel={state.selectedDirection?.name}
+            routeLabel={selectedRouteLabel}
+          />
         </section>
       );
       stickySecondary = (
@@ -293,12 +382,14 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
         content = renderAdviceResult({
           advice: state.advice,
           directionLabel: state.selectedDirection?.name,
-          routeLabel: selectedRouteLabel
+          routeLabel: selectedRouteLabel,
         });
       } else {
         content = null;
       }
-      stickyPrimary = <Button onClick={actions.refreshAdvice}>Atualizar localização</Button>;
+      stickyPrimary = (
+        <Button onClick={actions.refreshAdvice}>Atualizar localização</Button>
+      );
       stickySecondary = (
         <Button onClick={actions.changeRoute} variant="secondary">
           Trocar linha
@@ -313,11 +404,22 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           <h1 id="screen-title" className={styles.titleCompact}>
             Não é possível recomendar agora
           </h1>
-          <p className={styles.body}>{withheldReasonCopy(state.advice?.mode === "withheld" ? state.advice.reasonCode : undefined)}</p>
-          <RouteSummary directionLabel={state.selectedDirection?.name} routeLabel={selectedRouteLabel} />
+          <p className={styles.body}>
+            {withheldReasonCopy(
+              state.advice?.mode === "withheld"
+                ? state.advice.reasonCode
+                : undefined
+            )}
+          </p>
+          <RouteSummary
+            directionLabel={state.selectedDirection?.name}
+            routeLabel={selectedRouteLabel}
+          />
         </section>
       );
-      stickyPrimary = <Button onClick={actions.changeRoute}>Trocar linha</Button>;
+      stickyPrimary = (
+        <Button onClick={actions.changeRoute}>Trocar linha</Button>
+      );
       stickySecondary = (
         <Button onClick={actions.retry} variant="secondary">
           Tentar de novo
@@ -331,9 +433,14 @@ export function OnboardingFlowScreen({ controller }: OnboardingFlowScreenProps) 
           <h1 id="screen-title" className={styles.titleCompact}>
             Algo deu errado
           </h1>
-          <p className={styles.body}>Não consegui carregar as informações agora.</p>
+          <p className={styles.body}>
+            Não consegui carregar as informações agora.
+          </p>
           {selectedRouteLabel !== undefined ? (
-            <RouteSummary directionLabel={state.selectedDirection?.name} routeLabel={selectedRouteLabel} />
+            <RouteSummary
+              directionLabel={state.selectedDirection?.name}
+              routeLabel={selectedRouteLabel}
+            />
           ) : null}
         </section>
       );
@@ -369,7 +476,10 @@ function renderLoadingScreen(
   let heading = "Buscando linhas perto de você...";
   let body = "Isso deve levar poucos segundos.";
 
-  if (state.selectedRoute !== undefined && state.selectedDirection === undefined) {
+  if (
+    state.selectedRoute !== undefined &&
+    state.selectedDirection === undefined
+  ) {
     heading = "Carregando sentidos...";
     body = "Estou buscando os sentidos disponíveis para essa linha.";
   } else if (state.selectedDirection !== undefined) {
@@ -377,7 +487,8 @@ function renderLoadingScreen(
     body = "Estou montando o resumo da linha e do sentido.";
   } else if (state.screen === "slowLoadingNotice") {
     heading = "Ainda buscando...";
-    body = "A conexão pode estar lenta. Você pode continuar ou procurar a linha manualmente.";
+    body =
+      "A conexão pode estar lenta. Você pode continuar ou procurar a linha manualmente.";
   }
 
   return (
@@ -387,7 +498,9 @@ function renderLoadingScreen(
           {heading}
         </h1>
         <p className={styles.body}>{body}</p>
-        {selectedRouteLabel !== undefined ? <RouteSummary routeLabel={selectedRouteLabel} /> : null}
+        {selectedRouteLabel !== undefined ? (
+          <RouteSummary routeLabel={selectedRouteLabel} />
+        ) : null}
       </div>
     </section>
   );
@@ -396,7 +509,7 @@ function renderLoadingScreen(
 function renderAdviceResult({
   advice,
   directionLabel,
-  routeLabel
+  routeLabel,
 }: {
   advice: Exclude<UiAdviceState, { mode: "withheld" }>;
   directionLabel?: string;
@@ -410,14 +523,22 @@ function renderAdviceResult({
       <div className={styles.resultCard}>
         <div className={styles.resultHeader}>
           <p className={styles.resultEyebrow}>{variant.eyebrow}</p>
-          {variant.badge !== undefined ? <span className={styles.resultBadge}>{variant.badge}</span> : null}
+          {variant.badge !== undefined ? (
+            <span className={styles.resultBadge}>{variant.badge}</span>
+          ) : null}
         </div>
         <h1 id="screen-title" className={styles.titleCompact}>
           {variant.title}
         </h1>
         <p className={styles.body}>{variant.body}</p>
-        <RouteSummary directionLabel={directionLabel} label="Linha confirmada" routeLabel={routeLabel} />
-        {variant.previewNote !== undefined ? <p className={styles.metaText}>{variant.previewNote}</p> : null}
+        <RouteSummary
+          directionLabel={directionLabel}
+          label="Linha confirmada"
+          routeLabel={routeLabel}
+        />
+        {variant.previewNote !== undefined ? (
+          <p className={styles.metaText}>{variant.previewNote}</p>
+        ) : null}
         <AdviceBusDiagram advice={advice} summary={variant.accessibleSummary} />
         <p className={styles.estimateNotice}>{ESTIMATE_NOTICE}</p>
       </div>
@@ -425,7 +546,15 @@ function renderAdviceResult({
   );
 }
 
-function RouteCard({ meta, onSelect, route }: { meta: string; onSelect(): void; route: RouteCandidate }) {
+function RouteCard({
+  meta,
+  onSelect,
+  route,
+}: {
+  meta: string;
+  onSelect(): void;
+  route: RouteCandidate;
+}) {
   return (
     <button
       aria-label={`Selecionar linha ${route.code} ${route.name}`}
@@ -433,13 +562,21 @@ function RouteCard({ meta, onSelect, route }: { meta: string; onSelect(): void; 
       onClick={onSelect}
       type="button"
     >
-      <strong>{route.code} {route.name}</strong>
+      <strong>
+        {route.code} {route.name}
+      </strong>
       <span>{meta}</span>
     </button>
   );
 }
 
-function DirectionCard({ direction, onSelect }: { direction: DirectionChoice; onSelect(): void }) {
+function DirectionCard({
+  direction,
+  onSelect,
+}: {
+  direction: DirectionChoice;
+  onSelect(): void;
+}) {
   return (
     <button
       aria-label={`Selecionar sentido ${direction.name}`}
@@ -456,7 +593,7 @@ function DirectionCard({ direction, onSelect }: { direction: DirectionChoice; on
 function RouteSummary({
   directionLabel,
   label,
-  routeLabel
+  routeLabel,
 }: {
   directionLabel?: string;
   label?: string;
@@ -468,22 +605,48 @@ function RouteSummary({
 
   return (
     <div className={styles.summaryPanel}>
-      {label !== undefined ? <p className={styles.summaryLabel}>{label}</p> : null}
+      {label !== undefined ? (
+        <p className={styles.summaryLabel}>{label}</p>
+      ) : null}
       <strong>{routeLabel}</strong>
       {directionLabel !== undefined ? <span>{directionLabel}</span> : null}
     </div>
   );
 }
 
-function SchematicRouteMap({ points }: { points: Array<{ lat: number; lng: number }> }) {
+function SchematicRouteMap({
+  points,
+}: {
+  points: Array<{ lat: number; lng: number }>;
+}) {
   const normalized = normalizeMapPoints(points);
 
   return (
-    <div aria-label="Trajeto esquemático da linha selecionada" className={styles.mapShell} role="img">
+    <div
+      aria-label="Trajeto esquemático da linha selecionada"
+      className={styles.mapShell}
+      role="img"
+    >
       <svg className={styles.mapSvg} viewBox="0 0 100 100" aria-hidden="true">
-        <rect x="2" y="2" width="96" height="96" rx="12" className={styles.mapBackdrop} />
-        <polyline className={styles.mapLine} fill="none" points={normalized.join(" ")} />
-        <circle className={styles.mapStart} cx={normalized[0]?.split(",")[0] ?? "12"} cy={normalized[0]?.split(",")[1] ?? "50"} r="4" />
+        <rect
+          x="2"
+          y="2"
+          width="96"
+          height="96"
+          rx="12"
+          className={styles.mapBackdrop}
+        />
+        <polyline
+          className={styles.mapLine}
+          fill="none"
+          points={normalized.join(" ")}
+        />
+        <circle
+          className={styles.mapStart}
+          cx={normalized[0]?.split(",")[0] ?? "12"}
+          cy={normalized[0]?.split(",")[1] ?? "50"}
+          r="4"
+        />
         <circle
           className={styles.mapEnd}
           cx={normalized[normalized.length - 1]?.split(",")[0] ?? "88"}
@@ -495,7 +658,9 @@ function SchematicRouteMap({ points }: { points: Array<{ lat: number; lng: numbe
   );
 }
 
-function normalizeMapPoints(points: Array<{ lat: number; lng: number }>): string[] {
+function normalizeMapPoints(
+  points: Array<{ lat: number; lng: number }>
+): string[] {
   if (points.length === 0) {
     return ["12,50", "88,50"];
   }
@@ -528,7 +693,9 @@ function nearbyRouteMeta(route: RouteCandidate): string {
   return `${(route.distanceMeters / 1000).toFixed(1)} km de você`;
 }
 
-function locationIssueLabel(issue: OnboardingFlowController["state"]["locationIssue"]): string {
+function locationIssueLabel(
+  issue: OnboardingFlowController["state"]["locationIssue"]
+): string {
   switch (issue) {
     case "timeout":
       return "A tentativa de localização expirou antes de trazer as linhas próximas.";
@@ -542,7 +709,9 @@ function locationIssueLabel(issue: OnboardingFlowController["state"]["locationIs
 
 const ESTIMATE_NOTICE = "Estimativa pelo sol direto. Pode variar no caminho.";
 
-function adviceVariantCopy(advice: Exclude<UiAdviceState, { mode: "withheld" }>): {
+function adviceVariantCopy(
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>
+): {
   eyebrow: string;
   title: string;
   body: string;
@@ -555,7 +724,7 @@ function adviceVariantCopy(advice: Exclude<UiAdviceState, { mode: "withheld" }>)
       ...directionalAdviceCopy(advice.recommendedSeatArea),
       eyebrow: "Prévia da linha",
       badge: "Prévia",
-      previewNote: previewDistanceCopy(advice.distanceFromRouteMeters)
+      previewNote: previewDistanceCopy(advice.distanceFromRouteMeters),
     };
   }
 
@@ -565,7 +734,8 @@ function adviceVariantCopy(advice: Exclude<UiAdviceState, { mode: "withheld" }>)
         eyebrow: "Resultado calculado",
         title: "Sem lado melhor agora",
         body: "Sol alto demais para uma lateral se destacar neste trecho.",
-        accessibleSummary: "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora."
+        accessibleSummary:
+          "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora.",
       };
     }
 
@@ -573,45 +743,48 @@ function adviceVariantCopy(advice: Exclude<UiAdviceState, { mode: "withheld" }>)
       eyebrow: "Resultado calculado",
       title: "Sem sol direto relevante agora",
       body: "Não há sol direto suficiente para recomendar uma lateral neste trecho.",
-      accessibleSummary: "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora."
+      accessibleSummary:
+        "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora.",
     };
   }
 
   return {
     ...directionalAdviceCopy(advice.recommendedSeatArea),
-    eyebrow: "Agora no ônibus"
+    eyebrow: "Agora no ônibus",
   };
 }
 
-function directionalAdviceCopy(recommendedSeatArea: "left" | "right" | "front" | "back") {
+function directionalAdviceCopy(
+  recommendedSeatArea: "left" | "right" | "front" | "back"
+) {
   switch (recommendedSeatArea) {
     case "left":
       return {
         title: "Sente à esquerda",
         body: "Esse lado deve pegar menos sol direto neste sentido.",
         accessibleSummary:
-          "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus."
+          "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.",
       };
     case "right":
       return {
         title: "Melhor sentar à direita",
         body: "Esse lado deve pegar menos sol direto neste sentido.",
         accessibleSummary:
-          "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus."
+          "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.",
       };
     case "front":
       return {
         title: "Prefira sentar mais à frente",
         body: "Parte da frente deve pegar menos sol direto neste sentido.",
         accessibleSummary:
-          "Recomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus."
+          "Recomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.",
       };
     case "back":
       return {
         title: "Prefira sentar mais atrás",
         body: "Parte de trás deve pegar menos sol direto neste sentido.",
         accessibleSummary:
-          "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus."
+          "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
       };
   }
 }

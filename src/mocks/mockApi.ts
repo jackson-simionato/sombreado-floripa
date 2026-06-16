@@ -6,7 +6,7 @@ import type {
   RouteGeometryResponse,
   RoutesResponse,
   TargetAdvisoryRequest,
-  TargetAdvisoryResponse
+  TargetAdvisoryResponse,
 } from "../domain/types";
 import {
   emptyRoutesResponse,
@@ -14,7 +14,7 @@ import {
   mockAdvisories,
   routeDirectionsByRouteId,
   routeGeometryByDirectionId,
-  routesResponse
+  routesResponse,
 } from "./fixtures";
 
 export type ListRoutesParams = {
@@ -36,8 +36,13 @@ export type MockApiDelays = {
 export type MockApi = {
   listRoutes(params: ListRoutesParams): Promise<RoutesResponse>;
   getRouteDirections(routeId: string): Promise<RouteDirectionsResponse>;
-  getRouteGeometry(routeDirectionId: string, routeVersionId: string): Promise<RouteGeometryResponse>;
-  createOnboardAdvisory(request: TargetAdvisoryRequest): Promise<TargetAdvisoryResponse>;
+  getRouteGeometry(
+    routeDirectionId: string,
+    routeVersionId: string
+  ): Promise<RouteGeometryResponse>;
+  createOnboardAdvisory(
+    request: TargetAdvisoryRequest
+  ): Promise<TargetAdvisoryResponse>;
 };
 
 export class MockApiError extends Error {
@@ -50,14 +55,21 @@ export class MockApiError extends Error {
   }
 }
 
-export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: MockApiDelays } = {}): MockApi {
+export function createMockApi(
+  options: { scenarioId?: MockScenarioId; delays?: MockApiDelays } = {}
+): MockApi {
   const scenarioId = options.scenarioId ?? "nearby-routes";
   const delays = options.delays ?? {};
 
   return {
     async listRoutes(params) {
-      await delay(params.query === undefined ? delays.nearbyMs : delays.manualSearchMs);
-      rejectIfApiError(scenarioId, params.query === undefined ? "nearbyRoutes" : "manualSearch");
+      await delay(
+        params.query === undefined ? delays.nearbyMs : delays.manualSearchMs
+      );
+      rejectIfApiError(
+        scenarioId,
+        params.query === undefined ? "nearbyRoutes" : "manualSearch"
+      );
 
       if (scenarioId === "nearby-empty" && params.query === undefined) {
         return emptyRoutesResponse;
@@ -66,9 +78,12 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
         return emptyRoutesResponse;
       }
 
-      const routes = params.query === undefined ? nearbyRoutes() : manualRoutes(params.query);
+      const routes =
+        params.query === undefined
+          ? nearbyRoutes()
+          : manualRoutes(params.query);
       return {
-        routes: routes.slice(0, params.limit ?? routes.length)
+        routes: routes.slice(0, params.limit ?? routes.length),
       };
     },
 
@@ -76,7 +91,10 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
       await delay(delays.directionsMs);
       rejectIfApiError(scenarioId, "directions");
 
-      if (scenarioId === "route-no-directions" || routeId === fixtureIds.routes.noDirections) {
+      if (
+        scenarioId === "route-no-directions" ||
+        routeId === fixtureIds.routes.noDirections
+      ) {
         return { directions: [] };
       }
 
@@ -91,7 +109,7 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
         return {
           route_direction_id: routeDirectionId,
           route_version_id: routeVersionId,
-          segments: []
+          segments: [],
         };
       }
 
@@ -99,7 +117,7 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
         routeGeometryByDirectionId[routeDirectionId] ?? {
           route_direction_id: routeDirectionId,
           route_version_id: routeVersionId,
-          segments: []
+          segments: [],
         }
       );
     },
@@ -109,17 +127,19 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
       rejectIfApiError(scenarioId, "advisory");
 
       return advisoryForScenario(scenarioId);
-    }
+    },
   };
 }
 
-export function createMockLocationProvider(result: MockLocationResult = { kind: "granted", lat: -27.5969, lng: -48.5488 }): {
+export function createMockLocationProvider(
+  result: MockLocationResult = { kind: "granted", lat: -27.5969, lng: -48.5488 }
+): {
   getCurrentLocation(): Promise<MockLocationResult>;
 } {
   return {
     async getCurrentLocation() {
       return result;
-    }
+    },
   };
 }
 
@@ -127,7 +147,10 @@ function nearbyRoutes(): RoutesResponse["routes"] {
   return [...routesResponse.routes]
     .filter((route) => route.route_id !== fixtureIds.routes.missingGeometry)
     .sort((left, right) => {
-      if (left.distance_meters === undefined && right.distance_meters === undefined) {
+      if (
+        left.distance_meters === undefined &&
+        right.distance_meters === undefined
+      ) {
         return 0;
       }
       if (left.distance_meters === undefined) {
@@ -151,7 +174,10 @@ function manualRoutes(query: string): RoutesResponse["routes"] {
       [
         route.route_code,
         route.route_name,
-        ...route.directions.flatMap((direction) => [direction.name, ...direction.departure_labels])
+        ...route.directions.flatMap((direction) => [
+          direction.name,
+          ...direction.departure_labels,
+        ]),
       ].join(" ")
     );
 
@@ -159,7 +185,9 @@ function manualRoutes(query: string): RoutesResponse["routes"] {
   });
 }
 
-function advisoryForScenario(scenarioId: MockScenarioId): TargetAdvisoryResponse {
+function advisoryForScenario(
+  scenarioId: MockScenarioId
+): TargetAdvisoryResponse {
   switch (scenarioId) {
     case "advice-exposure-left-recommends-right":
       return mockAdvisories.advisoryExposureLeftRecommendsRight;
@@ -183,19 +211,26 @@ function advisoryForScenario(scenarioId: MockScenarioId): TargetAdvisoryResponse
 
 function rejectIfApiError(
   scenarioId: MockScenarioId,
-  operation: "nearbyRoutes" | "manualSearch" | "directions" | "geometry" | "advisory"
+  operation:
+    | "nearbyRoutes"
+    | "manualSearch"
+    | "directions"
+    | "geometry"
+    | "advisory"
 ): void {
   if (
     scenarioId === "api-error" ||
-    (scenarioId === "api-error-nearby-routes" && operation === "nearbyRoutes") ||
-    (scenarioId === "api-error-manual-search" && operation === "manualSearch") ||
+    (scenarioId === "api-error-nearby-routes" &&
+      operation === "nearbyRoutes") ||
+    (scenarioId === "api-error-manual-search" &&
+      operation === "manualSearch") ||
     (scenarioId === "api-error-directions" && operation === "directions") ||
     (scenarioId === "api-error-geometry" && operation === "geometry") ||
     (scenarioId === "api-error-advice" && operation === "advisory")
   ) {
     throw new MockApiError({
       kind: "api",
-      message: "Mock API failure"
+      message: "Mock API failure",
     });
   }
 }

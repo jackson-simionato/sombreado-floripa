@@ -17,15 +17,19 @@ export function LocationRequestScreen({
   state,
   manualNoticeVisible,
   onUseLocation,
-  onManualSearch
+  onManualSearch,
 }: LocationRequestScreenProps) {
   const isLoading = state === "finding-nearby";
-  const screenCopy = isLoading ? copy.findingNearbyRoutes : copy.locationRequest;
+  const screenCopy = isLoading
+    ? copy.findingNearbyRoutes
+    : copy.locationRequest;
 
   return (
     <AppShell>
       <div className={styles.screen}>
-        {!isLoading ? <p className={styles.brand}>{copy.locationRequest.brand}</p> : null}
+        {!isLoading ? (
+          <p className={styles.brand}>{copy.locationRequest.brand}</p>
+        ) : null}
         <section className={styles.hero} aria-labelledby="screen-title">
           <div className={styles.copyBlock}>
             <h1 id="screen-title" className={styles.title}>
@@ -36,7 +40,9 @@ export function LocationRequestScreen({
           <BusSplitDiagram />
         </section>
 
-        {!isLoading ? <p className={styles.notice}>{copy.locationRequest.locationNotice}</p> : null}
+        {!isLoading ? (
+          <p className={styles.notice}>{copy.locationRequest.locationNotice}</p>
+        ) : null}
 
         {manualNoticeVisible ? (
           <p className={styles.manualNotice} role="status">
@@ -47,10 +53,14 @@ export function LocationRequestScreen({
 
       <StickyActions>
         {!isLoading ? (
-          <Button onClick={onUseLocation}>{copy.locationRequest.primaryAction}</Button>
+          <Button onClick={onUseLocation}>
+            {copy.locationRequest.primaryAction}
+          </Button>
         ) : null}
         <Button onClick={onManualSearch} variant="secondary">
-          {isLoading ? copy.findingNearbyRoutes.secondaryAction : copy.locationRequest.secondaryAction}
+          {isLoading
+            ? copy.findingNearbyRoutes.secondaryAction
+            : copy.locationRequest.secondaryAction}
         </Button>
       </StickyActions>
     </AppShell>

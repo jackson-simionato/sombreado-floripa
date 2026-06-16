@@ -6,13 +6,13 @@ import {
   toDirectionChoices,
   toRouteCandidates,
   toRoutePolyline,
-  toUiAdvice
+  toUiAdvice,
 } from "../../src/domain/adapters";
 import type {
   RouteDirectionsResponse,
   RouteGeometryResponse,
   RoutesResponse,
-  TargetAdvisoryResponse
+  TargetAdvisoryResponse,
 } from "../../src/domain/types";
 
 const routeResponse: RoutesResponse = {
@@ -23,7 +23,7 @@ const routeResponse: RoutesResponse = {
       route_name: "TILAG - Centro",
       route_version_id: "version-b",
       distance_meters: undefined,
-      directions: []
+      directions: [],
     },
     {
       route_id: "route-a",
@@ -36,9 +36,9 @@ const routeResponse: RoutesResponse = {
           route_direction_id: "direction-a",
           sequence: 1,
           name: "TICEN para Lagoa",
-          departure_labels: ["TICEN", "UFSC"]
-        }
-      ]
+          departure_labels: ["TICEN", "UFSC"],
+        },
+      ],
     },
     {
       route_id: "route-c",
@@ -46,9 +46,9 @@ const routeResponse: RoutesResponse = {
       route_name: "Trindade",
       route_version_id: "version-c",
       distance_meters: 300,
-      directions: []
-    }
-  ]
+      directions: [],
+    },
+  ],
 };
 
 describe("domain adapters", () => {
@@ -62,7 +62,7 @@ describe("domain adapters", () => {
         code: "111",
         name: "Trindade",
         distanceMeters: 300,
-        directionHints: []
+        directionHints: [],
       },
       {
         routeId: "route-a",
@@ -70,27 +70,31 @@ describe("domain adapters", () => {
         code: "124",
         name: "TICEN - Lagoa",
         distanceMeters: 820,
-        directionHints: ["TICEN para Lagoa", "TICEN", "UFSC"]
+        directionHints: ["TICEN para Lagoa", "TICEN", "UFSC"],
       },
       {
         routeId: "route-b",
         routeVersionId: "version-b",
         code: "330",
         name: "TILAG - Centro",
-        directionHints: []
-      }
+        directionHints: [],
+      },
     ]);
   });
 
   test("preserves manual search relevance order while converting fields", () => {
     const candidates = toRouteCandidates(routeResponse, { source: "manual" });
 
-    expect(candidates.map((candidate) => candidate.routeId)).toEqual(["route-b", "route-a", "route-c"]);
+    expect(candidates.map((candidate) => candidate.routeId)).toEqual([
+      "route-b",
+      "route-a",
+      "route-c",
+    ]);
     expect(candidates[0]).toMatchObject({
       routeId: "route-b",
       routeVersionId: "version-b",
       code: "330",
-      name: "TILAG - Centro"
+      name: "TILAG - Centro",
     });
   });
 
@@ -101,15 +105,15 @@ describe("domain adapters", () => {
           route_direction_id: "direction-2",
           sequence: 2,
           name: "Lagoa para TICEN",
-          departure_labels: ["Lagoa"]
+          departure_labels: ["Lagoa"],
         },
         {
           route_direction_id: "direction-1",
           sequence: 1,
           name: "TICEN para Lagoa",
-          departure_labels: ["TICEN", "UFSC"]
-        }
-      ]
+          departure_labels: ["TICEN", "UFSC"],
+        },
+      ],
     };
 
     expect(toDirectionChoices(response)).toEqual([
@@ -117,14 +121,14 @@ describe("domain adapters", () => {
         routeDirectionId: "direction-1",
         sequence: 1,
         name: "TICEN para Lagoa",
-        departureLabels: ["TICEN", "UFSC"]
+        departureLabels: ["TICEN", "UFSC"],
       },
       {
         routeDirectionId: "direction-2",
         sequence: 2,
         name: "Lagoa para TICEN",
-        departureLabels: ["Lagoa"]
-      }
+        departureLabels: ["Lagoa"],
+      },
     ]);
   });
 
@@ -138,31 +142,31 @@ describe("domain adapters", () => {
           sequence: 2,
           coordinates: [
             [-48.522, -27.603],
-            [-48.52, -27.604]
+            [-48.52, -27.604],
           ],
           bearing_degrees: 100,
           distance_meters: 120,
-          cumulative_distance_meters: 220
+          cumulative_distance_meters: 220,
         },
         {
           id: "segment-1",
           sequence: 1,
           coordinates: [
             [-48.525, -27.601],
-            [-48.522, -27.603]
+            [-48.522, -27.603],
           ],
           bearing_degrees: 90,
           distance_meters: 100,
-          cumulative_distance_meters: 100
-        }
-      ]
+          cumulative_distance_meters: 100,
+        },
+      ],
     };
 
     expect(toRoutePolyline(response)).toEqual([
       { lat: -27.601, lng: -48.525 },
       { lat: -27.603, lng: -48.522 },
       { lat: -27.603, lng: -48.522 },
-      { lat: -27.604, lng: -48.52 }
+      { lat: -27.604, lng: -48.52 },
     ]);
   });
 
@@ -170,21 +174,27 @@ describe("domain adapters", () => {
     ["left", "right"],
     ["right", "left"],
     ["front", "back"],
-    ["back", "front"]
-  ] as const)("maps direct sun exposure %s to recommendation %s", (exposure, recommendation) => {
-    expect(toUiAdvice(advisoryWithExposure(exposure))).toEqual({
-      mode: "onboard",
-      directSunExposure: exposure,
-      recommendedSeatArea: recommendation
-    });
-  });
+    ["back", "front"],
+  ] as const)(
+    "maps direct sun exposure %s to recommendation %s",
+    (exposure, recommendation) => {
+      expect(toUiAdvice(advisoryWithExposure(exposure))).toEqual({
+        mode: "onboard",
+        directSunExposure: exposure,
+        recommendedSeatArea: recommendation,
+      });
+    }
+  );
 
-  test.each(["overhead", "none"] as const)("maps %s exposure to neutral computed advice", (exposure) => {
-    expect(toUiAdvice(advisoryWithExposure(exposure))).toEqual({
-      mode: "neutralComputed",
-      directSunExposure: exposure
-    });
-  });
+  test.each(["overhead", "none"] as const)(
+    "maps %s exposure to neutral computed advice",
+    (exposure) => {
+      expect(toUiAdvice(advisoryWithExposure(exposure))).toEqual({
+        mode: "neutralComputed",
+        directSunExposure: exposure,
+      });
+    }
+  );
 
   test("uses upcoming window for primary UI advice even when remaining route is absent", () => {
     const response = advisoryWithExposure("right");
@@ -193,7 +203,7 @@ describe("domain adapters", () => {
     expect(toUiAdvice(response)).toMatchObject({
       mode: "onboard",
       directSunExposure: "right",
-      recommendedSeatArea: "left"
+      recommendedSeatArea: "left",
     });
   });
 
@@ -208,15 +218,15 @@ describe("domain adapters", () => {
           lat: -27.6,
           lng: -48.52,
           distance_from_route_meters: 43,
-          cumulative_distance_meters: 200
-        }
+          cumulative_distance_meters: 200,
+        },
       })
     ).toEqual({
       mode: "preview",
       directSunExposure: "left",
       recommendedSeatArea: "right",
       previewSource: "estimated_route_point",
-      distanceFromRouteMeters: 43
+      distanceFromRouteMeters: 43,
     });
   });
 
@@ -228,12 +238,12 @@ describe("domain adapters", () => {
       route_direction_id: "direction-a",
       requested_at: "2026-05-26T12:00:00.000Z",
       reason: "no route geometry",
-      reason_code: "missing_route_geometry"
+      reason_code: "missing_route_geometry",
     };
 
     expect(toUiAdvice(response)).toEqual({
       mode: "withheld",
-      reasonCode: "missing_route_geometry"
+      reasonCode: "missing_route_geometry",
     });
   });
 
@@ -244,7 +254,7 @@ describe("domain adapters", () => {
         lng: -48.52,
         routeVersionId: "version-a",
         routeDirectionId: "direction-a",
-        now: () => new Date("2026-05-26T12:00:00.000Z")
+        now: () => new Date("2026-05-26T12:00:00.000Z"),
       })
     ).toEqual({
       lat: -27.6,
@@ -253,13 +263,15 @@ describe("domain adapters", () => {
       route_direction_id: "direction-a",
       datetime: "2026-05-26T12:00:00.000Z",
       window_minutes: DEFAULT_ADVISORY_WINDOW_MINUTES,
-      include_remaining: true
+      include_remaining: true,
     });
   });
 });
 
 function advisoryWithExposure(
-  dominantDirection: NonNullable<TargetAdvisoryResponse["upcoming_window"]>["dominant_direction"]
+  dominantDirection: NonNullable<
+    TargetAdvisoryResponse["upcoming_window"]
+  >["dominant_direction"]
 ): TargetAdvisoryResponse {
   return {
     status: "advisory",
@@ -276,8 +288,8 @@ function advisoryWithExposure(
         front: dominantDirection === "front" ? 800 : 0,
         back: dominantDirection === "back" ? 800 : 0,
         overhead: dominantDirection === "overhead" ? 800 : 0,
-        none: dominantDirection === "none" ? 800 : 0
-      }
-    }
+        none: dominantDirection === "none" ? 800 : 0,
+      },
+    },
   };
 }

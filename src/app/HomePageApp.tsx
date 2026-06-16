@@ -2,7 +2,12 @@
 
 import { OnboardingFlowScreen } from "../screens/OnboardingFlowScreen";
 import { useOnboardingFlow } from "../hooks/useOnboardingFlow";
-import type { MapAvailability, MockLocationResult, MockScenarioId, PrototypeScenarioId } from "../domain/types";
+import type {
+  MapAvailability,
+  MockLocationResult,
+  MockScenarioId,
+  PrototypeScenarioId,
+} from "../domain/types";
 
 export type HomePageAppProps = {
   locationResult?: MockLocationResult;

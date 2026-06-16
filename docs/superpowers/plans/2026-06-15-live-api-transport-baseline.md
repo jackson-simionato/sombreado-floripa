@@ -76,6 +76,7 @@ This plan does not implement:
 ### Task 1: Backend Local CORS Preflight
 
 **Files:**
+
 - Modify: `/home/jackson/sombreado/sombreado-service/app/config.py`
 - Modify: `/home/jackson/sombreado/sombreado-service/tests/test_config_logging.py`
 
@@ -138,6 +139,7 @@ git commit -m "fix(config): allow local Next frontend origin"
 ### Task 2: Add Zod and Transport Schemas
 
 **Files:**
+
 - Modify: `/home/jackson/sombreado/sombreado-floripa/package.json`
 - Modify: `/home/jackson/sombreado/sombreado-floripa/package-lock.json`
 - Create: `/home/jackson/sombreado/sombreado-floripa/src/api/schemas.ts`
@@ -165,7 +167,7 @@ import {
   apiErrorSchema,
   directionChoicesResponseSchema,
   routeCandidatesResponseSchema,
-  routeGeometryResponseSchema
+  routeGeometryResponseSchema,
 } from "../../src/api/schemas";
 
 describe("browser API transport schemas", () => {
@@ -177,7 +179,7 @@ describe("browser API transport schemas", () => {
           routeVersionId: "version-b",
           routeCode: "330",
           routeName: "TILAG - Centro",
-          directionHints: ["Centro"]
+          directionHints: ["Centro"],
         },
         {
           routeId: "route-a",
@@ -185,12 +187,15 @@ describe("browser API transport schemas", () => {
           routeCode: "124",
           routeName: "TICEN - Lagoa",
           distanceMeters: 320,
-          directionHints: ["TICEN", "Lagoa"]
-        }
-      ]
+          directionHints: ["TICEN", "Lagoa"],
+        },
+      ],
     });
 
-    expect(parsed.routes.map((route) => route.routeId)).toEqual(["route-b", "route-a"]);
+    expect(parsed.routes.map((route) => route.routeId)).toEqual([
+      "route-b",
+      "route-a",
+    ]);
   });
 
   test("parses direction choices", () => {
@@ -201,9 +206,9 @@ describe("browser API transport schemas", () => {
             routeDirectionId: "direction-1",
             sequence: 1,
             name: "TICEN para Lagoa",
-            departureLabels: ["TICEN", "UFSC"]
-          }
-        ]
+            departureLabels: ["TICEN", "UFSC"],
+          },
+        ],
       }).directions[0]?.departureLabels
     ).toEqual(["TICEN", "UFSC"]);
   });
@@ -214,7 +219,7 @@ describe("browser API transport schemas", () => {
         routeId: "route-1",
         routeVersionId: "version-1",
         routeDirectionId: "direction-1",
-        polyline: [{ lat: -27.5969, lng: -48.5488 }]
+        polyline: [{ lat: -27.5969, lng: -48.5488 }],
       }).polyline
     ).toEqual([{ lat: -27.5969, lng: -48.5488 }]);
   });
@@ -235,8 +240,8 @@ describe("browser API transport schemas", () => {
         lat: -27.5969,
         lng: -48.5488,
         source: "liveLocation",
-        distanceFromRouteMeters: 8
-      }
+        distanceFromRouteMeters: 8,
+      },
     });
 
     expect(parsed.recommendedSeatArea).toBe("left");
@@ -252,7 +257,7 @@ describe("browser API transport schemas", () => {
         routeVersionId: "version-1",
         routeDirectionId: "direction-1",
         reasonCode: "missingRouteGeometry",
-        computedAt: "2026-06-15T12:00:00.000Z"
+        computedAt: "2026-06-15T12:00:00.000Z",
       }).status
     ).toBe("withheld");
 
@@ -260,8 +265,8 @@ describe("browser API transport schemas", () => {
       apiErrorSchema.parse({
         error: {
           code: "routeVersionStale",
-          message: "Selected route version is no longer current."
-        }
+          message: "Selected route version is no longer current.",
+        },
       }).error.code
     ).toBe("routeVersionStale");
   });
@@ -291,39 +296,57 @@ export const routeCandidateSchema = z.object({
   routeCode: z.string(),
   routeName: z.string(),
   distanceMeters: z.number().optional(),
-  directionHints: z.array(z.string()).default([])
+  directionHints: z.array(z.string()).default([]),
 });
 
 export const routeCandidatesResponseSchema = z.object({
-  routes: z.array(routeCandidateSchema)
+  routes: z.array(routeCandidateSchema),
 });
 
 export const directionChoiceSchema = z.object({
   routeDirectionId: z.string(),
   sequence: z.number(),
   name: z.string(),
-  departureLabels: z.array(z.string()).default([])
+  departureLabels: z.array(z.string()).default([]),
 });
 
 export const directionChoicesResponseSchema = z.object({
-  directions: z.array(directionChoiceSchema)
+  directions: z.array(directionChoiceSchema),
 });
 
 export const latLngSchema = z.object({
   lat: z.number(),
-  lng: z.number()
+  lng: z.number(),
 });
 
 export const routeGeometryResponseSchema = z.object({
   routeId: z.string(),
   routeVersionId: z.string(),
   routeDirectionId: z.string(),
-  polyline: z.array(latLngSchema)
+  polyline: z.array(latLngSchema),
 });
 
-export const directSunExposureSchema = z.enum(["left", "right", "front", "back", "overhead", "none"]);
-export const recommendedSeatAreaSchema = z.enum(["left", "right", "front", "back", "neutral"]);
-export const sunConditionSchema = z.enum(["daylight", "night", "lowSun", "overhead"]);
+export const directSunExposureSchema = z.enum([
+  "left",
+  "right",
+  "front",
+  "back",
+  "overhead",
+  "none",
+]);
+export const recommendedSeatAreaSchema = z.enum([
+  "left",
+  "right",
+  "front",
+  "back",
+  "neutral",
+]);
+export const sunConditionSchema = z.enum([
+  "daylight",
+  "night",
+  "lowSun",
+  "overhead",
+]);
 export const adviceModeSchema = z.enum(["onboard", "preview"]);
 export const adviceHorizonSchema = z.enum(["upcoming", "remainingRoute"]);
 
@@ -331,7 +354,7 @@ export const adviceLocationSchema = z.object({
   lat: z.number(),
   lng: z.number(),
   accuracyMeters: z.number().optional(),
-  observedAt: z.string()
+  observedAt: z.string(),
 });
 
 export const adviceRequestSchema = z.object({
@@ -342,14 +365,14 @@ export const adviceRequestSchema = z.object({
   horizon: adviceHorizonSchema,
   observedAt: z.string(),
   location: adviceLocationSchema.optional(),
-  fallbackToPreview: z.boolean().optional()
+  fallbackToPreview: z.boolean().optional(),
 });
 
 export const advicePositionSchema = z.object({
   lat: z.number(),
   lng: z.number(),
   source: z.enum(["liveLocation", "directionStart"]),
-  distanceFromRouteMeters: z.number().optional()
+  distanceFromRouteMeters: z.number().optional(),
 });
 
 export const adviceSuccessSchema = z.object({
@@ -363,7 +386,7 @@ export const adviceSuccessSchema = z.object({
   recommendedSeatArea: recommendedSeatAreaSchema,
   sunCondition: sunConditionSchema,
   computedAt: z.string(),
-  position: advicePositionSchema.optional()
+  position: advicePositionSchema.optional(),
 });
 
 export const withheldReasonCodeSchema = z.enum([
@@ -371,7 +394,7 @@ export const withheldReasonCodeSchema = z.enum([
   "insufficientSunSignal",
   "unsupportedDirection",
   "noAdviceForSelectedHorizon",
-  "locationOffRoute"
+  "locationOffRoute",
 ]);
 
 export const adviceWithheldSchema = z.object({
@@ -382,24 +405,33 @@ export const adviceWithheldSchema = z.object({
   routeVersionId: z.string(),
   routeDirectionId: z.string(),
   reasonCode: withheldReasonCodeSchema,
-  computedAt: z.string()
+  computedAt: z.string(),
 });
 
-export const adviceResponseSchema = z.discriminatedUnion("status", [adviceSuccessSchema, adviceWithheldSchema]);
+export const adviceResponseSchema = z.discriminatedUnion("status", [
+  adviceSuccessSchema,
+  adviceWithheldSchema,
+]);
 
 export const apiErrorSchema = z.object({
   error: z.object({
     code: z.string(),
     message: z.string().optional(),
-    requestId: z.string().optional()
-  })
+    requestId: z.string().optional(),
+  }),
 });
 
 export type RouteCandidateTransport = z.infer<typeof routeCandidateSchema>;
-export type RouteCandidatesResponseTransport = z.infer<typeof routeCandidatesResponseSchema>;
+export type RouteCandidatesResponseTransport = z.infer<
+  typeof routeCandidatesResponseSchema
+>;
 export type DirectionChoiceTransport = z.infer<typeof directionChoiceSchema>;
-export type DirectionChoicesResponseTransport = z.infer<typeof directionChoicesResponseSchema>;
-export type RouteGeometryResponseTransport = z.infer<typeof routeGeometryResponseSchema>;
+export type DirectionChoicesResponseTransport = z.infer<
+  typeof directionChoicesResponseSchema
+>;
+export type RouteGeometryResponseTransport = z.infer<
+  typeof routeGeometryResponseSchema
+>;
 export type AdviceRequestTransport = z.infer<typeof adviceRequestSchema>;
 export type AdviceResponseTransport = z.infer<typeof adviceResponseSchema>;
 export type ApiErrorTransport = z.infer<typeof apiErrorSchema>;
@@ -418,6 +450,7 @@ Expected: PASS.
 ### Task 3: Add Live API Client and Error Normalization
 
 **Files:**
+
 - Create: `/home/jackson/sombreado/sombreado-floripa/src/api/client.ts`
 - Test: `/home/jackson/sombreado/sombreado-floripa/tests/api/client.test.ts`
 
@@ -428,7 +461,11 @@ Create `/home/jackson/sombreado/sombreado-floripa/tests/api/client.test.ts`:
 ```ts
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import { ApiClientError, createBrowserApiClient, requireApiBaseUrl } from "../../src/api/client";
+import {
+  ApiClientError,
+  createBrowserApiClient,
+  requireApiBaseUrl,
+} from "../../src/api/client";
 
 describe("browser API client", () => {
   beforeEach(() => {
@@ -436,28 +473,56 @@ describe("browser API client", () => {
   });
 
   test("fails clearly when API base URL is missing", () => {
-    expect(() => requireApiBaseUrl(undefined)).toThrow("NEXT_PUBLIC_API_URL is required for live API mode.");
-    expect(() => requireApiBaseUrl("")).toThrow("NEXT_PUBLIC_API_URL is required for live API mode.");
+    expect(() => requireApiBaseUrl(undefined)).toThrow(
+      "NEXT_PUBLIC_API_URL is required for live API mode."
+    );
+    expect(() => requireApiBaseUrl("")).toThrow(
+      "NEXT_PUBLIC_API_URL is required for live API mode."
+    );
   });
 
   test("calls nearby route candidates with credentials omitted and preserves order", async () => {
     const fetchMock = vi.fn().mockResolvedValue(
       jsonResponse({
         routes: [
-          { routeId: "route-b", routeVersionId: "version-b", routeCode: "330", routeName: "B", directionHints: [] },
-          { routeId: "route-a", routeVersionId: "version-a", routeCode: "124", routeName: "A", distanceMeters: 10, directionHints: [] }
-        ]
+          {
+            routeId: "route-b",
+            routeVersionId: "version-b",
+            routeCode: "330",
+            routeName: "B",
+            directionHints: [],
+          },
+          {
+            routeId: "route-a",
+            routeVersionId: "version-a",
+            routeCode: "124",
+            routeName: "A",
+            distanceMeters: 10,
+            directionHints: [],
+          },
+        ],
       })
     );
-    const client = createBrowserApiClient({ baseUrl: "http://localhost:8000/v1", fetchImpl: fetchMock });
+    const client = createBrowserApiClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
 
-    const response = await client.listNearbyRouteCandidates({ lat: -27.6, lng: -48.5, radiusMeters: 1200, limit: 5 });
+    const response = await client.listNearbyRouteCandidates({
+      lat: -27.6,
+      lng: -48.5,
+      radiusMeters: 1200,
+      limit: 5,
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/v1/route-candidates/nearby?lat=-27.6&lng=-48.5&radiusMeters=1200&limit=5",
       expect.objectContaining({ credentials: "omit", method: "GET" })
     );
-    expect(response.routes.map((route) => route.routeId)).toEqual(["route-b", "route-a"]);
+    expect(response.routes.map((route) => route.routeId)).toEqual([
+      "route-b",
+      "route-a",
+    ]);
   });
 
   test("normalizes public API error envelopes", async () => {
@@ -466,26 +531,41 @@ describe("browser API client", () => {
         {
           error: {
             code: "routeVersionStale",
-            message: "Selected route version is no longer current."
-          }
+            message: "Selected route version is no longer current.",
+          },
         },
         { status: 409 }
       )
     );
-    const client = createBrowserApiClient({ baseUrl: "http://localhost:8000/v1", fetchImpl: fetchMock });
+    const client = createBrowserApiClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
 
-    await expect(client.listDirectionChoices({ routeId: "route-a", routeVersionId: "old-version" })).rejects.toMatchObject({
+    await expect(
+      client.listDirectionChoices({
+        routeId: "route-a",
+        routeVersionId: "old-version",
+      })
+    ).rejects.toMatchObject({
       code: "routeVersionStale",
-      status: 409
+      status: 409,
     });
   });
 
   test("normalizes malformed success responses", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ routes: [{ routeId: 42 }] }));
-    const client = createBrowserApiClient({ baseUrl: "http://localhost:8000/v1", fetchImpl: fetchMock });
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(jsonResponse({ routes: [{ routeId: 42 }] }));
+    const client = createBrowserApiClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
 
-    await expect(client.searchRouteCandidates({ query: "330", limit: 8 })).rejects.toMatchObject({
-      code: "invalidApiResponse"
+    await expect(
+      client.searchRouteCandidates({ query: "330", limit: 8 })
+    ).rejects.toMatchObject({
+      code: "invalidApiResponse",
     });
   });
 });
@@ -493,7 +573,7 @@ describe("browser API client", () => {
 function jsonResponse(body: unknown, init: { status?: number } = {}) {
   return new Response(JSON.stringify(body), {
     status: init.status ?? 200,
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
   });
 }
 ```
@@ -525,7 +605,7 @@ import {
   type AdviceResponseTransport,
   type DirectionChoicesResponseTransport,
   type RouteCandidatesResponseTransport,
-  type RouteGeometryResponseTransport
+  type RouteGeometryResponseTransport,
 } from "./schemas";
 
 export type RiderFlowApiClient = {
@@ -536,7 +616,11 @@ export type RiderFlowApiClient = {
     limit: number;
     signal?: AbortSignal;
   }): Promise<RouteCandidatesResponseTransport>;
-  searchRouteCandidates(input: { query: string; limit: number; signal?: AbortSignal }): Promise<RouteCandidatesResponseTransport>;
+  searchRouteCandidates(input: {
+    query: string;
+    limit: number;
+    signal?: AbortSignal;
+  }): Promise<RouteCandidatesResponseTransport>;
   listDirectionChoices(input: {
     routeId: string;
     routeVersionId: string;
@@ -548,7 +632,10 @@ export type RiderFlowApiClient = {
     routeDirectionId: string;
     signal?: AbortSignal;
   }): Promise<RouteGeometryResponseTransport>;
-  createAdvice(input: { request: AdviceRequestTransport; signal?: AbortSignal }): Promise<AdviceResponseTransport>;
+  createAdvice(input: {
+    request: AdviceRequestTransport;
+    signal?: AbortSignal;
+  }): Promise<AdviceResponseTransport>;
 };
 
 export class ApiClientError extends Error {
@@ -556,7 +643,12 @@ export class ApiClientError extends Error {
   readonly status?: number;
   readonly requestId?: string;
 
-  constructor(input: { code: string; message: string; status?: number; requestId?: string }) {
+  constructor(input: {
+    code: string;
+    message: string;
+    status?: number;
+    requestId?: string;
+  }) {
     super(input.message);
     this.name = "ApiClientError";
     this.code = input.code;
@@ -569,7 +661,7 @@ export function requireApiBaseUrl(value: string | undefined): string {
   if (value === undefined || value.trim().length === 0) {
     throw new ApiClientError({
       code: "missingApiBaseUrl",
-      message: "NEXT_PUBLIC_API_URL is required for live API mode."
+      message: "NEXT_PUBLIC_API_URL is required for live API mode.",
     });
   }
   return value.replace(/\/+$/, "");
@@ -588,24 +680,36 @@ export function createBrowserApiClient(input: {
         lat: String(params.lat),
         lng: String(params.lng),
         radiusMeters: String(params.radiusMeters),
-        limit: String(params.limit)
+        limit: String(params.limit),
       });
-      return requestJson(fetchImpl, url, routeCandidatesResponseSchema, { method: "GET", signal: params.signal });
+      return requestJson(fetchImpl, url, routeCandidatesResponseSchema, {
+        method: "GET",
+        signal: params.signal,
+      });
     },
 
     searchRouteCandidates(params) {
       const url = withQuery(`${baseUrl}/route-candidates/search`, {
         query: params.query,
-        limit: String(params.limit)
+        limit: String(params.limit),
       });
-      return requestJson(fetchImpl, url, routeCandidatesResponseSchema, { method: "GET", signal: params.signal });
+      return requestJson(fetchImpl, url, routeCandidatesResponseSchema, {
+        method: "GET",
+        signal: params.signal,
+      });
     },
 
     listDirectionChoices(params) {
-      const url = withQuery(`${baseUrl}/routes/${encodeURIComponent(params.routeId)}/directions`, {
-        routeVersionId: params.routeVersionId
+      const url = withQuery(
+        `${baseUrl}/routes/${encodeURIComponent(params.routeId)}/directions`,
+        {
+          routeVersionId: params.routeVersionId,
+        }
+      );
+      return requestJson(fetchImpl, url, directionChoicesResponseSchema, {
+        method: "GET",
+        signal: params.signal,
       });
-      return requestJson(fetchImpl, url, directionChoicesResponseSchema, { method: "GET", signal: params.signal });
     },
 
     getRouteGeometry(params) {
@@ -613,7 +717,10 @@ export function createBrowserApiClient(input: {
         `${baseUrl}/routes/${encodeURIComponent(params.routeId)}/directions/${encodeURIComponent(params.routeDirectionId)}/geometry`,
         { routeVersionId: params.routeVersionId }
       );
-      return requestJson(fetchImpl, url, routeGeometryResponseSchema, { method: "GET", signal: params.signal });
+      return requestJson(fetchImpl, url, routeGeometryResponseSchema, {
+        method: "GET",
+        signal: params.signal,
+      });
     },
 
     createAdvice(params) {
@@ -621,9 +728,9 @@ export function createBrowserApiClient(input: {
         method: "POST",
         signal: params.signal,
         body: JSON.stringify(params.request),
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       });
-    }
+    },
   };
 }
 
@@ -635,7 +742,7 @@ async function requestJson<T>(
 ): Promise<T> {
   const response = await fetchImpl(url, {
     ...init,
-    credentials: "omit"
+    credentials: "omit",
   });
   const body: unknown = await response.json().catch(() => undefined);
 
@@ -646,13 +753,13 @@ async function requestJson<T>(
         code: parsed.data.error.code,
         message: parsed.data.error.message ?? "API request failed.",
         requestId: parsed.data.error.requestId,
-        status: response.status
+        status: response.status,
       });
     }
     throw new ApiClientError({
       code: "invalidApiError",
       message: "API request failed with an invalid error response.",
-      status: response.status
+      status: response.status,
     });
   }
 
@@ -662,7 +769,7 @@ async function requestJson<T>(
     if (error instanceof ZodError) {
       throw new ApiClientError({
         code: "invalidApiResponse",
-        message: "API response did not match the browser contract."
+        message: "API response did not match the browser contract.",
       });
     }
     throw error;
@@ -688,6 +795,7 @@ Expected: PASS.
 ### Task 4: Add One-Shot Browser Location Provider
 
 **Files:**
+
 - Create: `/home/jackson/sombreado/sombreado-floripa/src/location/browserLocation.ts`
 - Test: `/home/jackson/sombreado/sombreado-floripa/tests/location/browserLocation.test.ts`
 
@@ -698,7 +806,11 @@ Create `/home/jackson/sombreado/sombreado-floripa/tests/location/browserLocation
 ```ts
 import { describe, expect, test } from "vitest";
 
-import { classifyLocationFix, RECENT_FALLBACK_LOCATION_MAX_AGE_MS, FRESH_LOCATION_MAX_AGE_MS } from "../../src/location/browserLocation";
+import {
+  classifyLocationFix,
+  RECENT_FALLBACK_LOCATION_MAX_AGE_MS,
+  FRESH_LOCATION_MAX_AGE_MS,
+} from "../../src/location/browserLocation";
 
 describe("browser location freshness", () => {
   test("classifies fresh, recent fallback, stale, and inaccurate fixes", () => {
@@ -706,29 +818,53 @@ describe("browser location freshness", () => {
 
     expect(
       classifyLocationFix({
-        fix: { kind: "granted", lat: -27.6, lng: -48.5, accuracyMeters: 50, observedAt: "2026-06-15T11:59:45.000Z" },
-        now
+        fix: {
+          kind: "granted",
+          lat: -27.6,
+          lng: -48.5,
+          accuracyMeters: 50,
+          observedAt: "2026-06-15T11:59:45.000Z",
+        },
+        now,
       })
     ).toBe("fresh");
 
     expect(
       classifyLocationFix({
-        fix: { kind: "granted", lat: -27.6, lng: -48.5, accuracyMeters: 50, observedAt: "2026-06-15T11:58:30.000Z" },
-        now
+        fix: {
+          kind: "granted",
+          lat: -27.6,
+          lng: -48.5,
+          accuracyMeters: 50,
+          observedAt: "2026-06-15T11:58:30.000Z",
+        },
+        now,
       })
     ).toBe("recentFallback");
 
     expect(
       classifyLocationFix({
-        fix: { kind: "granted", lat: -27.6, lng: -48.5, accuracyMeters: 50, observedAt: "2026-06-15T11:57:30.000Z" },
-        now
+        fix: {
+          kind: "granted",
+          lat: -27.6,
+          lng: -48.5,
+          accuracyMeters: 50,
+          observedAt: "2026-06-15T11:57:30.000Z",
+        },
+        now,
       })
     ).toBe("unusable");
 
     expect(
       classifyLocationFix({
-        fix: { kind: "granted", lat: -27.6, lng: -48.5, accuracyMeters: 120, observedAt: "2026-06-15T11:59:45.000Z" },
-        now
+        fix: {
+          kind: "granted",
+          lat: -27.6,
+          lng: -48.5,
+          accuracyMeters: 120,
+          observedAt: "2026-06-15T11:59:45.000Z",
+        },
+        now,
       })
     ).toBe("unusable");
 
@@ -790,7 +926,7 @@ export function createBrowserLocationProvider(): LocationProvider {
               lat: position.coords.latitude,
               lng: position.coords.longitude,
               accuracyMeters: position.coords.accuracy,
-              observedAt: new Date(position.timestamp).toISOString()
+              observedAt: new Date(position.timestamp).toISOString(),
             });
           },
           (error) => {
@@ -807,19 +943,25 @@ export function createBrowserLocationProvider(): LocationProvider {
           {
             enableHighAccuracy: true,
             maximumAge: 0,
-            timeout: 10_000
+            timeout: 10_000,
           }
         );
       });
-    }
+    },
   };
 }
 
-export function classifyLocationFix(input: { fix: LocationFix; now?: Date }): LocationFreshness {
+export function classifyLocationFix(input: {
+  fix: LocationFix;
+  now?: Date;
+}): LocationFreshness {
   if (input.fix.kind !== "granted") {
     return "unusable";
   }
-  if (input.fix.accuracyMeters !== undefined && input.fix.accuracyMeters > ACCEPTABLE_ACCURACY_METERS) {
+  if (
+    input.fix.accuracyMeters !== undefined &&
+    input.fix.accuracyMeters > ACCEPTABLE_ACCURACY_METERS
+  ) {
     return "unusable";
   }
 
@@ -855,6 +997,7 @@ Expected: PASS.
 ### Task 5: Migrate Domain Types and Adapters to Browser Contract
 
 **Files:**
+
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/domain/types.ts`
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/domain/adapters.ts`
 - Test: `/home/jackson/sombreado/sombreado-floripa/tests/domain/adapters.test.ts`
@@ -868,9 +1011,22 @@ test("maps route candidates without reordering backend relevance", () => {
   expect(
     toRouteCandidates({
       routes: [
-        { routeId: "route-b", routeVersionId: "version-b", routeCode: "330", routeName: "B", directionHints: [] },
-        { routeId: "route-a", routeVersionId: "version-a", routeCode: "124", routeName: "A", distanceMeters: 10, directionHints: [] }
-      ]
+        {
+          routeId: "route-b",
+          routeVersionId: "version-b",
+          routeCode: "330",
+          routeName: "B",
+          directionHints: [],
+        },
+        {
+          routeId: "route-a",
+          routeVersionId: "version-a",
+          routeCode: "124",
+          routeName: "A",
+          distanceMeters: 10,
+          directionHints: [],
+        },
+      ],
     }).map((route) => route.routeId)
   ).toEqual(["route-b", "route-a"]);
 });
@@ -881,7 +1037,7 @@ test("maps route geometry polyline directly", () => {
       routeId: "route-a",
       routeVersionId: "version-a",
       routeDirectionId: "direction-a",
-      polyline: [{ lat: -27.6, lng: -48.5 }]
+      polyline: [{ lat: -27.6, lng: -48.5 }],
     })
   ).toEqual([{ lat: -27.6, lng: -48.5 }]);
 });
@@ -898,12 +1054,12 @@ test("uses backend-provided seat-area recommendation", () => {
       directSunExposure: "right",
       recommendedSeatArea: "front",
       sunCondition: "daylight",
-      computedAt: "2026-06-15T12:00:00.000Z"
+      computedAt: "2026-06-15T12:00:00.000Z",
     })
   ).toMatchObject({
     mode: "onboard",
     directSunExposure: "right",
-    recommendedSeatArea: "front"
+    recommendedSeatArea: "front",
   });
 });
 ```
@@ -928,7 +1084,12 @@ In `/home/jackson/sombreado/sombreado-floripa/src/domain/types.ts`:
 ```ts
 export type AdviceMode = "onboard" | "preview";
 export type AdviceHorizon = "upcoming" | "remainingRoute";
-export type RecommendedSeatArea = "left" | "right" | "front" | "back" | "neutral";
+export type RecommendedSeatArea =
+  | "left"
+  | "right"
+  | "front"
+  | "back"
+  | "neutral";
 export type SunCondition = "daylight" | "night" | "lowSun" | "overhead";
 export type WithheldReasonCode =
   | "missingRouteGeometry"
@@ -1007,27 +1168,35 @@ In `/home/jackson/sombreado/sombreado-floripa/src/domain/adapters.ts`:
 The core functions should have this shape:
 
 ```ts
-export function toRouteCandidates(routesResponse: RouteCandidatesResponseTransport): RouteCandidate[] {
+export function toRouteCandidates(
+  routesResponse: RouteCandidatesResponseTransport
+): RouteCandidate[] {
   return routesResponse.routes.map((route) => ({
     routeId: route.routeId,
     routeVersionId: route.routeVersionId,
     code: route.routeCode,
     name: route.routeName,
-    ...(route.distanceMeters === undefined ? {} : { distanceMeters: route.distanceMeters }),
-    directionHints: [...route.directionHints]
+    ...(route.distanceMeters === undefined
+      ? {}
+      : { distanceMeters: route.distanceMeters }),
+    directionHints: [...route.directionHints],
   }));
 }
 
-export function toDirectionChoices(routeDirectionsResponse: DirectionChoicesResponseTransport): DirectionChoice[] {
+export function toDirectionChoices(
+  routeDirectionsResponse: DirectionChoicesResponseTransport
+): DirectionChoice[] {
   return routeDirectionsResponse.directions.map((direction) => ({
     routeDirectionId: direction.routeDirectionId,
     sequence: direction.sequence,
     name: direction.name,
-    departureLabels: [...direction.departureLabels]
+    departureLabels: [...direction.departureLabels],
   }));
 }
 
-export function toRoutePolyline(routeGeometryResponse: RouteGeometryResponseTransport): LatLng[] {
+export function toRoutePolyline(
+  routeGeometryResponse: RouteGeometryResponseTransport
+): LatLng[] {
   return routeGeometryResponse.polyline.map((point) => ({ ...point }));
 }
 ```
@@ -1042,10 +1211,11 @@ if (adviceResponse.recommendedSeatArea === "neutral") {
   return {
     mode: "neutralComputed",
     directSunExposure:
-      adviceResponse.directSunExposure === "overhead" || adviceResponse.directSunExposure === "none"
+      adviceResponse.directSunExposure === "overhead" ||
+      adviceResponse.directSunExposure === "none"
         ? adviceResponse.directSunExposure
         : "none",
-    sunCondition: adviceResponse.sunCondition
+    sunCondition: adviceResponse.sunCondition,
   };
 }
 if (adviceResponse.mode === "preview") {
@@ -1056,13 +1226,16 @@ if (adviceResponse.mode === "preview") {
     previewSource: "estimated_route_point",
     ...(adviceResponse.position?.distanceFromRouteMeters === undefined
       ? {}
-      : { distanceFromRouteMeters: adviceResponse.position.distanceFromRouteMeters })
+      : {
+          distanceFromRouteMeters:
+            adviceResponse.position.distanceFromRouteMeters,
+        }),
   };
 }
 return {
   mode: "onboard",
   directSunExposure: adviceResponse.directSunExposure,
-  recommendedSeatArea: adviceResponse.recommendedSeatArea
+  recommendedSeatArea: adviceResponse.recommendedSeatArea,
 };
 ```
 
@@ -1081,6 +1254,7 @@ Expected: PASS.
 ### Task 6: Convert Mock API and Fixtures to Shared Client Interface
 
 **Files:**
+
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/mocks/fixtures.ts`
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/mocks/mockApi.ts`
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/mocks/scenarioStates.ts`
@@ -1101,7 +1275,9 @@ In `/home/jackson/sombreado/sombreado-floripa/tests/mocks/mockApi.test.ts`, upda
 Use this representative assertion:
 
 ```ts
-const api = createMockApi({ scenarioId: "advice-exposure-right-recommends-left" });
+const api = createMockApi({
+  scenarioId: "advice-exposure-right-recommends-left",
+});
 await expect(
   api.createAdvice({
     request: {
@@ -1116,15 +1292,15 @@ await expect(
         lat: -27.5969,
         lng: -48.5488,
         accuracyMeters: 42,
-        observedAt: "2026-06-15T12:00:00.000Z"
-      }
-    }
+        observedAt: "2026-06-15T12:00:00.000Z",
+      },
+    },
   })
 ).resolves.toMatchObject({
   status: "advice",
   mode: "onboard",
   directSunExposure: "right",
-  recommendedSeatArea: "left"
+  recommendedSeatArea: "left",
 });
 ```
 
@@ -1164,7 +1340,9 @@ The mock client signature should start like this:
 ```ts
 export type MockApi = RiderFlowApiClient;
 
-export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: MockApiDelays } = {}): MockApi {
+export function createMockApi(
+  options: { scenarioId?: MockScenarioId; delays?: MockApiDelays } = {}
+): MockApi {
   const scenarioId = options.scenarioId ?? "nearby-routes";
   const delays = options.delays ?? {};
 
@@ -1178,13 +1356,17 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
     async searchRouteCandidates(params) {
       await delay(delays.manualSearchMs);
       rejectIfApiError(scenarioId, "manualSearch");
-      const routes = scenarioId === "manual-empty" ? [] : manualRoutes(params.query);
+      const routes =
+        scenarioId === "manual-empty" ? [] : manualRoutes(params.query);
       return { routes: routes.slice(0, params.limit) };
     },
     async listDirectionChoices(params) {
       await delay(delays.directionsMs);
       rejectIfApiError(scenarioId, "directions");
-      if (scenarioId === "route-no-directions" || params.routeId === fixtureIds.routes.noDirections) {
+      if (
+        scenarioId === "route-no-directions" ||
+        params.routeId === fixtureIds.routes.noDirections
+      ) {
         return { directions: [] };
       }
       return routeDirectionsByRouteId[params.routeId] ?? { directions: [] };
@@ -1192,18 +1374,20 @@ export function createMockApi(options: { scenarioId?: MockScenarioId; delays?: M
     async getRouteGeometry(params) {
       await delay(delays.geometryMs);
       rejectIfApiError(scenarioId, "geometry");
-      return routeGeometryByDirectionId[params.routeDirectionId] ?? {
-        routeId: params.routeId,
-        routeVersionId: params.routeVersionId,
-        routeDirectionId: params.routeDirectionId,
-        polyline: []
-      };
+      return (
+        routeGeometryByDirectionId[params.routeDirectionId] ?? {
+          routeId: params.routeId,
+          routeVersionId: params.routeVersionId,
+          routeDirectionId: params.routeDirectionId,
+          polyline: [],
+        }
+      );
     },
     async createAdvice() {
       await delay(delays.advisoryMs);
       rejectIfApiError(scenarioId, "advisory");
       return adviceForScenario(scenarioId);
-    }
+    },
   };
 }
 ```
@@ -1230,6 +1414,7 @@ Expected: PASS.
 ### Task 7: Inject Live Client and Location Providers into Flow Hook
 
 **Files:**
+
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/hooks/useOnboardingFlow.ts`
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/domain/flow.ts`
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/domain/types.ts`
@@ -1251,7 +1436,7 @@ Representative expectation:
 expect(state.selectedDirection).toBeUndefined();
 expect(state.error).toMatchObject({
   kind: "api",
-  code: "routeVersionStale"
+  code: "routeVersionStale",
 });
 ```
 
@@ -1281,10 +1466,21 @@ In `/home/jackson/sombreado/sombreado-floripa/src/domain/types.ts`:
 
 ```ts
 export type RetryTarget =
-  | { kind: "nearbyRoutes"; lat: number; lng: number; radiusMeters?: number; limit?: number }
+  | {
+      kind: "nearbyRoutes";
+      lat: number;
+      lng: number;
+      radiusMeters?: number;
+      limit?: number;
+    }
   | { kind: "manualSearch"; query: string; limit?: number }
   | { kind: "directions"; routeId: string; routeVersionId: string }
-  | { kind: "geometry"; routeId: string; routeDirectionId: string; routeVersionId: string }
+  | {
+      kind: "geometry";
+      routeId: string;
+      routeDirectionId: string;
+      routeVersionId: string;
+    }
   | { kind: "advice"; request: AdviceRequest };
 ```
 
@@ -1316,7 +1512,9 @@ export function buildAdviceRequest(input: {
     horizon: input.horizon,
     observedAt: (input.now ?? (() => new Date()))().toISOString(),
     ...(input.location === undefined ? {} : { location: input.location }),
-    ...(input.fallbackToPreview === undefined ? {} : { fallbackToPreview: input.fallbackToPreview })
+    ...(input.fallbackToPreview === undefined
+      ? {}
+      : { fallbackToPreview: input.fallbackToPreview }),
   };
 }
 ```
@@ -1343,15 +1541,37 @@ The confirmation decision should follow:
 ```ts
 const freshLocation = await locationProvider.getCurrentLocation();
 const freshClass = classifyLocationFix({ fix: freshLocation });
-const fallbackClass = state.latestLocationFix === undefined ? "unusable" : classifyLocationFix({ fix: state.latestLocationFix });
+const fallbackClass =
+  state.latestLocationFix === undefined
+    ? "unusable"
+    : classifyLocationFix({ fix: state.latestLocationFix });
 
 if (freshLocation.kind === "granted" && freshClass === "fresh") {
-  request = buildAdviceRequest({ mode: "onboard", horizon: "upcoming", location: freshLocation, fallbackToPreview: true, ...ids });
-} else if (state.latestLocationFix?.kind === "granted" && fallbackClass === "recentFallback") {
-  request = buildAdviceRequest({ mode: "onboard", horizon: "upcoming", location: state.latestLocationFix, fallbackToPreview: true, ...ids });
+  request = buildAdviceRequest({
+    mode: "onboard",
+    horizon: "upcoming",
+    location: freshLocation,
+    fallbackToPreview: true,
+    ...ids,
+  });
+} else if (
+  state.latestLocationFix?.kind === "granted" &&
+  fallbackClass === "recentFallback"
+) {
+  request = buildAdviceRequest({
+    mode: "onboard",
+    horizon: "upcoming",
+    location: state.latestLocationFix,
+    fallbackToPreview: true,
+    ...ids,
+  });
   lastKnownLocationWarning = true;
 } else {
-  request = buildAdviceRequest({ mode: "preview", horizon: "remainingRoute", ...ids });
+  request = buildAdviceRequest({
+    mode: "preview",
+    horizon: "remainingRoute",
+    ...ids,
+  });
 }
 ```
 
@@ -1383,6 +1603,7 @@ Expected: PASS.
 ### Task 8: Route Live Runtime and Prototype Runtime Separately
 
 **Files:**
+
 - Modify: `/home/jackson/sombreado/sombreado-floripa/app/page.tsx`
 - Create: `/home/jackson/sombreado/sombreado-floripa/app/prototype/page.tsx`
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/app/HomePageApp.tsx`
@@ -1454,6 +1675,7 @@ Expected: PASS.
 ### Task 9: Add Minimal Runtime Copy and UI States
 
 **Files:**
+
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/content/copy.ts`
 - Modify: `/home/jackson/sombreado/sombreado-floripa/src/screens/OnboardingFlowScreen.tsx`
 - Test: `/home/jackson/sombreado/sombreado-floripa/tests/home-screen.test.tsx`
@@ -1471,10 +1693,14 @@ Add tests that render or drive states for:
 Expected Portuguese copy:
 
 ```ts
-expect(screen.getByText(/usando sua última localização conhecida/i)).toBeInTheDocument();
+expect(
+  screen.getByText(/usando sua última localização conhecida/i)
+).toBeInTheDocument();
 expect(screen.getByText(/Essa linha mudou/i)).toBeInTheDocument();
 expect(screen.getByText(/prévia da linha/i)).toBeInTheDocument();
-expect(screen.getByText(/Não consegui ler a resposta do serviço/i)).toBeInTheDocument();
+expect(
+  screen.getByText(/Não consegui ler a resposta do serviço/i)
+).toBeInTheDocument();
 ```
 
 - [ ] **Step 2: Run UI tests to verify they fail**
@@ -1493,11 +1719,15 @@ In `/home/jackson/sombreado/sombreado-floripa/src/content/copy.ts`, add:
 
 ```ts
 export const apiCopy = {
-  missingApiBaseUrl: "Configuração da API ausente. Defina NEXT_PUBLIC_API_URL para usar o modo ao vivo.",
-  invalidApiResponse: "Não consegui ler a resposta do serviço. Tente novamente em instantes.",
+  missingApiBaseUrl:
+    "Configuração da API ausente. Defina NEXT_PUBLIC_API_URL para usar o modo ao vivo.",
+  invalidApiResponse:
+    "Não consegui ler a resposta do serviço. Tente novamente em instantes.",
   staleRouteVersion: "Essa linha mudou. Vamos atualizar as opções.",
-  lastKnownLocation: "Estou usando sua última localização conhecida porque a atualização falhou agora.",
-  previewNoUsableLocation: "Sem uma localização confiável agora, vou mostrar uma prévia da linha."
+  lastKnownLocation:
+    "Estou usando sua última localização conhecida porque a atualização falhou agora.",
+  previewNoUsableLocation:
+    "Sem uma localização confiável agora, vou mostrar uma prévia da linha.",
 };
 ```
 
@@ -1524,6 +1754,7 @@ Expected: PASS.
 ### Task 10: QA Documentation and Full Frontend Verification
 
 **Files:**
+
 - Modify: `/home/jackson/sombreado/sombreado-floripa/docs/qa/05-api-integration.md`
 
 - [ ] **Step 1: Add a 05a QA section**

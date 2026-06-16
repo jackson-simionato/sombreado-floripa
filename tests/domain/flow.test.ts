@@ -1,13 +1,17 @@
 import { describe, expect, test } from "vitest";
 
-import { flowReducer, initialFlowState, normalizeFlowError } from "../../src/domain/flow";
+import {
+  flowReducer,
+  initialFlowState,
+  normalizeFlowError,
+} from "../../src/domain/flow";
 import type {
   DirectionChoice,
   FlowState,
   RouteCandidate,
   RouteGeometryResponse,
   TargetAdvisoryRequest,
-  TargetAdvisoryResponse
+  TargetAdvisoryResponse,
 } from "../../src/domain/types";
 
 const location = { lat: -27.6, lng: -48.52 };
@@ -18,14 +22,14 @@ const route: RouteCandidate = {
   code: "124",
   name: "TICEN - Lagoa",
   distanceMeters: 300,
-  directionHints: ["TICEN para Lagoa"]
+  directionHints: ["TICEN para Lagoa"],
 };
 
 const direction: DirectionChoice = {
   routeDirectionId: "direction-a",
   sequence: 1,
   name: "TICEN para Lagoa",
-  departureLabels: ["TICEN", "UFSC"]
+  departureLabels: ["TICEN", "UFSC"],
 };
 
 const geometry: RouteGeometryResponse = {
@@ -37,13 +41,13 @@ const geometry: RouteGeometryResponse = {
       sequence: 1,
       coordinates: [
         [-48.525, -27.601],
-        [-48.522, -27.603]
+        [-48.522, -27.603],
       ],
       bearing_degrees: 90,
       distance_meters: 100,
-      cumulative_distance_meters: 100
-    }
-  ]
+      cumulative_distance_meters: 100,
+    },
+  ],
 };
 
 const advisoryRequest: TargetAdvisoryRequest = {
@@ -53,7 +57,7 @@ const advisoryRequest: TargetAdvisoryRequest = {
   route_direction_id: "direction-a",
   datetime: "2026-05-26T12:00:00.000Z",
   window_minutes: 15,
-  include_remaining: true
+  include_remaining: true,
 };
 
 describe("flow reducer", () => {
@@ -69,15 +73,24 @@ describe("flow reducer", () => {
       requestId,
       result: { kind: "granted", ...location },
       radiusMeters: 1200,
-      limit: 5
+      limit: 5,
     });
     expect(state.screen).toBe("findingNearbyRoutes");
     expect(state.pendingRequests.nearbyRoutes).toBe(requestId);
 
-    state = flowReducer(state, { type: "nearbyRoutesSucceeded", requestId, candidates: [route] });
+    state = flowReducer(state, {
+      type: "nearbyRoutesSucceeded",
+      requestId,
+      candidates: [route],
+    });
     expect(state.screen).toBe("routeCandidateSelection");
 
-    state = flowReducer(state, { type: "routeSelected", route, source: "nearby", requestId: directionsRequestId });
+    state = flowReducer(state, {
+      type: "routeSelected",
+      route,
+      source: "nearby",
+      requestId: directionsRequestId,
+    });
     expect(state.screen).toBe("findingNearbyRoutes");
     expect(state.selectedRoute).toEqual({
       routeId: "route-a",
@@ -85,46 +98,46 @@ describe("flow reducer", () => {
       code: "124",
       name: "TICEN - Lagoa",
       distanceMeters: 300,
-      source: "nearby"
+      source: "nearby",
     });
 
     state = flowReducer(state, {
       type: "directionsSucceeded",
       requestId: directionsRequestId,
-      directions: [direction]
+      directions: [direction],
     });
     expect(state.screen).toBe("directionChoice");
 
     state = flowReducer(state, {
       type: "directionSelected",
       direction,
-      requestId: geometryRequestId
+      requestId: geometryRequestId,
     });
     state = flowReducer(state, {
       type: "geometrySucceeded",
       requestId: geometryRequestId,
       geometry,
-      mapAvailability: "available"
+      mapAvailability: "available",
     });
     expect(state.screen).toBe("routeConfirmation");
 
     state = flowReducer(state, {
       type: "routeConfirmed",
       requestId: advisoryRequestId,
-      advisoryRequest
+      advisoryRequest,
     });
     expect(state.screen).toBe("computingAdvice");
 
     state = flowReducer(state, {
       type: "advisorySucceeded",
       requestId: advisoryRequestId,
-      advice: advisoryResponse("on_route", "right")
+      advice: advisoryResponse("on_route", "right"),
     });
     expect(state.screen).toBe("onboardAdviceResult");
     expect(state.advice).toEqual({
       mode: "onboard",
       directSunExposure: "right",
-      recommendedSeatArea: "left"
+      recommendedSeatArea: "left",
     });
   });
 
@@ -133,18 +146,18 @@ describe("flow reducer", () => {
       type: "manualSearchRequested",
       requestId: "manual-1",
       query: "lagoa",
-      limit: 10
+      limit: 10,
     });
     state = flowReducer(state, {
       type: "manualSearchSucceeded",
       requestId: "manual-1",
-      candidates: [route]
+      candidates: [route],
     });
     state = flowReducer(state, {
       type: "routeSelected",
       route,
       source: "manual",
-      requestId: "directions-1"
+      requestId: "directions-1",
     });
 
     expect(state.screen).toBe("findingNearbyRoutes");
@@ -152,20 +165,19 @@ describe("flow reducer", () => {
     expect(state.manualQuery).toBe("lagoa");
   });
 
-  test.each([
-    ["denied"],
-    ["unavailable"],
-    ["timeout"]
-  ] as const)("maps %s location result to location denied recovery while preserving reason", (kind) => {
-    const state = flowReducer(initialFlowState, {
-      type: "locationResolved",
-      requestId: "nearby-1",
-      result: { kind }
-    });
+  test.each([["denied"], ["unavailable"], ["timeout"]] as const)(
+    "maps %s location result to location denied recovery while preserving reason",
+    (kind) => {
+      const state = flowReducer(initialFlowState, {
+        type: "locationResolved",
+        requestId: "nearby-1",
+        result: { kind },
+      });
 
-    expect(state.screen).toBe("locationDeniedRecovery");
-    expect(state.locationIssue).toBe(kind);
-  });
+      expect(state.screen).toBe("locationDeniedRecovery");
+      expect(state.locationIssue).toBe(kind);
+    }
+  );
 
   test("handles empty nearby, empty manual, and no direction branches distinctly", () => {
     expect(
@@ -173,7 +185,7 @@ describe("flow reducer", () => {
         flowReducer(initialFlowState, {
           type: "locationResolved",
           requestId: "nearby-1",
-          result: { kind: "granted", ...location }
+          result: { kind: "granted", ...location },
         }),
         { type: "nearbyRoutesSucceeded", requestId: "nearby-1", candidates: [] }
       ).screen
@@ -184,7 +196,7 @@ describe("flow reducer", () => {
         flowReducer(initialFlowState, {
           type: "manualSearchRequested",
           requestId: "manual-1",
-          query: "xyz"
+          query: "xyz",
         }),
         { type: "manualSearchSucceeded", requestId: "manual-1", candidates: [] }
       ).screen
@@ -194,13 +206,13 @@ describe("flow reducer", () => {
       type: "routeSelected",
       route,
       source: "nearby",
-      requestId: "directions-1"
+      requestId: "directions-1",
     });
     expect(
       flowReducer(selected, {
         type: "directionsSucceeded",
         requestId: "directions-1",
-        directions: []
+        directions: [],
       }).screen
     ).toBe("routeWithoutDirections");
   });
@@ -212,7 +224,7 @@ describe("flow reducer", () => {
         type: "geometrySucceeded",
         requestId: "geometry-1",
         geometry: { ...geometry, segments: [] },
-        mapAvailability: "available"
+        mapAvailability: "available",
       }).screen
     ).toBe("routeConfirmationFallback");
 
@@ -222,7 +234,7 @@ describe("flow reducer", () => {
         type: "geometrySucceeded",
         requestId: "geometry-2",
         geometry,
-        mapAvailability: "unavailable"
+        mapAvailability: "unavailable",
       }).screen
     ).toBe("routeConfirmationFallback");
   });
@@ -238,9 +250,9 @@ describe("flow reducer", () => {
           kind: "geometry",
           routeId: "route-a",
           routeDirectionId: "direction-a",
-          routeVersionId: "version-a"
-        }
-      })
+          routeVersionId: "version-a",
+        },
+      }),
     });
 
     expect(state.screen).toBe("apiError");
@@ -248,19 +260,29 @@ describe("flow reducer", () => {
       kind: "geometry",
       routeId: "route-a",
       routeDirectionId: "direction-a",
-      routeVersionId: "version-a"
+      routeVersionId: "version-a",
     });
   });
 
   test("maps preview, neutral, and withheld advisory results to distinct screens or advice states", () => {
-    expect(advisoryScreen(advisoryResponse("estimated_route_point", "left"))).toBe("routePreviewAdviceResult");
+    expect(
+      advisoryScreen(advisoryResponse("estimated_route_point", "left"))
+    ).toBe("routePreviewAdviceResult");
 
-    const neutralState = advisoryState(advisoryResponse("on_route", "overhead"));
+    const neutralState = advisoryState(
+      advisoryResponse("on_route", "overhead")
+    );
     expect(neutralState.screen).toBe("onboardAdviceResult");
-    expect(neutralState.advice).toEqual({ mode: "neutralComputed", directSunExposure: "overhead" });
+    expect(neutralState.advice).toEqual({
+      mode: "neutralComputed",
+      directSunExposure: "overhead",
+    });
 
     const noSunState = advisoryState(advisoryResponse("on_route", "none"));
-    expect(noSunState.advice).toEqual({ mode: "neutralComputed", directSunExposure: "none" });
+    expect(noSunState.advice).toEqual({
+      mode: "neutralComputed",
+      directSunExposure: "none",
+    });
 
     expect(
       advisoryScreen({
@@ -269,7 +291,7 @@ describe("flow reducer", () => {
         route_version_id: "version-a",
         route_direction_id: "direction-a",
         requested_at: "2026-05-26T12:00:00.000Z",
-        reason_code: "missing_route_geometry"
+        reason_code: "missing_route_geometry",
       })
     ).toBe("trueWithheld");
   });
@@ -279,9 +301,13 @@ describe("flow reducer", () => {
       flowReducer(initialFlowState, {
         type: "locationResolved",
         requestId: "nearby-current",
-        result: { kind: "granted", ...location }
+        result: { kind: "granted", ...location },
       }),
-      { type: "nearbyRoutesSucceeded", requestId: "nearby-old", candidates: [route] }
+      {
+        type: "nearbyRoutesSucceeded",
+        requestId: "nearby-old",
+        candidates: [route],
+      }
     );
 
     expect(state.screen).toBe("findingNearbyRoutes");
@@ -292,35 +318,39 @@ describe("flow reducer", () => {
     const retryTarget = {
       kind: "manualSearch" as const,
       query: "lagoa",
-      limit: 7
+      limit: 7,
     };
     const state = flowReducer(initialFlowState, {
       type: "retryRequested",
       requestId: "manual-retry",
-      retryTarget
+      retryTarget,
     });
 
     expect(state.pendingRetry).toEqual({
       requestId: "manual-retry",
-      retryTarget
+      retryTarget,
     });
   });
 
   test("invalid direction, confirmation, and advisory transitions do not violate route-before-direction invariant", () => {
-    let state = flowReducer(initialFlowState, { type: "directionSelected", direction, requestId: "geometry-1" });
+    let state = flowReducer(initialFlowState, {
+      type: "directionSelected",
+      direction,
+      requestId: "geometry-1",
+    });
     expect(state).toBe(initialFlowState);
 
     state = flowReducer(initialFlowState, {
       type: "routeConfirmed",
       requestId: "advisory-1",
-      advisoryRequest
+      advisoryRequest,
     });
     expect(state).toBe(initialFlowState);
 
     state = flowReducer(initialFlowState, {
       type: "advisorySucceeded",
       requestId: "advisory-1",
-      advice: advisoryResponse("on_route", "right")
+      advice: advisoryResponse("on_route", "right"),
     });
     expect(state).toBe(initialFlowState);
   });
@@ -328,7 +358,9 @@ describe("flow reducer", () => {
   test("change route and change direction clear stale state while preserving reusable context", () => {
     const fullState = advisoryState(advisoryResponse("on_route", "right"));
 
-    const changedDirection = flowReducer(fullState, { type: "changeDirection" });
+    const changedDirection = flowReducer(fullState, {
+      type: "changeDirection",
+    });
     expect(changedDirection.screen).toBe("directionChoice");
     expect(changedDirection.selectedRoute).toEqual(fullState.selectedRoute);
     expect(changedDirection.selectedDirection).toBeUndefined();
@@ -352,7 +384,7 @@ describe("flow reducer", () => {
         manualQuery: "lagoa",
         manualCandidates: [route],
         selectedRoute: { ...route, source: "manual" },
-        directionChoices: [direction]
+        directionChoices: [direction],
       },
       { type: "changeRoute" }
     );
@@ -367,7 +399,7 @@ describe("flow reducer", () => {
       type: "routeConfirmed",
       requestId: "advisory-2",
       advisoryRequest,
-      referenceLocation: { lat: -27.61, lng: -48.51 }
+      referenceLocation: { lat: -27.61, lng: -48.51 },
     });
 
     expect(state.screen).toBe("computingAdvice");
@@ -383,7 +415,7 @@ function selectDirection(requestId: string): FlowState {
       latestLocation: location,
       nearbyCandidates: [route],
       selectedRoute: { ...route, source: "nearby" },
-      directionChoices: [direction]
+      directionChoices: [direction],
     },
     { type: "directionSelected", direction, requestId }
   );
@@ -395,17 +427,17 @@ function advisoryState(advice: TargetAdvisoryResponse): FlowState {
     type: "geometrySucceeded",
     requestId: "geometry-1",
     geometry,
-    mapAvailability: "available"
+    mapAvailability: "available",
   });
   state = flowReducer(state, {
     type: "routeConfirmed",
     requestId: "advisory-1",
-    advisoryRequest
+    advisoryRequest,
   });
   return flowReducer(state, {
     type: "advisorySucceeded",
     requestId: "advisory-1",
-    advice
+    advice,
   });
 }
 
@@ -415,7 +447,9 @@ function advisoryScreen(advice: TargetAdvisoryResponse): FlowState["screen"] {
 
 function advisoryResponse(
   advisoryContext: "on_route" | "estimated_route_point",
-  dominantDirection: NonNullable<TargetAdvisoryResponse["upcoming_window"]>["dominant_direction"]
+  dominantDirection: NonNullable<
+    TargetAdvisoryResponse["upcoming_window"]
+  >["dominant_direction"]
 ): TargetAdvisoryResponse {
   return {
     status: "advisory",
@@ -428,8 +462,9 @@ function advisoryResponse(
       segment_sequence: 1,
       lat: -27.6,
       lng: -48.52,
-      distance_from_route_meters: advisoryContext === "estimated_route_point" ? 55 : 5,
-      cumulative_distance_meters: 100
+      distance_from_route_meters:
+        advisoryContext === "estimated_route_point" ? 55 : 5,
+      cumulative_distance_meters: 100,
     },
     upcoming_window: {
       total_distance_meters: 800,
@@ -440,8 +475,8 @@ function advisoryResponse(
         front: dominantDirection === "front" ? 800 : 0,
         back: dominantDirection === "back" ? 800 : 0,
         overhead: dominantDirection === "overhead" ? 800 : 0,
-        none: dominantDirection === "none" ? 800 : 0
-      }
-    }
+        none: dominantDirection === "none" ? 800 : 0,
+      },
+    },
   };
 }

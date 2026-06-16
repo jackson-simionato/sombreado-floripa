@@ -1,4 +1,9 @@
-import { buildTargetAdvisoryRequest, toDirectionChoices, toRouteCandidates, toUiAdvice } from "../domain/adapters";
+import {
+  buildTargetAdvisoryRequest,
+  toDirectionChoices,
+  toRouteCandidates,
+  toUiAdvice,
+} from "../domain/adapters";
 import { initialFlowState } from "../domain/flow";
 import type {
   FlowState,
@@ -7,9 +12,15 @@ import type {
   MockScenarioId,
   PrototypeScenarioId,
   RetryTarget,
-  TargetAdvisoryResponse
+  TargetAdvisoryResponse,
 } from "../domain/types";
-import { fixtureIds, mockAdvisories, routeDirectionsByRouteId, routeGeometryByDirectionId, routesResponse } from "./fixtures";
+import {
+  fixtureIds,
+  mockAdvisories,
+  routeDirectionsByRouteId,
+  routeGeometryByDirectionId,
+  routesResponse,
+} from "./fixtures";
 
 export type PrototypeScenarioDefinition = {
   id: PrototypeScenarioId;
@@ -25,7 +36,9 @@ export type PrototypeScenarioDefinition = {
 
 const nearbyCandidates = toRouteCandidates(
   {
-    routes: routesResponse.routes.filter((route) => route.route_id !== fixtureIds.routes.missingGeometry)
+    routes: routesResponse.routes.filter(
+      (route) => route.route_id !== fixtureIds.routes.missingGeometry
+    ),
   },
   { source: "nearby" }
 );
@@ -33,37 +46,51 @@ const nearbyCandidates = toRouteCandidates(
 const manualCandidates = toRouteCandidates(
   {
     routes: routesResponse.routes.filter(
-      (route) => route.route_id === fixtureIds.routes.lagoa || route.route_id === fixtureIds.routes.missingGeometry
-    )
+      (route) =>
+        route.route_id === fixtureIds.routes.lagoa ||
+        route.route_id === fixtureIds.routes.missingGeometry
+    ),
   },
   { source: "manual" }
 );
 
 const selectedNearbyRoute = toSelectedRoute(nearbyCandidates[0], "nearby");
 const selectedMissingGeometryRoute = toSelectedRoute(
-  manualCandidates.find((route) => route.routeId === fixtureIds.routes.missingGeometry) ?? manualCandidates[0],
+  manualCandidates.find(
+    (route) => route.routeId === fixtureIds.routes.missingGeometry
+  ) ?? manualCandidates[0],
   "manual"
 );
 
-const nearbyDirections = toDirectionChoices(routeDirectionsByRouteId[fixtureIds.routes.lagoa]);
+const nearbyDirections = toDirectionChoices(
+  routeDirectionsByRouteId[fixtureIds.routes.lagoa]
+);
 const selectedDirection = toSelectedDirection(nearbyDirections[0]);
-const missingGeometryDirections = toDirectionChoices(routeDirectionsByRouteId[fixtureIds.routes.missingGeometry]);
-const selectedMissingGeometryDirection = toSelectedDirection(missingGeometryDirections[0]);
+const missingGeometryDirections = toDirectionChoices(
+  routeDirectionsByRouteId[fixtureIds.routes.missingGeometry]
+);
+const selectedMissingGeometryDirection = toSelectedDirection(
+  missingGeometryDirections[0]
+);
 
-const routeGeometry = routeGeometryByDirectionId[fixtureIds.routeDirections.lagoaOutbound];
+const routeGeometry =
+  routeGeometryByDirectionId[fixtureIds.routeDirections.lagoaOutbound];
 const advisoryRequest = buildTargetAdvisoryRequest({
   lat: -27.5969,
   lng: -48.5488,
   routeVersionId: selectedNearbyRoute.routeVersionId,
   routeDirectionId: selectedDirection.routeDirectionId,
-  now: () => new Date("2026-05-26T12:00:00.000Z")
+  now: () => new Date("2026-05-26T12:00:00.000Z"),
 });
 
 export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
   {
     id: "location-request",
     label: "Localização: pedir acesso",
-    seed: { state: cloneState(initialFlowState), mockScenarioId: "nearby-routes" }
+    seed: {
+      state: cloneState(initialFlowState),
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "location-finding-nearby",
@@ -72,10 +99,10 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
       state: buildState({
         screen: "findingNearbyRoutes",
         requestStatus: "loading",
-        latestLocation: { lat: -27.5969, lng: -48.5488 }
+        latestLocation: { lat: -27.5969, lng: -48.5488 },
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "location-slow-loading",
@@ -84,10 +111,10 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
       state: buildState({
         screen: "slowLoadingNotice",
         requestStatus: "loading",
-        latestLocation: { lat: -27.5969, lng: -48.5488 }
+        latestLocation: { lat: -27.5969, lng: -48.5488 },
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "location-denied",
@@ -96,10 +123,10 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
       state: buildState({
         screen: "locationDeniedRecovery",
         requestStatus: "error",
-        locationIssue: "denied"
+        locationIssue: "denied",
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "routes-nearby",
@@ -109,10 +136,10 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
         screen: "routeCandidateSelection",
         requestStatus: "success",
         latestLocation: { lat: -27.5969, lng: -48.5488 },
-        nearbyCandidates
+        nearbyCandidates,
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "routes-none-nearby",
@@ -121,10 +148,10 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
       state: buildState({
         screen: "noNearbyRoutes",
         requestStatus: "success",
-        latestLocation: { lat: -27.5969, lng: -48.5488 }
+        latestLocation: { lat: -27.5969, lng: -48.5488 },
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "manual-search",
@@ -133,11 +160,11 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
       state: buildState({
         screen: "manualRouteSearch",
         requestStatus: "success",
-        manualCandidates
+        manualCandidates,
       }),
       manualQueryDraft: "lagoa",
-      mockScenarioId: "manual-search"
-    }
+      mockScenarioId: "manual-search",
+    },
   },
   {
     id: "manual-search-empty",
@@ -145,11 +172,11 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
     seed: {
       state: buildState({
         screen: "noManualResults",
-        requestStatus: "success"
+        requestStatus: "success",
       }),
       manualQueryDraft: "xpto",
-      mockScenarioId: "manual-search"
-    }
+      mockScenarioId: "manual-search",
+    },
   },
   {
     id: "direction-choice",
@@ -160,10 +187,10 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
         requestStatus: "success",
         nearbyCandidates,
         selectedRoute: selectedNearbyRoute,
-        directionChoices: nearbyDirections
+        directionChoices: nearbyDirections,
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "direction-unavailable",
@@ -174,12 +201,16 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
         requestStatus: "success",
         nearbyCandidates,
         selectedRoute: toSelectedRoute(
-          toRouteCandidates({ routes: routesResponse.routes.filter((route) => route.route_id === fixtureIds.routes.noDirections) })[0],
+          toRouteCandidates({
+            routes: routesResponse.routes.filter(
+              (route) => route.route_id === fixtureIds.routes.noDirections
+            ),
+          })[0],
           "nearby"
-        )
+        ),
       }),
-      mockScenarioId: "route-no-directions"
-    }
+      mockScenarioId: "route-no-directions",
+    },
   },
   {
     id: "confirmation",
@@ -192,10 +223,10 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
         selectedRoute: selectedNearbyRoute,
         selectedDirection,
         directionChoices: nearbyDirections,
-        geometry: routeGeometry
+        geometry: routeGeometry,
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "confirmation-fallback",
@@ -208,12 +239,15 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
         selectedRoute: selectedMissingGeometryRoute,
         selectedDirection: selectedMissingGeometryDirection,
         directionChoices: missingGeometryDirections,
-        geometry: routeGeometryByDirectionId[fixtureIds.routeDirections.missingGeometryOutbound],
-        mapAvailability: "available"
+        geometry:
+          routeGeometryByDirectionId[
+            fixtureIds.routeDirections.missingGeometryOutbound
+          ],
+        mapAvailability: "available",
       }),
       manualQueryDraft: "lagoa",
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "advice-computing",
@@ -227,59 +261,80 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
         selectedRoute: selectedNearbyRoute,
         selectedDirection,
         directionChoices: nearbyDirections,
-        advisoryRequest
+        advisoryRequest,
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "advice-onboard-left",
     label: "Conselho: a bordo esquerda",
     seed: {
-      state: adviceState("onboardAdviceResult", mockAdvisories.advisoryExposureRightRecommendsLeft)
-    }
+      state: adviceState(
+        "onboardAdviceResult",
+        mockAdvisories.advisoryExposureRightRecommendsLeft
+      ),
+    },
   },
   {
     id: "advice-onboard-right",
     label: "Conselho: a bordo direita",
     seed: {
-      state: adviceState("onboardAdviceResult", mockAdvisories.advisoryExposureLeftRecommendsRight)
-    }
+      state: adviceState(
+        "onboardAdviceResult",
+        mockAdvisories.advisoryExposureLeftRecommendsRight
+      ),
+    },
   },
   {
     id: "advice-onboard-front",
     label: "Conselho: a bordo frente",
     seed: {
-      state: adviceState("onboardAdviceResult", mockAdvisories.advisoryExposureBackRecommendsFront)
-    }
+      state: adviceState(
+        "onboardAdviceResult",
+        mockAdvisories.advisoryExposureBackRecommendsFront
+      ),
+    },
   },
   {
     id: "advice-onboard-back",
     label: "Conselho: a bordo trás",
     seed: {
-      state: adviceState("onboardAdviceResult", mockAdvisories.advisoryExposureFrontRecommendsBack)
-    }
+      state: adviceState(
+        "onboardAdviceResult",
+        mockAdvisories.advisoryExposureFrontRecommendsBack
+      ),
+    },
   },
   {
     id: "advice-neutral-overhead",
     label: "Conselho: neutro sol alto",
     seed: {
-      state: adviceState("onboardAdviceResult", mockAdvisories.advisoryExposureOverheadNeutral)
-    }
+      state: adviceState(
+        "onboardAdviceResult",
+        mockAdvisories.advisoryExposureOverheadNeutral
+      ),
+    },
   },
   {
     id: "advice-neutral-none",
     label: "Conselho: neutro sem sol direto",
     seed: {
-      state: adviceState("onboardAdviceResult", mockAdvisories.advisoryExposureNoneNeutral)
-    }
+      state: adviceState(
+        "onboardAdviceResult",
+        mockAdvisories.advisoryExposureNoneNeutral
+      ),
+    },
   },
   {
     id: "advice-preview",
     label: "Conselho: prévia",
     seed: {
-      state: adviceState("routePreviewAdviceResult", mockAdvisories.advisoryPreviewLeft)
-    }
+      state: adviceState(
+        "routePreviewAdviceResult",
+        mockAdvisories.advisoryPreviewLeft
+      ),
+    },
   },
   {
     id: "advice-withheld",
@@ -292,10 +347,10 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
         selectedDirection,
         directionChoices: nearbyDirections,
         advice: toUiAdvice(mockAdvisories.advisoryWithheld),
-        advisoryRequest
+        advisoryRequest,
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "error-nearby-routes",
@@ -307,11 +362,11 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
           lat: -27.5969,
           lng: -48.5488,
           radiusMeters: 1200,
-          limit: 5
-        }
+          limit: 5,
+        },
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "error-manual-search",
@@ -319,11 +374,11 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
     seed: {
       state: apiErrorState({
         manualQuery: "lagoa",
-        retryTarget: { kind: "manualSearch", query: "lagoa", limit: 8 }
+        retryTarget: { kind: "manualSearch", query: "lagoa", limit: 8 },
       }),
       manualQueryDraft: "lagoa",
-      mockScenarioId: "manual-search"
-    }
+      mockScenarioId: "manual-search",
+    },
   },
   {
     id: "error-directions",
@@ -331,10 +386,13 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
     seed: {
       state: apiErrorState({
         selectedRoute: selectedNearbyRoute,
-        retryTarget: { kind: "directions", routeId: selectedNearbyRoute.routeId }
+        retryTarget: {
+          kind: "directions",
+          routeId: selectedNearbyRoute.routeId,
+        },
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "error-geometry",
@@ -348,11 +406,11 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
           kind: "geometry",
           routeId: selectedNearbyRoute.routeId,
           routeDirectionId: selectedDirection.routeDirectionId,
-          routeVersionId: selectedNearbyRoute.routeVersionId
-        }
+          routeVersionId: selectedNearbyRoute.routeVersionId,
+        },
       }),
-      mockScenarioId: "nearby-routes"
-    }
+      mockScenarioId: "nearby-routes",
+    },
   },
   {
     id: "error-advice",
@@ -365,19 +423,27 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
         advisoryRequest,
         retryTarget: {
           kind: "advisory",
-          request: advisoryRequest
-        }
+          request: advisoryRequest,
+        },
       }),
-      mockScenarioId: "nearby-routes"
-    }
-  }
+      mockScenarioId: "nearby-routes",
+    },
+  },
 ] as const;
 
-export function getPrototypeScenario(id: PrototypeScenarioId): PrototypeScenarioDefinition {
-  return prototypeScenarios.find((scenario) => scenario.id === id) ?? prototypeScenarios[0];
+export function getPrototypeScenario(
+  id: PrototypeScenarioId
+): PrototypeScenarioDefinition {
+  return (
+    prototypeScenarios.find((scenario) => scenario.id === id) ??
+    prototypeScenarios[0]
+  );
 }
 
-function adviceState(screen: FlowState["screen"], response: TargetAdvisoryResponse): FlowState {
+function adviceState(
+  screen: FlowState["screen"],
+  response: TargetAdvisoryResponse
+): FlowState {
   return buildState({
     screen,
     requestStatus: "success",
@@ -386,7 +452,7 @@ function adviceState(screen: FlowState["screen"], response: TargetAdvisoryRespon
     selectedDirection,
     directionChoices: nearbyDirections,
     advice: toUiAdvice(response),
-    advisoryRequest
+    advisoryRequest,
   });
 }
 
@@ -402,8 +468,10 @@ function apiErrorState(input: {
     screen: "apiError",
     requestStatus: "error",
     manualQuery: input.manualQuery ?? "",
-    nearbyCandidates: input.selectedRoute?.source === "nearby" ? nearbyCandidates : [],
-    manualCandidates: input.selectedRoute?.source === "manual" ? manualCandidates : [],
+    nearbyCandidates:
+      input.selectedRoute?.source === "nearby" ? nearbyCandidates : [],
+    manualCandidates:
+      input.selectedRoute?.source === "manual" ? manualCandidates : [],
     selectedRoute: input.selectedRoute,
     selectedDirection: input.selectedDirection,
     directionChoices: input.directionChoices ?? [],
@@ -411,27 +479,48 @@ function apiErrorState(input: {
     error: {
       kind: "api",
       message: "Mock API failure",
-      retryTarget: input.retryTarget
-    }
+      retryTarget: input.retryTarget,
+    },
   });
 }
 
 function buildState(overrides: Partial<FlowState>): FlowState {
   return cloneState({
     ...initialFlowState,
-    ...overrides
+    ...overrides,
   });
 }
 
 function cloneState(state: FlowState): FlowState {
   return {
     ...state,
-    latestLocation: state.latestLocation === undefined ? undefined : { ...state.latestLocation },
-    nearbyCandidates: state.nearbyCandidates.map((candidate) => ({ ...candidate, directionHints: [...candidate.directionHints] })),
-    manualCandidates: state.manualCandidates.map((candidate) => ({ ...candidate, directionHints: [...candidate.directionHints] })),
-    directionChoices: state.directionChoices.map((direction) => ({ ...direction, departureLabels: [...direction.departureLabels] })),
-    selectedRoute: state.selectedRoute === undefined ? undefined : { ...state.selectedRoute },
-    selectedDirection: state.selectedDirection === undefined ? undefined : { ...state.selectedDirection, departureLabels: [...state.selectedDirection.departureLabels] },
+    latestLocation:
+      state.latestLocation === undefined
+        ? undefined
+        : { ...state.latestLocation },
+    nearbyCandidates: state.nearbyCandidates.map((candidate) => ({
+      ...candidate,
+      directionHints: [...candidate.directionHints],
+    })),
+    manualCandidates: state.manualCandidates.map((candidate) => ({
+      ...candidate,
+      directionHints: [...candidate.directionHints],
+    })),
+    directionChoices: state.directionChoices.map((direction) => ({
+      ...direction,
+      departureLabels: [...direction.departureLabels],
+    })),
+    selectedRoute:
+      state.selectedRoute === undefined
+        ? undefined
+        : { ...state.selectedRoute },
+    selectedDirection:
+      state.selectedDirection === undefined
+        ? undefined
+        : {
+            ...state.selectedDirection,
+            departureLabels: [...state.selectedDirection.departureLabels],
+          },
     geometry:
       state.geometry === undefined
         ? undefined
@@ -439,11 +528,14 @@ function cloneState(state: FlowState): FlowState {
             ...state.geometry,
             segments: state.geometry.segments.map((segment) => ({
               ...segment,
-              coordinates: segment.coordinates.map(([lng, lat]) => [lng, lat])
-            }))
+              coordinates: segment.coordinates.map(([lng, lat]) => [lng, lat]),
+            })),
           },
     advice: state.advice === undefined ? undefined : { ...state.advice },
-    advisoryRequest: state.advisoryRequest === undefined ? undefined : { ...state.advisoryRequest },
+    advisoryRequest:
+      state.advisoryRequest === undefined
+        ? undefined
+        : { ...state.advisoryRequest },
     error:
       state.error === undefined
         ? undefined
@@ -453,8 +545,11 @@ function cloneState(state: FlowState): FlowState {
               state.error.retryTarget === undefined
                 ? undefined
                 : state.error.retryTarget.kind === "advisory"
-                  ? { kind: "advisory", request: { ...state.error.retryTarget.request } }
-                  : { ...state.error.retryTarget }
+                  ? {
+                      kind: "advisory",
+                      request: { ...state.error.retryTarget.request },
+                    }
+                  : { ...state.error.retryTarget },
           },
     pendingRetry:
       state.pendingRetry === undefined
@@ -463,14 +558,22 @@ function cloneState(state: FlowState): FlowState {
             requestId: state.pendingRetry.requestId,
             retryTarget:
               state.pendingRetry.retryTarget.kind === "advisory"
-                ? { kind: "advisory", request: { ...state.pendingRetry.retryTarget.request } }
-                : { ...state.pendingRetry.retryTarget }
+                ? {
+                    kind: "advisory",
+                    request: { ...state.pendingRetry.retryTarget.request },
+                  }
+                : { ...state.pendingRetry.retryTarget },
           },
-    pendingRequests: { ...state.pendingRequests }
+    pendingRequests: { ...state.pendingRequests },
   };
 }
 
-function toSelectedRoute(route: NonNullable<FlowState["selectedRoute"]> | (typeof nearbyCandidates)[number], source: "nearby" | "manual") {
+function toSelectedRoute(
+  route:
+    | NonNullable<FlowState["selectedRoute"]>
+    | (typeof nearbyCandidates)[number],
+  source: "nearby" | "manual"
+) {
   if ("source" in route) {
     return { ...route };
   }
@@ -481,7 +584,9 @@ function toSelectedRoute(route: NonNullable<FlowState["selectedRoute"]> | (typeo
     code: route.code,
     name: route.name,
     source,
-    ...(route.distanceMeters === undefined ? {} : { distanceMeters: route.distanceMeters })
+    ...(route.distanceMeters === undefined
+      ? {}
+      : { distanceMeters: route.distanceMeters }),
   };
 }
 
@@ -490,6 +595,6 @@ function toSelectedDirection(direction: (typeof nearbyDirections)[number]) {
     routeDirectionId: direction.routeDirectionId,
     sequence: direction.sequence,
     name: direction.name,
-    departureLabels: [...direction.departureLabels]
+    departureLabels: [...direction.departureLabels],
   };
 }

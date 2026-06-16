@@ -43,14 +43,19 @@
 .sideShade {
   border: 2px solid var(--color-shade-500);
   background:
-    linear-gradient(135deg, rgba(78, 156, 181, 0.22) 25%, transparent 25%) 0 0 / 12px 12px,
+    linear-gradient(135deg, rgba(78, 156, 181, 0.22) 25%, transparent 25%) 0 0 /
+      12px 12px,
     var(--color-shade-100);
 }
 
 .sideSun {
   border: 2px solid var(--color-sun-500);
   background:
-    repeating-linear-gradient(45deg, rgba(248, 184, 78, 0.3) 0 5px, transparent 5px 11px),
+    repeating-linear-gradient(
+      45deg,
+      rgba(248, 184, 78, 0.3) 0 5px,
+      transparent 5px 11px
+    ),
     var(--color-sun-100);
 }
 

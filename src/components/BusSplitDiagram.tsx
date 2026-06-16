@@ -4,7 +4,10 @@ import styles from "./BusSplitDiagram.module.css";
 
 export function BusSplitDiagram() {
   return (
-    <figure className={styles.figure} aria-label={copy.busSplitDiagram.accessibleSummary}>
+    <figure
+      className={styles.figure}
+      aria-label={copy.busSplitDiagram.accessibleSummary}
+    >
       <div className={styles.frontArrow} aria-hidden="true">
         ↑ <span>{copy.busSplitDiagram.front}</span>
       </div>
@@ -19,7 +22,9 @@ export function BusSplitDiagram() {
           <strong>{copy.busSplitDiagram.sunnySide}</strong>
         </div>
       </div>
-      <figcaption className={styles.caption}>{copy.busSplitDiagram.accessibleSummary}</figcaption>
+      <figcaption className={styles.caption}>
+        {copy.busSplitDiagram.accessibleSummary}
+      </figcaption>
     </figure>
   );
 }

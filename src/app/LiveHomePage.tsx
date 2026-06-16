@@ -3,7 +3,10 @@
 import { FormEvent, useMemo, useState } from "react";
 
 import { createRouteCandidatesClient } from "../api/routeCandidates";
-import type { LiveApiError, RouteCandidateTransport } from "../api/routeCandidates";
+import type {
+  LiveApiError,
+  RouteCandidateTransport,
+} from "../api/routeCandidates";
 import { AppShell } from "../components/AppShell";
 import { BusSplitDiagram } from "../components/BusSplitDiagram";
 import { Button } from "../components/Button";
@@ -15,7 +18,14 @@ type LiveHomePageProps = {
   apiBaseUrl?: string;
 };
 
-type LiveMode = "idle" | "manual" | "loading" | "results" | "empty" | "error" | "selectedUnsupported";
+type LiveMode =
+  | "idle"
+  | "manual"
+  | "loading"
+  | "results"
+  | "empty"
+  | "error"
+  | "selectedUnsupported";
 
 type LiveState = {
   mode: LiveMode;
@@ -26,7 +36,7 @@ type LiveState = {
 
 const initialState: LiveState = {
   mode: "idle",
-  candidates: []
+  candidates: [],
 };
 
 export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
@@ -35,7 +45,10 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
   const [manualQuery, setManualQuery] = useState("");
 
   const client = useMemo(() => {
-    if (normalizedApiBaseUrl === undefined || normalizedApiBaseUrl.length === 0) {
+    if (
+      normalizedApiBaseUrl === undefined ||
+      normalizedApiBaseUrl.length === 0
+    ) {
       return undefined;
     }
 
@@ -51,10 +64,13 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
               Configuração da API ausente
             </h1>
             <p className={styles.body}>
-              O Sombreado Floripa precisa de NEXT_PUBLIC_API_URL para carregar dados ao vivo. Configure a URL pública do
-              sombreado-service e recarregue a página.
+              O Sombreado Floripa precisa de NEXT_PUBLIC_API_URL para carregar
+              dados ao vivo. Configure a URL pública do sombreado-service e
+              recarregue a página.
             </p>
-            <p className={styles.metaText}>As informações das linhas não estão disponíveis neste ambiente.</p>
+            <p className={styles.metaText}>
+              As informações das linhas não estão disponíveis neste ambiente.
+            </p>
           </section>
         </div>
       </AppShell>
@@ -74,13 +90,20 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
     setState({ mode: "loading", candidates: [] });
 
     try {
-      const response = await routeCandidatesClient.searchRouteCandidates({ query, limit: 8 });
-      setState(response.routes.length === 0 ? { mode: "empty", candidates: [] } : { mode: "results", candidates: response.routes });
+      const response = await routeCandidatesClient.searchRouteCandidates({
+        query,
+        limit: 8,
+      });
+      setState(
+        response.routes.length === 0
+          ? { mode: "empty", candidates: [] }
+          : { mode: "results", candidates: response.routes }
+      );
     } catch (error) {
       setState({
         mode: "error",
         candidates: [],
-        errorMessage: liveErrorMessage(error)
+        errorMessage: liveErrorMessage(error),
       });
     }
   }
@@ -94,14 +117,18 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
         radiusMeters: 1200,
-        limit: 5
+        limit: 5,
       });
-      setState(response.routes.length === 0 ? { mode: "empty", candidates: [] } : { mode: "results", candidates: response.routes });
+      setState(
+        response.routes.length === 0
+          ? { mode: "empty", candidates: [] }
+          : { mode: "results", candidates: response.routes }
+      );
     } catch (error) {
       setState({
         mode: "error",
         candidates: [],
-        errorMessage: liveErrorMessage(error)
+        errorMessage: liveErrorMessage(error),
       });
     }
   }
@@ -111,7 +138,11 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
   }
 
   function selectRoute(route: RouteCandidateTransport) {
-    setState({ mode: "selectedUnsupported", candidates: state.candidates, selectedRoute: route });
+    setState({
+      mode: "selectedUnsupported",
+      candidates: state.candidates,
+      selectedRoute: route,
+    });
   }
 
   let content;
@@ -127,14 +158,22 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
             <h1 id="screen-title" className={styles.title}>
               De que lado sentar?
             </h1>
-            <p className={styles.body}>Encontre a melhor lateral do ônibus pelo sol direto.</p>
+            <p className={styles.body}>
+              Encontre a melhor lateral do ônibus pelo sol direto.
+            </p>
           </div>
           <BusSplitDiagram />
         </section>
-        <p className={styles.metaText}>A localização só é usada para encontrar linhas perto de você.</p>
+        <p className={styles.metaText}>
+          A localização só é usada para encontrar linhas perto de você.
+        </p>
       </>
     );
-    stickyPrimary = <Button onClick={() => void requestLocation()}>Usar minha localização</Button>;
+    stickyPrimary = (
+      <Button onClick={() => void requestLocation()}>
+        Usar minha localização
+      </Button>
+    );
     stickySecondary = (
       <Button onClick={openManualSearch} variant="secondary">
         Procurar linha manualmente
@@ -147,7 +186,10 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
           Procurar linha
         </h1>
         <p className={styles.body}>Digite o número ou nome da linha.</p>
-        <form className={styles.stack} onSubmit={(event) => void searchManually(event)}>
+        <form
+          className={styles.stack}
+          onSubmit={(event) => void searchManually(event)}
+        >
           <label className={styles.searchField}>
             <span className={styles.searchLabel}>Linha</span>
             <input
@@ -177,7 +219,9 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
           <h1 id="screen-title" className={styles.titleCompact}>
             Buscando linhas ao vivo...
           </h1>
-          <p className={styles.body}>Estou carregando as linhas pelo sombreado-service.</p>
+          <p className={styles.body}>
+            Estou carregando as linhas pelo sombreado-service.
+          </p>
         </div>
       </section>
     );
@@ -187,10 +231,17 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
         <h1 id="screen-title" className={styles.titleCompact}>
           Escolha sua linha
         </h1>
-        <p className={styles.body}>Linhas carregadas ao vivo. O sentido entra na próxima etapa da integração.</p>
+        <p className={styles.body}>
+          Linhas carregadas ao vivo. O sentido entra na próxima etapa da
+          integração.
+        </p>
         <div className={styles.list}>
           {state.candidates.map((route) => (
-            <LiveRouteCard key={route.routeId} route={route} onSelect={() => selectRoute(route)} />
+            <LiveRouteCard
+              key={route.routeId}
+              route={route}
+              onSelect={() => selectRoute(route)}
+            />
           ))}
         </div>
       </section>
@@ -206,10 +257,14 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
         <h1 id="screen-title" className={styles.titleCompact}>
           Nenhuma linha encontrada
         </h1>
-        <p className={styles.body}>Tente buscar pelo número, terminal ou destino da linha.</p>
+        <p className={styles.body}>
+          Tente buscar pelo número, terminal ou destino da linha.
+        </p>
       </section>
     );
-    stickyPrimary = <Button onClick={openManualSearch}>Procurar linha manualmente</Button>;
+    stickyPrimary = (
+      <Button onClick={openManualSearch}>Procurar linha manualmente</Button>
+    );
     stickySecondary = (
       <Button onClick={() => void requestLocation()} variant="secondary">
         Usar minha localização
@@ -221,10 +276,14 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
         <h1 id="screen-title" className={styles.titleCompact}>
           Algo deu errado
         </h1>
-        <p className={styles.body}>{state.errorMessage ?? "Não consegui carregar as linhas agora."}</p>
+        <p className={styles.body}>
+          {state.errorMessage ?? "Não consegui carregar as linhas agora."}
+        </p>
       </section>
     );
-    stickyPrimary = <Button onClick={openManualSearch}>Procurar linha manualmente</Button>;
+    stickyPrimary = (
+      <Button onClick={openManualSearch}>Procurar linha manualmente</Button>
+    );
     stickySecondary = (
       <Button onClick={() => void requestLocation()} variant="secondary">
         Tentar localização de novo
@@ -232,7 +291,9 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
     );
   } else if (state.mode === "selectedUnsupported") {
     const routeLabel =
-      state.selectedRoute === undefined ? undefined : `${state.selectedRoute.routeCode} ${state.selectedRoute.routeName}`;
+      state.selectedRoute === undefined
+        ? undefined
+        : `${state.selectedRoute.routeCode} ${state.selectedRoute.routeName}`;
 
     content = (
       <section className={styles.stack} aria-labelledby="screen-title">
@@ -240,8 +301,8 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
           Linha carregada ao vivo
         </h1>
         <p className={styles.body}>
-          Ainda não é possível continuar com dados ao vivo neste ambiente. A próxima etapa vai conectar sentido, confirmação
-          e conselho.
+          Ainda não é possível continuar com dados ao vivo neste ambiente. A
+          próxima etapa vai conectar sentido, confirmação e conselho.
         </p>
         {routeLabel === undefined ? null : (
           <div className={styles.summaryPanel}>
@@ -252,7 +313,11 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
       </section>
     );
     stickyPrimary = (
-      <Button onClick={() => setState({ mode: "results", candidates: state.candidates })}>
+      <Button
+        onClick={() =>
+          setState({ mode: "results", candidates: state.candidates })
+        }
+      >
         Voltar para linhas
       </Button>
     );
@@ -274,7 +339,13 @@ export function LiveHomePage({ apiBaseUrl }: LiveHomePageProps) {
   );
 }
 
-function LiveRouteCard({ onSelect, route }: { onSelect(): void; route: RouteCandidateTransport }) {
+function LiveRouteCard({
+  onSelect,
+  route,
+}: {
+  onSelect(): void;
+  route: RouteCandidateTransport;
+}) {
   return (
     <button
       aria-label={`Selecionar linha ${route.routeCode} ${route.routeName}`}
@@ -282,7 +353,9 @@ function LiveRouteCard({ onSelect, route }: { onSelect(): void; route: RouteCand
       onClick={onSelect}
       type="button"
     >
-      <strong>{route.routeCode} {route.routeName}</strong>
+      <strong>
+        {route.routeCode} {route.routeName}
+      </strong>
       <span>{liveRouteMeta(route)}</span>
     </button>
   );
@@ -312,7 +385,7 @@ function getCurrentPosition(): Promise<GeolocationPosition> {
     navigator.geolocation.getCurrentPosition(resolve, reject, {
       enableHighAccuracy: true,
       maximumAge: 30_000,
-      timeout: 10_000
+      timeout: 10_000,
     });
   });
 }
@@ -323,7 +396,8 @@ function liveErrorMessage(error: unknown): string {
   }
 
   if (
-    (typeof GeolocationPositionError !== "undefined" && error instanceof GeolocationPositionError) ||
+    (typeof GeolocationPositionError !== "undefined" &&
+      error instanceof GeolocationPositionError) ||
     (typeof error === "object" && error !== null && "code" in error)
   ) {
     return "Não consegui acessar sua localização agora. Você ainda pode procurar a linha manualmente.";

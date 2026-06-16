@@ -34,7 +34,11 @@
 
 .busNeutral {
   background:
-    linear-gradient(180deg, rgba(255, 249, 238, 0.92), rgba(255, 255, 255, 0.98)),
+    linear-gradient(
+      180deg,
+      rgba(255, 249, 238, 0.92),
+      rgba(255, 255, 255, 0.98)
+    ),
     var(--color-paper);
 }
 
@@ -68,7 +72,8 @@
 .deckRecommended {
   border: 2px solid var(--color-shade-500);
   background:
-    linear-gradient(135deg, rgba(78, 156, 181, 0.2) 25%, transparent 25%) 0 0 / 12px 12px,
+    linear-gradient(135deg, rgba(78, 156, 181, 0.2) 25%, transparent 25%) 0 0 /
+      12px 12px,
     var(--color-shade-100);
 }
 
@@ -76,14 +81,22 @@
 .deckSunny {
   border: 2px solid var(--color-sun-500);
   background:
-    repeating-linear-gradient(45deg, rgba(248, 184, 78, 0.28) 0 5px, transparent 5px 11px),
+    repeating-linear-gradient(
+      45deg,
+      rgba(248, 184, 78, 0.28) 0 5px,
+      transparent 5px 11px
+    ),
     var(--color-sun-100);
 }
 
 .zoneNeutral {
   border: 2px solid var(--color-line);
   background:
-    repeating-linear-gradient(135deg, rgba(107, 98, 88, 0.08) 0 6px, transparent 6px 12px),
+    repeating-linear-gradient(
+      135deg,
+      rgba(107, 98, 88, 0.08) 0 6px,
+      transparent 6px 12px
+    ),
     #fbf8f2;
 }
 

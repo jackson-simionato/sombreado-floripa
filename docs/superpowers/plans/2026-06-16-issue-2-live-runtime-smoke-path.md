@@ -24,6 +24,7 @@
 ### Task 1: Add Route-Candidate API Tests
 
 **Files:**
+
 - Create: `tests/api/routeCandidates.test.ts`
 - Later create: `src/api/routeCandidates.ts`
 
@@ -67,6 +68,7 @@ Expected: pass.
 ### Task 2: Add Live Runtime Tests
 
 **Files:**
+
 - Modify: `tests/home-screen.test.tsx`
 - Later create: `src/app/LiveHomePage.tsx`
 - Later modify: `app/page.tsx`
@@ -111,6 +113,7 @@ Expected: pass.
 ### Task 3: Update QA Documentation
 
 **Files:**
+
 - Modify: `docs/qa/05-api-integration.md`
 
 - [ ] **Step 1: Patch QA notes**
@@ -130,6 +133,7 @@ Expected: the QA doc includes issue #2 smoke setup and blocker notes only.
 ### Task 4: Full Verification
 
 **Files:**
+
 - All changed files.
 
 - [ ] **Step 1: Run focused tests**

@@ -5,11 +5,23 @@ export type LatLng = {
   lng: number;
 };
 
-export type ExposureDirection = "left" | "right" | "front" | "back" | "overhead" | "none";
+export type ExposureDirection =
+  | "left"
+  | "right"
+  | "front"
+  | "back"
+  | "overhead"
+  | "none";
 
-export type DirectionalExposure = Exclude<ExposureDirection, "overhead" | "none">;
+export type DirectionalExposure = Exclude<
+  ExposureDirection,
+  "overhead" | "none"
+>;
 
-export type AdvisoryCalculationContext = "on_route" | "estimated_route_point" | "unavailable";
+export type AdvisoryCalculationContext =
+  | "on_route"
+  | "estimated_route_point"
+  | "unavailable";
 
 export type AdvisoryReasonCode =
   | "missing_route_geometry"
@@ -218,10 +230,21 @@ export type ScreenStateName =
 export type RequestId = string;
 
 export type RetryTarget =
-  | { kind: "nearbyRoutes"; lat: number; lng: number; radiusMeters?: number; limit?: number }
+  | {
+      kind: "nearbyRoutes";
+      lat: number;
+      lng: number;
+      radiusMeters?: number;
+      limit?: number;
+    }
   | { kind: "manualSearch"; query: string; limit?: number }
   | { kind: "directions"; routeId: string }
-  | { kind: "geometry"; routeId: string; routeDirectionId: string; routeVersionId: string }
+  | {
+      kind: "geometry";
+      routeId: string;
+      routeDirectionId: string;
+      routeVersionId: string;
+    }
   | { kind: "advisory"; request: TargetAdvisoryRequest };
 
 export type FlowError = {

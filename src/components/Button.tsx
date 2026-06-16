@@ -7,8 +7,15 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary";
 };
 
-export function Button({ children, className, variant = "primary", ...props }: ButtonProps) {
-  const classes = [styles.button, styles[variant], className].filter(Boolean).join(" ");
+export function Button({
+  children,
+  className,
+  variant = "primary",
+  ...props
+}: ButtonProps) {
+  const classes = [styles.button, styles[variant], className]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <button className={classes} type="button" {...props}>

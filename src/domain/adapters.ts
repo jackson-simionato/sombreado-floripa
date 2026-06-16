@@ -10,7 +10,7 @@ import type {
   RoutesResponse,
   TargetAdvisoryRequest,
   TargetAdvisoryResponse,
-  UiAdviceState
+  UiAdviceState,
 } from "./types";
 
 export const DEFAULT_ADVISORY_WINDOW_MINUTES = 15;
@@ -24,8 +24,13 @@ export function toRouteCandidates(
     routeVersionId: route.route_version_id,
     code: route.route_code,
     name: route.route_name,
-    ...(route.distance_meters === undefined ? {} : { distanceMeters: route.distance_meters }),
-    directionHints: route.directions.flatMap((direction) => [direction.name, ...direction.departure_labels])
+    ...(route.distance_meters === undefined
+      ? {}
+      : { distanceMeters: route.distance_meters }),
+    directionHints: route.directions.flatMap((direction) => [
+      direction.name,
+      ...direction.departure_labels,
+    ]),
   }));
 
   if (options.source !== "nearby") {
@@ -35,43 +40,52 @@ export function toRouteCandidates(
   return [...candidates].sort(compareNearbyCandidates);
 }
 
-export function toDirectionChoices(routeDirectionsResponse: RouteDirectionsResponse): DirectionChoice[] {
+export function toDirectionChoices(
+  routeDirectionsResponse: RouteDirectionsResponse
+): DirectionChoice[] {
   return [...routeDirectionsResponse.directions]
     .sort((left, right) => left.sequence - right.sequence)
     .map((direction) => ({
       routeDirectionId: direction.route_direction_id,
       sequence: direction.sequence,
       name: direction.name,
-      departureLabels: [...direction.departure_labels]
+      departureLabels: [...direction.departure_labels],
     }));
 }
 
-export function toRoutePolyline(routeGeometryResponse: RouteGeometryResponse): LatLng[] {
+export function toRoutePolyline(
+  routeGeometryResponse: RouteGeometryResponse
+): LatLng[] {
   return [...routeGeometryResponse.segments]
     .sort((left, right) => left.sequence - right.sequence)
-    .flatMap((segment) => segment.coordinates.map(([lng, lat]) => ({ lat, lng })));
+    .flatMap((segment) =>
+      segment.coordinates.map(([lng, lat]) => ({ lat, lng }))
+    );
 }
 
-export function toUiAdvice(advisoryResponse: TargetAdvisoryResponse): UiAdviceState {
+export function toUiAdvice(
+  advisoryResponse: TargetAdvisoryResponse
+): UiAdviceState {
   if (advisoryResponse.status === "withheld") {
     return {
       mode: "withheld",
-      reasonCode: advisoryResponse.reason_code ?? "service_unavailable"
+      reasonCode: advisoryResponse.reason_code ?? "service_unavailable",
     };
   }
 
-  const dominantDirection = advisoryResponse.upcoming_window?.dominant_direction;
+  const dominantDirection =
+    advisoryResponse.upcoming_window?.dominant_direction;
   if (dominantDirection === undefined) {
     return {
       mode: "withheld",
-      reasonCode: "insufficient_sun_signal"
+      reasonCode: "insufficient_sun_signal",
     };
   }
 
   if (dominantDirection === "overhead" || dominantDirection === "none") {
     return {
       mode: "neutralComputed",
-      directSunExposure: dominantDirection
+      directSunExposure: dominantDirection,
     };
   }
 
@@ -85,15 +99,16 @@ export function toUiAdvice(advisoryResponse: TargetAdvisoryResponse): UiAdviceSt
       ...(advisoryResponse.projected_position === undefined
         ? {}
         : {
-            distanceFromRouteMeters: advisoryResponse.projected_position.distance_from_route_meters
-          })
+            distanceFromRouteMeters:
+              advisoryResponse.projected_position.distance_from_route_meters,
+          }),
     };
   }
 
   return {
     mode: "onboard",
     directSunExposure: dominantDirection,
-    recommendedSeatArea
+    recommendedSeatArea,
   };
 }
 
@@ -113,11 +128,14 @@ export function buildTargetAdvisoryRequest(input: {
     route_direction_id: input.routeDirectionId,
     datetime: (input.now ?? (() => new Date()))().toISOString(),
     window_minutes: input.windowMinutes ?? DEFAULT_ADVISORY_WINDOW_MINUTES,
-    include_remaining: input.includeRemaining ?? true
+    include_remaining: input.includeRemaining ?? true,
   };
 }
 
-function compareNearbyCandidates(left: RouteCandidate, right: RouteCandidate): number {
+function compareNearbyCandidates(
+  left: RouteCandidate,
+  right: RouteCandidate
+): number {
   if (left.distanceMeters !== undefined && right.distanceMeters === undefined) {
     return -1;
   }
@@ -131,10 +149,14 @@ function compareNearbyCandidates(left: RouteCandidate, right: RouteCandidate): n
     }
   }
 
-  return `${left.code} ${left.name}`.localeCompare(`${right.code} ${right.name}`, "pt-BR", {
-    numeric: true,
-    sensitivity: "base"
-  });
+  return `${left.code} ${left.name}`.localeCompare(
+    `${right.code} ${right.name}`,
+    "pt-BR",
+    {
+      numeric: true,
+      sensitivity: "base",
+    }
+  );
 }
 
 function invertExposure(exposure: DirectionalExposure): DirectionalExposure {
@@ -142,12 +164,14 @@ function invertExposure(exposure: DirectionalExposure): DirectionalExposure {
     left: "right",
     right: "left",
     front: "back",
-    back: "front"
+    back: "front",
   };
 
   return mapping[exposure];
 }
 
-export function isDirectionalExposure(exposure: ExposureDirection): exposure is DirectionalExposure {
+export function isDirectionalExposure(
+  exposure: ExposureDirection
+): exposure is DirectionalExposure {
   return exposure !== "overhead" && exposure !== "none";
 }

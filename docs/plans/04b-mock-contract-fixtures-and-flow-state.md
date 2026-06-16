@@ -159,14 +159,14 @@ Adapter mapping:
 
 Important semantic boundary: backend `upcoming_window.dominant_direction` describes the direction with more direct sun exposure. UI recommendation must invert it:
 
-| Backend direct sun exposure | UI recommendation |
-| --- | --- |
-| `right` | sit `left` |
-| `left` | sit `right` |
-| `front` | sit farther `back` |
-| `back` | sit farther `front` |
-| `overhead` | neutral computed result |
-| `none` | neutral computed result |
+| Backend direct sun exposure | UI recommendation       |
+| --------------------------- | ----------------------- |
+| `right`                     | sit `left`              |
+| `left`                      | sit `right`             |
+| `front`                     | sit farther `back`      |
+| `back`                      | sit farther `front`     |
+| `overhead`                  | neutral computed result |
+| `none`                      | neutral computed result |
 
 `left` and `right` are passenger-facing bus sides, not compass directions and not map screen directions.
 
@@ -274,10 +274,21 @@ type FlowError = {
 };
 
 type RetryTarget =
-  | { kind: "nearbyRoutes"; lat: number; lng: number; radiusMeters?: number; limit?: number }
+  | {
+      kind: "nearbyRoutes";
+      lat: number;
+      lng: number;
+      radiusMeters?: number;
+      limit?: number;
+    }
   | { kind: "manualSearch"; query: string; limit?: number }
   | { kind: "directions"; routeId: string }
-  | { kind: "geometry"; routeId: string; routeDirectionId: string; routeVersionId: string }
+  | {
+      kind: "geometry";
+      routeId: string;
+      routeDirectionId: string;
+      routeVersionId: string;
+    }
   | { kind: "advisory"; request: TargetAdvisoryRequest };
 ```
 
@@ -363,12 +374,12 @@ Add curated fixtures with explicit edge cases:
 Name advisory fixtures to avoid exposure/recommendation ambiguity:
 
 ```ts
-advisoryExposureRightRecommendsLeft
-advisoryExposureLeftRecommendsRight
-advisoryExposureFrontRecommendsBack
-advisoryExposureBackRecommendsFront
-advisoryExposureOverheadNeutral
-advisoryExposureNoneNeutral
+advisoryExposureRightRecommendsLeft;
+advisoryExposureLeftRecommendsRight;
+advisoryExposureFrontRecommendsBack;
+advisoryExposureBackRecommendsFront;
+advisoryExposureOverheadNeutral;
+advisoryExposureNoneNeutral;
 ```
 
 Define stable scenario IDs for Plan 04e:

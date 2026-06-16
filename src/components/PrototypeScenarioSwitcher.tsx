@@ -10,7 +10,10 @@ type PrototypeScenarioSwitcherProps = {
   onChange(nextScenarioId: PrototypeScenarioId): void;
 };
 
-export function PrototypeScenarioSwitcher({ onChange, selectedScenarioId }: PrototypeScenarioSwitcherProps) {
+export function PrototypeScenarioSwitcher({
+  onChange,
+  selectedScenarioId,
+}: PrototypeScenarioSwitcherProps) {
   return (
     <aside className={styles.tray} aria-label="Controles de protótipo">
       <label className={styles.field}>
@@ -18,7 +21,9 @@ export function PrototypeScenarioSwitcher({ onChange, selectedScenarioId }: Prot
         <select
           aria-label="Protótipo"
           className={styles.select}
-          onChange={(event) => onChange(event.target.value as PrototypeScenarioId)}
+          onChange={(event) =>
+            onChange(event.target.value as PrototypeScenarioId)
+          }
           value={selectedScenarioId}
         >
           {prototypeScenarios.map((scenario) => (

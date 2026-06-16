@@ -14,7 +14,7 @@ import type {
   SelectedDirection,
   SelectedRoute,
   TargetAdvisoryRequest,
-  TargetAdvisoryResponse
+  TargetAdvisoryResponse,
 } from "./types";
 
 export const initialFlowState: FlowState = {
@@ -25,7 +25,7 @@ export const initialFlowState: FlowState = {
   manualCandidates: [],
   directionChoices: [],
   mapAvailability: "available",
-  pendingRequests: {}
+  pendingRequests: {},
 };
 
 export type FlowEvent =
@@ -39,13 +39,39 @@ export type FlowEvent =
       limit?: number;
     }
   | { type: "nearbySlowThresholdReached"; requestId: RequestId }
-  | { type: "nearbyRoutesSucceeded"; requestId: RequestId; candidates: RouteCandidate[] }
-  | { type: "manualSearchRequested"; requestId: RequestId; query: string; limit?: number }
-  | { type: "manualSearchSucceeded"; requestId: RequestId; candidates: RouteCandidate[] }
+  | {
+      type: "nearbyRoutesSucceeded";
+      requestId: RequestId;
+      candidates: RouteCandidate[];
+    }
+  | {
+      type: "manualSearchRequested";
+      requestId: RequestId;
+      query: string;
+      limit?: number;
+    }
+  | {
+      type: "manualSearchSucceeded";
+      requestId: RequestId;
+      candidates: RouteCandidate[];
+    }
   | { type: "continueWaiting" }
-  | { type: "routeSelected"; route: RouteCandidate; source: RouteSelectionSource; requestId: RequestId }
-  | { type: "directionsSucceeded"; requestId: RequestId; directions: DirectionChoice[] }
-  | { type: "directionSelected"; direction: DirectionChoice; requestId: RequestId }
+  | {
+      type: "routeSelected";
+      route: RouteCandidate;
+      source: RouteSelectionSource;
+      requestId: RequestId;
+    }
+  | {
+      type: "directionsSucceeded";
+      requestId: RequestId;
+      directions: DirectionChoice[];
+    }
+  | {
+      type: "directionSelected";
+      direction: DirectionChoice;
+      requestId: RequestId;
+    }
   | {
       type: "geometrySucceeded";
       requestId: RequestId;
@@ -58,7 +84,11 @@ export type FlowEvent =
       advisoryRequest: TargetAdvisoryRequest;
       referenceLocation?: { lat: number; lng: number };
     }
-  | { type: "advisorySucceeded"; requestId: RequestId; advice: TargetAdvisoryResponse }
+  | {
+      type: "advisorySucceeded";
+      requestId: RequestId;
+      advice: TargetAdvisoryResponse;
+    }
   | { type: "operationFailed"; requestId: RequestId; error: FlowError }
   | { type: "retryRequested"; requestId: RequestId; retryTarget: RetryTarget }
   | { type: "changeRoute" }
@@ -71,14 +101,14 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         ...state,
         screen: "locationRequest",
         requestStatus: "idle",
-        locationIssue: undefined
+        locationIssue: undefined,
       });
 
     case "manualSearchOpened":
       return clearError({
         ...state,
         screen: "manualRouteSearch",
-        requestStatus: "idle"
+        requestStatus: "idle",
       });
 
     case "locationResolved":
@@ -90,8 +120,8 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
           locationIssue: event.result.kind,
           pendingRequests: {
             ...state.pendingRequests,
-            nearbyRoutes: undefined
-          }
+            nearbyRoutes: undefined,
+          },
         });
       }
 
@@ -103,8 +133,8 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         locationIssue: undefined,
         pendingRequests: {
           ...state.pendingRequests,
-          nearbyRoutes: event.requestId
-        }
+          nearbyRoutes: event.requestId,
+        },
       });
 
     case "nearbySlowThresholdReached":
@@ -113,7 +143,7 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
       }
       return compactState({
         ...state,
-        screen: "slowLoadingNotice"
+        screen: "slowLoadingNotice",
       });
 
     case "nearbyRoutesSucceeded":
@@ -122,13 +152,16 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
       }
       return clearError({
         ...state,
-        screen: event.candidates.length > 0 ? "routeCandidateSelection" : "noNearbyRoutes",
+        screen:
+          event.candidates.length > 0
+            ? "routeCandidateSelection"
+            : "noNearbyRoutes",
         requestStatus: "success",
         nearbyCandidates: cloneRouteCandidates(event.candidates),
         pendingRequests: {
           ...state.pendingRequests,
-          nearbyRoutes: undefined
-        }
+          nearbyRoutes: undefined,
+        },
       });
 
     case "manualSearchRequested":
@@ -139,8 +172,8 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         manualQuery: event.query,
         pendingRequests: {
           ...state.pendingRequests,
-          manualSearch: event.requestId
-        }
+          manualSearch: event.requestId,
+        },
       });
 
     case "manualSearchSucceeded":
@@ -149,13 +182,14 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
       }
       return clearError({
         ...state,
-        screen: event.candidates.length > 0 ? "manualRouteSearch" : "noManualResults",
+        screen:
+          event.candidates.length > 0 ? "manualRouteSearch" : "noManualResults",
         requestStatus: "success",
         manualCandidates: cloneRouteCandidates(event.candidates),
         pendingRequests: {
           ...state.pendingRequests,
-          manualSearch: undefined
-        }
+          manualSearch: undefined,
+        },
       });
 
     case "continueWaiting":
@@ -164,7 +198,7 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
       }
       return compactState({
         ...state,
-        screen: "findingNearbyRoutes"
+        screen: "findingNearbyRoutes",
       });
 
     case "routeSelected":
@@ -178,24 +212,30 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
           directionChoices: [],
           pendingRequests: {
             ...state.pendingRequests,
-            directions: event.requestId
-          }
+            directions: event.requestId,
+          },
         })
       );
 
     case "directionsSucceeded":
-      if (state.pendingRequests.directions !== event.requestId || state.selectedRoute === undefined) {
+      if (
+        state.pendingRequests.directions !== event.requestId ||
+        state.selectedRoute === undefined
+      ) {
         return state;
       }
       return clearError({
         ...state,
-        screen: event.directions.length > 0 ? "directionChoice" : "routeWithoutDirections",
+        screen:
+          event.directions.length > 0
+            ? "directionChoice"
+            : "routeWithoutDirections",
         requestStatus: "success",
         directionChoices: cloneDirectionChoices(event.directions),
         pendingRequests: {
           ...state.pendingRequests,
-          directions: undefined
-        }
+          directions: undefined,
+        },
       });
 
     case "directionSelected":
@@ -210,8 +250,8 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
           selectedDirection: toSelectedDirection(event.direction),
           pendingRequests: {
             ...state.pendingRequests,
-            geometry: event.requestId
-          }
+            geometry: event.requestId,
+          },
         })
       );
 
@@ -225,7 +265,10 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
       }
       return clearError({
         ...state,
-        screen: geometryAllowsConfirmation(event.geometry, event.mapAvailability)
+        screen: geometryAllowsConfirmation(
+          event.geometry,
+          event.mapAvailability
+        )
           ? "routeConfirmation"
           : "routeConfirmationFallback",
         requestStatus: "success",
@@ -233,12 +276,15 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         mapAvailability: event.mapAvailability,
         pendingRequests: {
           ...state.pendingRequests,
-          geometry: undefined
-        }
+          geometry: undefined,
+        },
       });
 
     case "routeConfirmed":
-      if (state.selectedRoute === undefined || state.selectedDirection === undefined) {
+      if (
+        state.selectedRoute === undefined ||
+        state.selectedDirection === undefined
+      ) {
         return state;
       }
       return clearError({
@@ -249,8 +295,8 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         advisoryRequest: { ...event.advisoryRequest },
         pendingRequests: {
           ...state.pendingRequests,
-          advisory: event.requestId
-        }
+          advisory: event.requestId,
+        },
       });
 
     case "advisorySucceeded":
@@ -268,8 +314,8 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         advice: toUiAdvice(event.advice),
         pendingRequests: {
           ...state.pendingRequests,
-          advisory: undefined
-        }
+          advisory: undefined,
+        },
       });
 
     case "operationFailed":
@@ -281,7 +327,10 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         screen: "apiError",
         requestStatus: "error",
         error: normalizeFlowError(event.error),
-        pendingRequests: clearPendingRequests(state.pendingRequests, event.requestId)
+        pendingRequests: clearPendingRequests(
+          state.pendingRequests,
+          event.requestId
+        ),
       });
 
     case "retryRequested":
@@ -289,21 +338,24 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         ...state,
         pendingRetry: {
           requestId: event.requestId,
-          retryTarget: cloneRetryTarget(event.retryTarget)
-        }
+          retryTarget: cloneRetryTarget(event.retryTarget),
+        },
       });
 
     case "changeRoute":
       return clearAdviceAndGeometry({
         ...state,
-        screen: state.selectedRoute?.source === "manual" ? "manualRouteSearch" : "routeCandidateSelection",
+        screen:
+          state.selectedRoute?.source === "manual"
+            ? "manualRouteSearch"
+            : "routeCandidateSelection",
         requestStatus: "idle",
         selectedRoute: undefined,
         selectedDirection: undefined,
         directionChoices: [],
         error: undefined,
         advisoryRequest: undefined,
-        pendingRequests: {}
+        pendingRequests: {},
       });
 
     case "changeDirection":
@@ -312,12 +364,15 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
       }
       return clearAdviceAndGeometry({
         ...state,
-        screen: state.directionChoices.length > 0 ? "directionChoice" : "findingNearbyRoutes",
+        screen:
+          state.directionChoices.length > 0
+            ? "directionChoice"
+            : "findingNearbyRoutes",
         requestStatus: "idle",
         selectedDirection: undefined,
         error: undefined,
         advisoryRequest: undefined,
-        pendingRequests: {}
+        pendingRequests: {},
       });
 
     default:
@@ -325,24 +380,29 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
   }
 }
 
-export function normalizeFlowError(error: FlowError | Error | unknown): FlowError {
+export function normalizeFlowError(
+  error: FlowError | Error | unknown
+): FlowError {
   if (isFlowError(error)) {
     return {
       ...error,
-      retryTarget: error.retryTarget === undefined ? undefined : cloneRetryTarget(error.retryTarget)
+      retryTarget:
+        error.retryTarget === undefined
+          ? undefined
+          : cloneRetryTarget(error.retryTarget),
     };
   }
 
   if (error instanceof Error) {
     return {
       kind: "unknown",
-      message: error.message
+      message: error.message,
     };
   }
 
   return {
     kind: "unknown",
-    message: "Unknown flow error"
+    message: "Unknown flow error",
   };
 }
 
@@ -356,7 +416,10 @@ function screenForAdvice(advice: TargetAdvisoryResponse): ScreenStateName {
   return "onboardAdviceResult";
 }
 
-function geometryAllowsConfirmation(geometry: RouteGeometryResponse, mapAvailability: MapAvailability): boolean {
+function geometryAllowsConfirmation(
+  geometry: RouteGeometryResponse,
+  mapAvailability: MapAvailability
+): boolean {
   return mapAvailability === "available" && geometry.segments.length > 0;
 }
 
@@ -364,20 +427,31 @@ function requestIsPending(state: FlowState, requestId: RequestId): boolean {
   return Object.values(state.pendingRequests).includes(requestId);
 }
 
-function clearPendingRequests(pendingRequests: FlowState["pendingRequests"], requestId: RequestId): FlowState["pendingRequests"] {
+function clearPendingRequests(
+  pendingRequests: FlowState["pendingRequests"],
+  requestId: RequestId
+): FlowState["pendingRequests"] {
   return Object.fromEntries(
-    Object.entries(pendingRequests).map(([key, value]) => [key, value === requestId ? undefined : value])
+    Object.entries(pendingRequests).map(([key, value]) => [
+      key,
+      value === requestId ? undefined : value,
+    ])
   ) as FlowState["pendingRequests"];
 }
 
-function toSelectedRoute(route: RouteCandidate, source: RouteSelectionSource): SelectedRoute {
+function toSelectedRoute(
+  route: RouteCandidate,
+  source: RouteSelectionSource
+): SelectedRoute {
   return {
     routeId: route.routeId,
     routeVersionId: route.routeVersionId,
     code: route.code,
     name: route.name,
-    ...(route.distanceMeters === undefined ? {} : { distanceMeters: route.distanceMeters }),
-    source
+    ...(route.distanceMeters === undefined
+      ? {}
+      : { distanceMeters: route.distanceMeters }),
+    source,
   };
 }
 
@@ -386,7 +460,7 @@ function toSelectedDirection(direction: DirectionChoice): SelectedDirection {
     routeDirectionId: direction.routeDirectionId,
     sequence: direction.sequence,
     name: direction.name,
-    departureLabels: [...direction.departureLabels]
+    departureLabels: [...direction.departureLabels],
   };
 }
 
@@ -395,28 +469,30 @@ function clearAdviceAndGeometry(state: FlowState): FlowState {
     ...state,
     geometry: undefined,
     advice: undefined,
-    advisoryRequest: undefined
+    advisoryRequest: undefined,
   });
 }
 
 function clearError(state: FlowState): FlowState {
   return compactState({
     ...state,
-    error: undefined
+    error: undefined,
   });
 }
 
 function cloneRouteCandidates(candidates: RouteCandidate[]): RouteCandidate[] {
   return candidates.map((candidate) => ({
     ...candidate,
-    directionHints: [...candidate.directionHints]
+    directionHints: [...candidate.directionHints],
   }));
 }
 
-function cloneDirectionChoices(directions: DirectionChoice[]): DirectionChoice[] {
+function cloneDirectionChoices(
+  directions: DirectionChoice[]
+): DirectionChoice[] {
   return directions.map((direction) => ({
     ...direction,
-    departureLabels: [...direction.departureLabels]
+    departureLabels: [...direction.departureLabels],
   }));
 }
 
@@ -425,8 +501,8 @@ function cloneGeometry(geometry: RouteGeometryResponse): RouteGeometryResponse {
     ...geometry,
     segments: geometry.segments.map((segment) => ({
       ...segment,
-      coordinates: segment.coordinates.map(([lng, lat]) => [lng, lat])
-    }))
+      coordinates: segment.coordinates.map(([lng, lat]) => [lng, lat]),
+    })),
   };
 }
 
@@ -434,7 +510,7 @@ function cloneRetryTarget(retryTarget: RetryTarget): RetryTarget {
   if (retryTarget.kind === "advisory") {
     return {
       kind: "advisory",
-      request: { ...retryTarget.request }
+      request: { ...retryTarget.request },
     };
   }
   return { ...retryTarget };

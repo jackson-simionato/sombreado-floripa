@@ -35,21 +35,21 @@ The core brand signature is the bus-side split motif. It should come from the pr
 
 ## Color Direction
 
-| Token | Hex | Use |
-| --- | --- | --- |
-| Sun 500 | `#F8B84E` | Sun accents, direct-sun markers, optimistic highlights |
-| Sun 100 | `#FCE6B8` | Soft sun backgrounds and non-critical emphasis |
-| Shade 500 | `#4E9CB5` | Recommended-side accents, selected states, route confirmation |
-| Shade 100 | `#DDF1F5` | Recommendation panels and calm informational backgrounds |
-| Surface Warm | `#FFF9EE` | App background |
-| Paper | `#FFFFFF` | Primary cards, sheets, modal surfaces |
-| Line | `#E7DED2` | Dividers, quiet borders, diagram outlines |
-| Ink | `#25211B` | Primary text |
-| Muted Ink | `#6B6258` | Secondary text and notices |
-| Success | `#2F8F68` | Available/confirmed states unrelated to sun-vs-shade meaning |
-| Warning | `#D9822B` | Recoverable uncertainty and partial confidence |
-| Error | `#C84C3A` | Failed location, unavailable advice, and blocking errors |
-| Focus | `#2D6CDF` | Keyboard focus rings and accessibility-only focus emphasis |
+| Token        | Hex       | Use                                                           |
+| ------------ | --------- | ------------------------------------------------------------- |
+| Sun 500      | `#F8B84E` | Sun accents, direct-sun markers, optimistic highlights        |
+| Sun 100      | `#FCE6B8` | Soft sun backgrounds and non-critical emphasis                |
+| Shade 500    | `#4E9CB5` | Recommended-side accents, selected states, route confirmation |
+| Shade 100    | `#DDF1F5` | Recommendation panels and calm informational backgrounds      |
+| Surface Warm | `#FFF9EE` | App background                                                |
+| Paper        | `#FFFFFF` | Primary cards, sheets, modal surfaces                         |
+| Line         | `#E7DED2` | Dividers, quiet borders, diagram outlines                     |
+| Ink          | `#25211B` | Primary text                                                  |
+| Muted Ink    | `#6B6258` | Secondary text and notices                                    |
+| Success      | `#2F8F68` | Available/confirmed states unrelated to sun-vs-shade meaning  |
+| Warning      | `#D9822B` | Recoverable uncertainty and partial confidence                |
+| Error        | `#C84C3A` | Failed location, unavailable advice, and blocking errors      |
+| Focus        | `#2D6CDF` | Keyboard focus rings and accessibility-only focus emphasis    |
 
 ### Color Pairing Examples
 
@@ -70,13 +70,13 @@ If the implementation avoids a webfont in v1, system UI is acceptable. The brand
 
 Recommended scale for mobile wireframes:
 
-| Role | Size | Weight | Notes |
-| --- | --- | --- | --- |
-| Result title | 30-34px | 720-780 | Used for advice like "Sente à esquerda" |
-| Screen title | 24-28px | 700 | Route selection, confirmation, empty states |
-| Body | 16-18px | 400-500 | Short explanatory copy |
-| Button | 16-17px | 650-720 | Verb-led actions |
-| Caption | 13-14px | 450-550 | Estimate notices and metadata |
+| Role         | Size    | Weight  | Notes                                       |
+| ------------ | ------- | ------- | ------------------------------------------- |
+| Result title | 30-34px | 720-780 | Used for advice like "Sente à esquerda"     |
+| Screen title | 24-28px | 700     | Route selection, confirmation, empty states |
+| Body         | 16-18px | 400-500 | Short explanatory copy                      |
+| Button       | 16-17px | 650-720 | Verb-led actions                            |
+| Caption      | 13-14px | 450-550 | Estimate notices and metadata               |
 
 Keep letter spacing at `0`. Do not use condensed, technical, or transit-control typography.
 

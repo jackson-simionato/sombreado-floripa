@@ -253,7 +253,13 @@ Example preview request:
 ## Advice Responses
 
 ```ts
-type DirectSunExposure = "left" | "right" | "front" | "back" | "overhead" | "none";
+type DirectSunExposure =
+  | "left"
+  | "right"
+  | "front"
+  | "back"
+  | "overhead"
+  | "none";
 type RecommendedSeatArea = "left" | "right" | "front" | "back" | "neutral";
 type SunCondition = "daylight" | "night" | "lowSun" | "overhead";
 

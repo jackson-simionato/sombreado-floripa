@@ -1,10 +1,20 @@
 .actions {
   position: fixed;
-  right: max(var(--space-4), calc((100vw - var(--app-max-width)) / 2 + var(--space-4)));
+  right: max(
+    var(--space-4),
+    calc((100vw - var(--app-max-width)) / 2 + var(--space-4))
+  );
   bottom: 0;
-  left: max(var(--space-4), calc((100vw - var(--app-max-width)) / 2 + var(--space-4)));
+  left: max(
+    var(--space-4),
+    calc((100vw - var(--app-max-width)) / 2 + var(--space-4))
+  );
   display: grid;
   gap: var(--space-3);
   padding: var(--space-4) 0 calc(var(--space-4) + env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, rgba(255, 249, 238, 0), var(--color-surface-warm) 18%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 249, 238, 0),
+    var(--color-surface-warm) 18%
+  );
 }

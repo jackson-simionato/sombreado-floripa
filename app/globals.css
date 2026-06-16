@@ -41,7 +41,11 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    linear-gradient(180deg, rgba(248, 184, 78, 0.14), rgba(255, 249, 238, 0) 220px),
+    linear-gradient(
+      180deg,
+      rgba(248, 184, 78, 0.14),
+      rgba(255, 249, 238, 0) 220px
+    ),
     var(--color-surface-warm);
   color: var(--color-ink);
   font-family: Inter, Avenir, "Helvetica Neue", Arial, sans-serif;

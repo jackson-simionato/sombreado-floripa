@@ -1,9 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 
-import { buildTargetAdvisoryRequest, toDirectionChoices, toRouteCandidates } from "../domain/adapters";
-import { flowReducer, initialFlowState, normalizeFlowError } from "../domain/flow";
+import {
+  buildTargetAdvisoryRequest,
+  toDirectionChoices,
+  toRouteCandidates,
+} from "../domain/adapters";
+import {
+  flowReducer,
+  initialFlowState,
+  normalizeFlowError,
+} from "../domain/flow";
 import type {
   DirectionChoice,
   FlowError,
@@ -14,9 +29,13 @@ import type {
   PrototypeScenarioId,
   RequestId,
   RetryTarget,
-  RouteCandidate
+  RouteCandidate,
 } from "../domain/types";
-import { MockApiError, createMockApi, createMockLocationProvider } from "../mocks/mockApi";
+import {
+  MockApiError,
+  createMockApi,
+  createMockLocationProvider,
+} from "../mocks/mockApi";
 import { getPrototypeScenario } from "../mocks/scenarioStates";
 
 type UseOnboardingFlowOptions = {
@@ -46,15 +65,31 @@ export type OnboardingFlowController = {
 };
 
 export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
-  const seededScenario = options.prototypeScenarioId === undefined ? undefined : getPrototypeScenario(options.prototypeScenarioId).seed;
-  const [state, dispatch] = useReducer(flowReducer, seededScenario?.state ?? initialFlowState);
-  const [manualQueryDraft, setManualQueryDraft] = useState(seededScenario?.manualQueryDraft ?? initialFlowState.manualQuery);
-  const [manualSearchEnabled, setManualSearchEnabled] = useState(seededScenario === undefined);
+  const seededScenario =
+    options.prototypeScenarioId === undefined
+      ? undefined
+      : getPrototypeScenario(options.prototypeScenarioId).seed;
+  const [state, dispatch] = useReducer(
+    flowReducer,
+    seededScenario?.state ?? initialFlowState
+  );
+  const [manualQueryDraft, setManualQueryDraft] = useState(
+    seededScenario?.manualQueryDraft ?? initialFlowState.manualQuery
+  );
+  const [manualSearchEnabled, setManualSearchEnabled] = useState(
+    seededScenario === undefined
+  );
   const requestSequenceRef = useRef(0);
 
-  const scenarioId = options.mockScenarioId ?? options.scenarioId ?? seededScenario?.mockScenarioId ?? "nearby-routes";
+  const scenarioId =
+    options.mockScenarioId ??
+    options.scenarioId ??
+    seededScenario?.mockScenarioId ??
+    "nearby-routes";
   const mapAvailability =
-    options.mapAvailabilityOverride ?? seededScenario?.mapAvailabilityOverride ?? mapAvailabilityForScenario(scenarioId);
+    options.mapAvailabilityOverride ??
+    seededScenario?.mapAvailabilityOverride ??
+    mapAvailabilityForScenario(scenarioId);
 
   const api = useMemo(
     () =>
@@ -65,7 +100,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
             ? { nearbyMs: 900 }
             : scenarioId === "computing-advice"
               ? { advisoryMs: 900 }
-              : undefined
+              : undefined,
       }),
     [scenarioId]
   );
@@ -75,7 +110,9 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       createMockLocationProvider(
         options.locationResult ??
           seededScenario?.locationResult ??
-          (scenarioId === "location-denied" ? { kind: "denied" } : { kind: "granted", lat: -27.5969, lng: -48.5488 })
+          (scenarioId === "location-denied"
+            ? { kind: "denied" }
+            : { kind: "granted", lat: -27.5969, lng: -48.5488 })
       ),
     [options.locationResult, scenarioId, seededScenario?.locationResult]
   );
@@ -87,10 +124,13 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
 
   const failOperation = useCallback(
     (requestId: RequestId, error: unknown, retryTarget: RetryTarget) => {
-      const normalized = error instanceof MockApiError ? error.flowError : normalizeFlowError(error);
+      const normalized =
+        error instanceof MockApiError
+          ? error.flowError
+          : normalizeFlowError(error);
       const flowError: FlowError = {
         ...normalized,
-        retryTarget
+        retryTarget,
       };
       dispatch({ type: "operationFailed", requestId, error: flowError });
     },
@@ -105,7 +145,9 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       routeVersionId: string;
     }) => {
       const requestId = nextRequestId("advisory");
-      const locationResult = input.includeFreshLocation ? await locationProvider.getCurrentLocation() : undefined;
+      const locationResult = input.includeFreshLocation
+        ? await locationProvider.getCurrentLocation()
+        : undefined;
       const referenceLocation =
         locationResult?.kind === "granted"
           ? { lat: locationResult.lat, lng: locationResult.lng }
@@ -115,14 +157,14 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         lat: referenceLocation.lat,
         lng: referenceLocation.lng,
         routeVersionId: input.routeVersionId,
-        routeDirectionId: input.routeDirectionId
+        routeDirectionId: input.routeDirectionId,
       });
 
       dispatch({
         type: "routeConfirmed",
         requestId,
         advisoryRequest,
-        referenceLocation
+        referenceLocation,
       });
 
       try {
@@ -130,12 +172,12 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         dispatch({
           type: "advisorySucceeded",
           requestId,
-          advice
+          advice,
         });
       } catch (error) {
         failOperation(requestId, error, {
           kind: "advisory",
-          request: advisoryRequest
+          request: advisoryRequest,
         });
       }
     },
@@ -151,7 +193,13 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
 
     const requestId = nextRequestId("nearby");
     const location = await locationProvider.getCurrentLocation();
-    dispatch({ type: "locationResolved", requestId, result: location, radiusMeters: 1200, limit: 5 });
+    dispatch({
+      type: "locationResolved",
+      requestId,
+      result: location,
+      radiusMeters: 1200,
+      limit: 5,
+    });
 
     if (location.kind !== "granted") {
       return;
@@ -166,12 +214,12 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         lat: location.lat,
         lng: location.lng,
         radiusMeters: 1200,
-        limit: 5
+        limit: 5,
       });
       dispatch({
         type: "nearbyRoutesSucceeded",
         requestId,
-        candidates: toRouteCandidates(response, { source: "nearby" })
+        candidates: toRouteCandidates(response, { source: "nearby" }),
       });
     } catch (error) {
       failOperation(requestId, error, {
@@ -179,7 +227,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         lat: location.lat,
         lng: location.lng,
         radiusMeters: 1200,
-        limit: 5
+        limit: 5,
       });
     }
   }, [api, failOperation, locationProvider, nextRequestId]);
@@ -194,10 +242,13 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         dispatch({
           type: "directionsSucceeded",
           requestId,
-          directions: toDirectionChoices(response)
+          directions: toDirectionChoices(response),
         });
       } catch (error) {
-        failOperation(requestId, error, { kind: "directions", routeId: route.routeId });
+        failOperation(requestId, error, {
+          kind: "directions",
+          routeId: route.routeId,
+        });
       }
     },
     [api, failOperation, nextRequestId]
@@ -213,19 +264,22 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       dispatch({ type: "directionSelected", direction, requestId });
 
       try {
-        const geometry = await api.getRouteGeometry(direction.routeDirectionId, state.selectedRoute.routeVersionId);
+        const geometry = await api.getRouteGeometry(
+          direction.routeDirectionId,
+          state.selectedRoute.routeVersionId
+        );
         dispatch({
           type: "geometrySucceeded",
           requestId,
           geometry,
-          mapAvailability
+          mapAvailability,
         });
       } catch (error) {
         failOperation(requestId, error, {
           kind: "geometry",
           routeId: state.selectedRoute.routeId,
           routeDirectionId: direction.routeDirectionId,
-          routeVersionId: state.selectedRoute.routeVersionId
+          routeVersionId: state.selectedRoute.routeVersionId,
         });
       }
     },
@@ -233,7 +287,10 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   );
 
   const confirmRoute = useCallback(() => {
-    if (state.selectedRoute === undefined || state.selectedDirection === undefined) {
+    if (
+      state.selectedRoute === undefined ||
+      state.selectedDirection === undefined
+    ) {
       return;
     }
 
@@ -241,12 +298,20 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       includeFreshLocation: false,
       fallbackLocation: state.latestLocation,
       routeDirectionId: state.selectedDirection.routeDirectionId,
-      routeVersionId: state.selectedRoute.routeVersionId
+      routeVersionId: state.selectedRoute.routeVersionId,
     });
-  }, [requestAdvisory, state.latestLocation, state.selectedDirection, state.selectedRoute]);
+  }, [
+    requestAdvisory,
+    state.latestLocation,
+    state.selectedDirection,
+    state.selectedRoute,
+  ]);
 
   const refreshAdvice = useCallback(() => {
-    if (state.selectedRoute === undefined || state.selectedDirection === undefined) {
+    if (
+      state.selectedRoute === undefined ||
+      state.selectedDirection === undefined
+    ) {
       return;
     }
 
@@ -254,9 +319,14 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       includeFreshLocation: true,
       fallbackLocation: state.latestLocation,
       routeDirectionId: state.selectedDirection.routeDirectionId,
-      routeVersionId: state.selectedRoute.routeVersionId
+      routeVersionId: state.selectedRoute.routeVersionId,
     });
-  }, [requestAdvisory, state.latestLocation, state.selectedDirection, state.selectedRoute]);
+  }, [
+    requestAdvisory,
+    state.latestLocation,
+    state.selectedDirection,
+    state.selectedRoute,
+  ]);
 
   const retry = useCallback(() => {
     const retryTarget = state.error?.retryTarget;
@@ -285,7 +355,9 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     }
 
     if (retryTarget.kind === "geometry") {
-      const direction = state.directionChoices.find((choice) => choice.routeDirectionId === retryTarget.routeDirectionId);
+      const direction = state.directionChoices.find(
+        (choice) => choice.routeDirectionId === retryTarget.routeDirectionId
+      );
       if (direction !== undefined) {
         void selectDirection(direction);
       }
@@ -293,13 +365,20 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     }
 
     if (retryTarget.kind === "advisory") {
-      const routeVersionId = state.selectedRoute?.routeVersionId ?? retryTarget.request.route_version_id;
-      const routeDirectionId = state.selectedDirection?.routeDirectionId ?? retryTarget.request.route_direction_id;
+      const routeVersionId =
+        state.selectedRoute?.routeVersionId ??
+        retryTarget.request.route_version_id;
+      const routeDirectionId =
+        state.selectedDirection?.routeDirectionId ??
+        retryTarget.request.route_direction_id;
       void requestAdvisory({
         includeFreshLocation: false,
-        fallbackLocation: { lat: retryTarget.request.lat, lng: retryTarget.request.lng },
+        fallbackLocation: {
+          lat: retryTarget.request.lat,
+          lng: retryTarget.request.lng,
+        },
         routeDirectionId,
-        routeVersionId
+        routeVersionId,
       });
     }
   }, [requestAdvisory, requestLocation, selectDirection, selectRoute, state]);
@@ -309,7 +388,10 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       return;
     }
 
-    if (state.screen !== "manualRouteSearch" && state.screen !== "noManualResults") {
+    if (
+      state.screen !== "manualRouteSearch" &&
+      state.screen !== "noManualResults"
+    ) {
       return;
     }
 
@@ -327,17 +409,28 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         dispatch({
           type: "manualSearchSucceeded",
           requestId,
-          candidates: toRouteCandidates(response, { source: "manual" })
+          candidates: toRouteCandidates(response, { source: "manual" }),
         });
       } catch (error) {
-        failOperation(requestId, error, { kind: "manualSearch", query, limit: 8 });
+        failOperation(requestId, error, {
+          kind: "manualSearch",
+          query,
+          limit: 8,
+        });
       }
     }, 180);
 
     return () => {
       window.clearTimeout(timerId);
     };
-  }, [api, failOperation, manualQueryDraft, manualSearchEnabled, nextRequestId, state.screen]);
+  }, [
+    api,
+    failOperation,
+    manualQueryDraft,
+    manualSearchEnabled,
+    nextRequestId,
+    state.screen,
+  ]);
 
   return {
     manualQueryDraft,
@@ -357,7 +450,10 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       refreshAdvice,
       retry,
       searchManually(query: string) {
-        if (state.screen !== "manualRouteSearch" && state.screen !== "noManualResults") {
+        if (
+          state.screen !== "manualRouteSearch" &&
+          state.screen !== "noManualResults"
+        ) {
           dispatch({ type: "manualSearchOpened" });
         }
         setManualSearchEnabled(true);
@@ -371,15 +467,24 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       },
       useLocation() {
         void requestLocation();
-      }
-    }
+      },
+    },
   };
 }
 
-function mapAvailabilityForScenario(scenarioId: MockScenarioId): MapAvailability {
-  return scenarioId === "confirmation-fallback-map-unavailable" ? "unavailable" : "available";
+function mapAvailabilityForScenario(
+  scenarioId: MockScenarioId
+): MapAvailability {
+  return scenarioId === "confirmation-fallback-map-unavailable"
+    ? "unavailable"
+    : "available";
 }
 
-function sourceRouteForRetry(state: FlowState, routeId: string): RouteCandidate | undefined {
-  return [...state.nearbyCandidates, ...state.manualCandidates].find((route) => route.routeId === routeId);
+function sourceRouteForRetry(
+  state: FlowState,
+  routeId: string
+): RouteCandidate | undefined {
+  return [...state.nearbyCandidates, ...state.manualCandidates].find(
+    (route) => route.routeId === routeId
+  );
 }

@@ -9,12 +9,16 @@ import { getPrototypeScenario } from "../mocks/scenarioStates";
 import { HomePageApp } from "./HomePageApp";
 
 export function PrototypeHomePage() {
-  const [prototypeScenarioId, setPrototypeScenarioId] = useState<PrototypeScenarioId>("location-request");
+  const [prototypeScenarioId, setPrototypeScenarioId] =
+    useState<PrototypeScenarioId>("location-request");
   const scenario = getPrototypeScenario(prototypeScenarioId);
 
   return (
     <>
-      <PrototypeScenarioSwitcher onChange={setPrototypeScenarioId} selectedScenarioId={prototypeScenarioId} />
+      <PrototypeScenarioSwitcher
+        onChange={setPrototypeScenarioId}
+        selectedScenarioId={prototypeScenarioId}
+      />
       <HomePageApp
         key={prototypeScenarioId}
         mapAvailabilityOverride={scenario.seed.mapAvailabilityOverride}

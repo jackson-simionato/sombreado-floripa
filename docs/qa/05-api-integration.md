@@ -64,34 +64,34 @@ advisory computation to this frontend repository.
 
 Mark each state as verified against local service, verified with fixtures only, blocked by backend gap, or not checked.
 
-| State or behavior | Local service | Fixtures | Notes |
-| --- | --- | --- | --- |
-| Missing `NEXT_PUBLIC_API_URL` fails clearly in live mode |  |  |  |
-| Nearby route lookup after rider taps location |  |  |  |
-| Nearby empty result |  |  |  |
-| Manual route search |  |  |  |
-| Manual empty result |  |  |  |
-| Route candidates stay route-only |  |  |  |
-| Direction choices load after route selection |  |  |  |
-| Route without directions |  |  |  |
-| Stale route version recovery |  |  |  |
-| Geometry loads for confirmation |  |  |  |
-| Missing geometry falls back to route confirmation fallback |  |  |  |
-| Geometry network/API failure shows API error |  |  |  |
-| Initial onboard advice request |  |  |  |
-| Preview advice without location |  |  |  |
-| Preview advice from far away/manual route selection |  |  |  |
-| Neutral night advice |  |  |  |
-| True withheld advice |  |  |  |
-| Initial advice API error |  |  |  |
-| Live location watch starts after confirmation/result |  |  |  |
-| Live advice refresh is throttled |  |  |  |
-| Background refresh failure preserves last advice |  |  |  |
-| Live updates can be paused/stopped |  |  |  |
-| Last-updated/freshness copy is visible |  |  |  |
-| Browser location denial recovers through manual search |  |  |  |
-| Low-accuracy location does not produce misleading onboard advice |  |  |  |
-| Abort/stale request behavior does not mutate current state |  |  |  |
+| State or behavior                                                | Local service | Fixtures | Notes |
+| ---------------------------------------------------------------- | ------------- | -------- | ----- |
+| Missing `NEXT_PUBLIC_API_URL` fails clearly in live mode         |               |          |       |
+| Nearby route lookup after rider taps location                    |               |          |       |
+| Nearby empty result                                              |               |          |       |
+| Manual route search                                              |               |          |       |
+| Manual empty result                                              |               |          |       |
+| Route candidates stay route-only                                 |               |          |       |
+| Direction choices load after route selection                     |               |          |       |
+| Route without directions                                         |               |          |       |
+| Stale route version recovery                                     |               |          |       |
+| Geometry loads for confirmation                                  |               |          |       |
+| Missing geometry falls back to route confirmation fallback       |               |          |       |
+| Geometry network/API failure shows API error                     |               |          |       |
+| Initial onboard advice request                                   |               |          |       |
+| Preview advice without location                                  |               |          |       |
+| Preview advice from far away/manual route selection              |               |          |       |
+| Neutral night advice                                             |               |          |       |
+| True withheld advice                                             |               |          |       |
+| Initial advice API error                                         |               |          |       |
+| Live location watch starts after confirmation/result             |               |          |       |
+| Live advice refresh is throttled                                 |               |          |       |
+| Background refresh failure preserves last advice                 |               |          |       |
+| Live updates can be paused/stopped                               |               |          |       |
+| Last-updated/freshness copy is visible                           |               |          |       |
+| Browser location denial recovers through manual search           |               |          |       |
+| Low-accuracy location does not produce misleading onboard advice |               |          |       |
+| Abort/stale request behavior does not mutate current state       |               |          |       |
 
 ## Rider Copy Checks
 
@@ -109,34 +109,34 @@ Confirm the UI:
 
 Confirm local service compatibility with `docs/api-contract.md`:
 
-| Contract item | Status | Notes |
-| --- | --- | --- |
-| CORS allows local frontend origin |  |  |
-| Public endpoints require no auth/cookies |  |  |
-| CamelCase JSON fields |  |  |
-| `GET /route-candidates/nearby` |  |  |
-| `GET /route-candidates/search` |  |  |
-| `GET /routes/{routeId}/directions?routeVersionId=...` |  |  |
-| `GET /routes/{routeId}/directions/{routeDirectionId}/geometry?routeVersionId=...` |  |  |
-| `POST /advice` |  |  |
-| `POST /advice` supports `mode` |  |  |
-| `POST /advice` supports `horizon` |  |  |
-| `POST /advice` supports `fallbackToPreview` |  |  |
-| Preview uses direction start without location |  |  |
-| Preview is not distance-gated by rider location |  |  |
-| Successful advice returns `recommendedSeatArea` |  |  |
-| Successful advice returns `sunCondition` |  |  |
-| Night returns neutral advice, not withheld |  |  |
-| Non-2xx errors use stable envelope |  |  |
-| Stale version returns `409 routeVersionStale` |  |  |
+| Contract item                                                                     | Status | Notes |
+| --------------------------------------------------------------------------------- | ------ | ----- |
+| CORS allows local frontend origin                                                 |        |       |
+| Public endpoints require no auth/cookies                                          |        |       |
+| CamelCase JSON fields                                                             |        |       |
+| `GET /route-candidates/nearby`                                                    |        |       |
+| `GET /route-candidates/search`                                                    |        |       |
+| `GET /routes/{routeId}/directions?routeVersionId=...`                             |        |       |
+| `GET /routes/{routeId}/directions/{routeDirectionId}/geometry?routeVersionId=...` |        |       |
+| `POST /advice`                                                                    |        |       |
+| `POST /advice` supports `mode`                                                    |        |       |
+| `POST /advice` supports `horizon`                                                 |        |       |
+| `POST /advice` supports `fallbackToPreview`                                       |        |       |
+| Preview uses direction start without location                                     |        |       |
+| Preview is not distance-gated by rider location                                   |        |       |
+| Successful advice returns `recommendedSeatArea`                                   |        |       |
+| Successful advice returns `sunCondition`                                          |        |       |
+| Night returns neutral advice, not withheld                                        |        |       |
+| Non-2xx errors use stable envelope                                                |        |       |
+| Stale version returns `409 routeVersionStale`                                     |        |       |
 
 ## Backend Contract Gaps
 
 Record gaps that must be fixed in `sombreado-service` before Plan 05 can be fully verified against local service.
 
 | Gap | Blocking state | Frontend fallback during Plan 05 | Backend follow-up |
-| --- | --- | --- | --- |
-|  |  |  |  |
+| --- | -------------- | -------------------------------- | ----------------- |
+|     |                |                                  |                   |
 
 ## Result
 
