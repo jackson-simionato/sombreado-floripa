@@ -38,3 +38,29 @@ Triage labels use the canonical skill vocabulary: `bug`, `enhancement`, `needs-t
 ### Domain docs
 
 This is a single-context frontend repo: use root `CONTEXT.md` and future `docs/adr/` records when present. See `docs/agents/domain.md`.
+
+## Engineering standards for coding agents
+
+Coding agents must follow `docs/engineering-standards.md`.
+
+### Branches and commits
+
+- Branch from `develop` unless the user explicitly chooses a different base.
+- Use branch names like `feat/2-short-slug`, `fix/18-short-slug`, `docs/21-short-slug`, `chore/frontend-hooks`, or `refactor/30-short-slug`.
+- Prefer small, coherent commits over one mixed changeset.
+- Use lightweight Conventional Commit subjects such as `feat(routes): add live candidate search`.
+- Stage explicit paths. Do not use `git add .` when unrelated changes may exist.
+
+### Completion checks
+
+Before claiming implementation work is complete, run:
+
+```bash
+npm run format:check
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+```
+
+Use focused tests first when useful, but the full commands above are the default completion gate.

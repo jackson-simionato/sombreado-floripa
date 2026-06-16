@@ -30,7 +30,37 @@ The current v1 flow is defined by:
 
 The frontend app should be implemented at the repository root, not inside a nested `frontend/` folder.
 
-Future implementation should call `sombreado-service` directly from the browser using `NEXT_PUBLIC_API_URL` as the public API base URL convention. Runnable install and development commands should be added when the app is scaffolded.
+The app calls `sombreado-service` directly from the browser using `NEXT_PUBLIC_API_URL` as the public API base URL convention.
+
+Install dependencies:
+
+```bash
+npm ci
+```
+
+Install Git hooks:
+
+```bash
+npm run prepare
+```
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Before completing a change, run:
+
+```bash
+npm run format:check
+npm run lint
+npm run typecheck
+npm run test
+npm run build
+```
+
+See [docs/engineering-standards.md](docs/engineering-standards.md) for branch, commit, hook, and pull request expectations.
 
 ## Not In Scope
 
