@@ -78,11 +78,13 @@ describe("home screen flow", () => {
       await screen.findByRole("searchbox", { name: "Linha" }),
       "TICEN Lagoa"
     );
-    await user.click(screen.getByRole("button", { name: "Buscar linha" }));
 
     const routeButton = await screen.findByRole("button", {
       name: "Selecionar linha 124 TICEN - Lagoa",
     });
+    expect(
+      screen.getByRole("heading", { name: "Procurar linha" })
+    ).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/v1/route-candidates/search?query=TICEN+Lagoa&limit=8",
       { credentials: "omit", method: "GET" }
@@ -112,7 +114,14 @@ describe("home screen flow", () => {
               routeVersionId: "version-330",
               routeCode: "330",
               routeName: "TILAG - Centro",
-              distanceMeters: 420,
+              distanceMeters: 900,
+            },
+            {
+              routeId: "route-124",
+              routeVersionId: "version-124",
+              routeCode: "124",
+              routeName: "TICEN - Lagoa",
+              distanceMeters: 100,
             },
           ],
         }),
@@ -151,10 +160,16 @@ describe("home screen flow", () => {
     );
 
     expect(
-      await screen.findByRole("button", {
-        name: "Selecionar linha 330 TILAG - Centro",
-      })
+      await screen.findByRole("heading", { name: "Escolha sua linha" })
     ).toBeInTheDocument();
+    expect(screen.getByText("1 de 4")).toBeInTheDocument();
+    const routeButtons = await screen.findAllByRole("button", {
+      name: /Selecionar linha/i,
+    });
+    expect(routeButtons.map((button) => button.textContent)).toEqual([
+      "330 TILAG - Centro900 m de você",
+      "124 TICEN - Lagoa100 m de você",
+    ]);
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/v1/route-candidates/nearby?lat=-27.5969&lng=-48.5488&radiusMeters=1200&limit=5",
       { credentials: "omit", method: "GET" }

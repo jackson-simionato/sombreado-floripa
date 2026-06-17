@@ -217,6 +217,7 @@ export type ScreenStateName =
   | "noNearbyRoutes"
   | "manualRouteSearch"
   | "noManualResults"
+  | "liveRouteSelectedUnsupported"
   | "directionChoice"
   | "routeWithoutDirections"
   | "routeConfirmation"

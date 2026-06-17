@@ -1,5 +1,5 @@
-import { LiveHomePage } from "../src/app/LiveHomePage";
+import { LiveProductHomePage } from "../src/app/LiveProductHomePage";
 
 export default function HomePage() {
-  return <LiveHomePage apiBaseUrl={process.env.NEXT_PUBLIC_API_URL} />;
+  return <LiveProductHomePage apiBaseUrl={process.env.NEXT_PUBLIC_API_URL} />;
 }

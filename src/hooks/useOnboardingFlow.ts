@@ -12,13 +12,18 @@ import {
 import {
   buildTargetAdvisoryRequest,
   toDirectionChoices,
-  toRouteCandidates,
 } from "../domain/adapters";
+import {
+  LiveRouteCandidateClientError,
+  createMockRiderFlowClient,
+} from "../api/riderFlowClient";
+import type { RiderFlowClient } from "../api/riderFlowClient";
 import {
   flowReducer,
   initialFlowState,
   normalizeFlowError,
 } from "../domain/flow";
+import type { LocationProvider } from "../location/locationProvider";
 import type {
   DirectionChoice,
   FlowError,
@@ -39,8 +44,11 @@ import {
 import { getPrototypeScenario } from "../mocks/scenarioStates";
 
 type UseOnboardingFlowOptions = {
+  locationProvider?: LocationProvider;
   mockScenarioId?: MockScenarioId;
+  riderFlowClient?: RiderFlowClient;
   scenarioId?: MockScenarioId;
+  stopAfterRouteSelection?: boolean;
   prototypeScenarioId?: PrototypeScenarioId;
   locationResult?: MockLocationResult;
   mapAvailabilityOverride?: MapAvailability;
@@ -65,6 +73,9 @@ export type OnboardingFlowController = {
 };
 
 export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
+  const injectedLocationProvider = options.locationProvider;
+  const injectedRiderFlowClient = options.riderFlowClient;
+  const stopAfterRouteSelection = options.stopAfterRouteSelection ?? false;
   const seededScenario =
     options.prototypeScenarioId === undefined
       ? undefined
@@ -105,8 +116,14 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     [scenarioId]
   );
 
+  const routeCandidateClient = useMemo(
+    () => injectedRiderFlowClient ?? createMockRiderFlowClient(api),
+    [api, injectedRiderFlowClient]
+  );
+
   const locationProvider = useMemo(
     () =>
+      injectedLocationProvider ??
       createMockLocationProvider(
         options.locationResult ??
           seededScenario?.locationResult ??
@@ -114,7 +131,12 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
             ? { kind: "denied" }
             : { kind: "granted", lat: -27.5969, lng: -48.5488 })
       ),
-    [options.locationResult, scenarioId, seededScenario?.locationResult]
+    [
+      injectedLocationProvider,
+      options.locationResult,
+      scenarioId,
+      seededScenario?.locationResult,
+    ]
   );
 
   const nextRequestId = useCallback((prefix: string): RequestId => {
@@ -127,7 +149,9 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       const normalized =
         error instanceof MockApiError
           ? error.flowError
-          : normalizeFlowError(error);
+          : error instanceof LiveRouteCandidateClientError
+            ? error.flowError
+            : normalizeFlowError(error);
       const flowError: FlowError = {
         ...normalized,
         retryTarget,
@@ -210,7 +234,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     }, 500);
 
     try {
-      const response = await api.listRoutes({
+      const candidates = await routeCandidateClient.listNearbyRouteCandidates({
         lat: location.lat,
         lng: location.lng,
         radiusMeters: 1200,
@@ -219,7 +243,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       dispatch({
         type: "nearbyRoutesSucceeded",
         requestId,
-        candidates: toRouteCandidates(response, { source: "nearby" }),
+        candidates,
       });
     } catch (error) {
       failOperation(requestId, error, {
@@ -230,10 +254,15 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         limit: 5,
       });
     }
-  }, [api, failOperation, locationProvider, nextRequestId]);
+  }, [failOperation, locationProvider, nextRequestId, routeCandidateClient]);
 
   const selectRoute = useCallback(
     async (route: RouteCandidate, source: "nearby" | "manual") => {
+      if (stopAfterRouteSelection) {
+        dispatch({ type: "routeSelectionStopped", route, source });
+        return;
+      }
+
       const requestId = nextRequestId("directions");
       dispatch({ type: "routeSelected", route, source, requestId });
 
@@ -251,7 +280,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         });
       }
     },
-    [api, failOperation, nextRequestId]
+    [api, failOperation, nextRequestId, stopAfterRouteSelection]
   );
 
   const selectDirection = useCallback(
@@ -405,11 +434,14 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       dispatch({ type: "manualSearchRequested", requestId, query, limit: 8 });
 
       try {
-        const response = await api.listRoutes({ query, limit: 8 });
+        const candidates = await routeCandidateClient.searchRouteCandidates({
+          query,
+          limit: 8,
+        });
         dispatch({
           type: "manualSearchSucceeded",
           requestId,
-          candidates: toRouteCandidates(response, { source: "manual" }),
+          candidates,
         });
       } catch (error) {
         failOperation(requestId, error, {
@@ -424,11 +456,11 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       window.clearTimeout(timerId);
     };
   }, [
-    api,
     failOperation,
     manualQueryDraft,
     manualSearchEnabled,
     nextRequestId,
+    routeCandidateClient,
     state.screen,
   ]);
 

@@ -233,6 +233,29 @@ export function OnboardingFlowScreen({
       );
       break;
 
+    case "liveRouteSelectedUnsupported":
+      content = (
+        <section className={styles.stack} aria-labelledby="screen-title">
+          <h1 id="screen-title" className={styles.titleCompact}>
+            Linha carregada ao vivo
+          </h1>
+          <p className={styles.body}>
+            Ainda não é possível continuar com dados ao vivo neste ambiente. A
+            próxima etapa vai conectar sentido, confirmação e conselho.
+          </p>
+          <RouteSummary label="Linha" routeLabel={selectedRouteLabel} />
+        </section>
+      );
+      stickyPrimary = (
+        <Button onClick={actions.changeRoute}>Voltar para linhas</Button>
+      );
+      stickySecondary = (
+        <Button onClick={actions.openManualSearch} variant="secondary">
+          Procurar outra linha
+        </Button>
+      );
+      break;
+
     case "directionChoice":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">

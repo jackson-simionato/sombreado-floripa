@@ -165,6 +165,23 @@ describe("flow reducer", () => {
     expect(state.manualQuery).toBe("lagoa");
   });
 
+  test("stops live route selection before direction choice", () => {
+    const state = flowReducer(initialFlowState, {
+      type: "routeSelectionStopped",
+      route,
+      source: "nearby",
+    });
+
+    expect(state.screen).toBe("liveRouteSelectedUnsupported");
+    expect(state.requestStatus).toBe("success");
+    expect(state.selectedRoute).toMatchObject({
+      routeId: "route-a",
+      routeVersionId: "version-a",
+      source: "nearby",
+    });
+    expect(state.pendingRequests).toEqual({});
+  });
+
   test.each([["denied"], ["unavailable"], ["timeout"]] as const)(
     "maps %s location result to location denied recovery while preserving reason",
     (kind) => {
