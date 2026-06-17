@@ -60,6 +60,34 @@ Local live browser smoke is blocked until
 backend CORS. Do not add backend CORS behavior, API routes, scraper behavior, or
 advisory computation to this frontend repository.
 
+## Issue #3 Live Nearby Route Candidates
+
+Issue #3 moves live Route Candidate discovery from the temporary issue #2 smoke
+runtime into the reducer-driven Onboard Flow. It still does not complete full
+Plan 05 API integration.
+
+Expected issue #3 behavior:
+
+- `/` uses the same route-first Onboard Flow screens as the prototype runtime,
+  backed by a live rider-flow client.
+- `/prototype` keeps the fixture-driven mocked flow and scenario switcher.
+- Nearby Route Candidates are requested only after the Rider taps the location
+  action.
+- Nearby lookup sends `radiusMeters: 1200` and `limit: 5`.
+- Manual Route Search remains live and uses the same rider-flow client boundary.
+- Nearby and manual Route Candidate order preserves Sombreado Service response
+  order.
+- Route Candidates remain route-only before Direction Choice.
+- Selecting a live Route Candidate stops before Direction Choice until issue #4.
+- Malformed responses, public API errors, network failures, and stale reducer
+  requests are handled through controlled flow states.
+
+Local live browser smoke still depends on
+`jackson-simionato/sombreado-service#11` allowing the local Next.js origin
+through backend CORS. Do not add backend CORS behavior, API routes, scraper
+behavior, route-data processing, or advisory computation to this frontend
+repository.
+
 ## Local-Service Smoke Checklist
 
 Mark each state as verified against local service, verified with fixtures only, blocked by backend gap, or not checked.
