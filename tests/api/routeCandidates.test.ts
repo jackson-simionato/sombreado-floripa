@@ -106,6 +106,39 @@ describe("route candidate browser API client", () => {
     });
   });
 
+  test("forwards abort signals to nearby and manual fetches", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse({ routes: [] }))
+      .mockResolvedValueOnce(jsonResponse({ routes: [] }));
+    const nearbyController = new AbortController();
+    const manualController = new AbortController();
+    const client = createRouteCandidatesClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+
+    await client.listNearbyRouteCandidates(
+      { lat: -27.5969, lng: -48.5488, radiusMeters: 1200, limit: 5 },
+      { signal: nearbyController.signal }
+    );
+    await client.searchRouteCandidates(
+      { query: "TICEN", limit: 8 },
+      { signal: manualController.signal }
+    );
+
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      1,
+      "http://localhost:8000/v1/route-candidates/nearby?lat=-27.5969&lng=-48.5488&radiusMeters=1200&limit=5",
+      { credentials: "omit", method: "GET", signal: nearbyController.signal }
+    );
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      2,
+      "http://localhost:8000/v1/route-candidates/search?query=TICEN&limit=8",
+      { credentials: "omit", method: "GET", signal: manualController.signal }
+    );
+  });
+
   test("normalizes malformed route candidate responses", async () => {
     const fetchMock = vi
       .fn()

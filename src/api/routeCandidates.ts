@@ -24,6 +24,10 @@ export type LiveApiErrorKind =
   | "http"
   | "malformedResponse";
 
+export type RouteCandidateRequestOptions = {
+  signal?: AbortSignal;
+};
+
 export class LiveApiError extends Error {
   readonly kind: LiveApiErrorKind;
   readonly status?: number;
@@ -41,16 +45,22 @@ export class LiveApiError extends Error {
 }
 
 export type RouteCandidatesClient = {
-  listNearbyRouteCandidates(input: {
-    lat: number;
-    lng: number;
-    radiusMeters: number;
-    limit: number;
-  }): Promise<RouteCandidatesResponseTransport>;
-  searchRouteCandidates(input: {
-    query: string;
-    limit: number;
-  }): Promise<RouteCandidatesResponseTransport>;
+  listNearbyRouteCandidates(
+    input: {
+      lat: number;
+      lng: number;
+      radiusMeters: number;
+      limit: number;
+    },
+    options?: RouteCandidateRequestOptions
+  ): Promise<RouteCandidatesResponseTransport>;
+  searchRouteCandidates(
+    input: {
+      query: string;
+      limit: number;
+    },
+    options?: RouteCandidateRequestOptions
+  ): Promise<RouteCandidatesResponseTransport>;
 };
 
 export function requireApiBaseUrl(value: string | undefined): string {
@@ -76,7 +86,7 @@ export function createRouteCandidatesClient({
   const normalizedBaseUrl = requireApiBaseUrl(baseUrl);
 
   return {
-    listNearbyRouteCandidates(input) {
+    listNearbyRouteCandidates(input, options) {
       const searchParams = new URLSearchParams({
         lat: input.lat.toString(),
         lng: input.lng.toString(),
@@ -86,11 +96,12 @@ export function createRouteCandidatesClient({
 
       return requestRouteCandidates(
         fetchImpl,
-        `${normalizedBaseUrl}/route-candidates/nearby?${searchParams.toString()}`
+        `${normalizedBaseUrl}/route-candidates/nearby?${searchParams.toString()}`,
+        options
       );
     },
 
-    searchRouteCandidates(input) {
+    searchRouteCandidates(input, options) {
       const searchParams = new URLSearchParams({
         query: input.query,
         limit: input.limit.toString(),
@@ -98,7 +109,8 @@ export function createRouteCandidatesClient({
 
       return requestRouteCandidates(
         fetchImpl,
-        `${normalizedBaseUrl}/route-candidates/search?${searchParams.toString()}`
+        `${normalizedBaseUrl}/route-candidates/search?${searchParams.toString()}`,
+        options
       );
     },
   };
@@ -106,12 +118,17 @@ export function createRouteCandidatesClient({
 
 async function requestRouteCandidates(
   fetchImpl: typeof fetch,
-  url: string
+  url: string,
+  options?: RouteCandidateRequestOptions
 ): Promise<RouteCandidatesResponseTransport> {
   let response: Response;
 
   try {
-    response = await fetchImpl(url, { method: "GET", credentials: "omit" });
+    response = await fetchImpl(url, {
+      method: "GET",
+      credentials: "omit",
+      ...(options?.signal === undefined ? {} : { signal: options.signal }),
+    });
   } catch (error) {
     throw new LiveApiError({
       kind: "network",
