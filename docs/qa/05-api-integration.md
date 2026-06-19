@@ -88,6 +88,34 @@ through backend CORS. Do not add backend CORS behavior, API routes, scraper
 behavior, route-data processing, or advisory computation to this frontend
 repository.
 
+## Issue #4 Manual Search And Direction Choice
+
+Issue #4 completes the live route-first selection path through Direction
+Choice. It stops before Route Geometry, which remains owned by issue #5.
+
+Expected issue #4 behavior:
+
+- Manual Route Search remains debounced and preserves service relevance order.
+- Clearing or replacing a query cancels obsolete requests and stale results.
+- Nearby and manual Route Candidates remain route-only.
+- Selecting either candidate source loads Direction Choices through the shared
+  rider-flow client.
+- Direction requests include the selected `routeVersionId` and preserve service
+  order.
+- Empty Direction Choices render Route Without Directions.
+- `routeVersionStale` refreshes candidates and requires explicit route and
+  direction reselection.
+- Generic Direction Choice failures retry the exact route/version request.
+- Live direction selection stops before Geometry, which remains issue #5.
+- `/prototype` keeps fixture-backed Direction Choice and downstream states.
+
+Automated coverage verifies the live manual/direction path, cancellation,
+response order, route-version pinning, stale-version recovery, Route Without
+Directions, and prototype parity. Local browser smoke was not run during this
+slice because it requires a separately running local `sombreado-service` with
+compatible seeded route data and CORS configuration. This is an environment
+dependency, not permission to add backend behavior to this repository.
+
 ## Local-Service Smoke Checklist
 
 Mark each state as verified against local service, verified with fixtures only, blocked by backend gap, or not checked.
