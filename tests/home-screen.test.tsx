@@ -58,6 +58,12 @@ describe("home screen flow", () => {
               ? {
                   directions: [
                     {
+                      routeDirectionId: "direction-124-inbound",
+                      sequence: 2,
+                      name: "Lagoa para TICEN",
+                      departureLabels: ["Lagoa", "TICEN"],
+                    },
+                    {
                       routeDirectionId: "direction-124-outbound",
                       sequence: 1,
                       name: "TICEN para Lagoa",
@@ -115,10 +121,13 @@ describe("home screen flow", () => {
       await screen.findByRole("heading", { name: "Escolha o sentido" })
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", {
-        name: "Selecionar sentido TICEN para Lagoa",
-      })
-    ).toBeInTheDocument();
+      screen
+        .getAllByRole("button", { name: /Selecionar sentido/i })
+        .map((button) => button.textContent)
+    ).toEqual([
+      "Lagoa para TICENLagoa · TICEN",
+      "TICEN para LagoaTICEN · Lagoa",
+    ]);
     expect(
       fetchMock.mock.calls.some(
         ([url]) =>
@@ -126,6 +135,24 @@ describe("home screen flow", () => {
           "http://localhost:8000/v1/routes/route-124/directions?routeVersionId=version-124"
       )
     ).toBe(true);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar sentido Lagoa para TICEN",
+      })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Sentido escolhido" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("124 TICEN - Lagoa")).toBeInTheDocument();
+    expect(screen.getByText("Lagoa para TICEN")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Trocar sentido" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Trocar linha" })
+    ).toBeInTheDocument();
   });
 
   test("loads nearby route candidates live after rider location action", async () => {
@@ -292,6 +319,11 @@ describe("home screen flow", () => {
       await screen.findByRole("button", {
         name: "Selecionar linha 124 TICEN - Lagoa",
       })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "As opções desta linha foram atualizadas. Escolha a linha e o sentido novamente."
+      )
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: "Escolha o sentido" })

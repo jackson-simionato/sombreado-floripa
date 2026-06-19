@@ -125,6 +125,14 @@ export function OnboardingFlowScreen({
           <p className={styles.body}>
             Mostramos linhas perto de você. O sentido vem no próximo passo.
           </p>
+          {state.routeRefreshNotice === "routeVersionStale" ? (
+            <div className={styles.noticePanel} role="status">
+              <p>
+                As opções desta linha foram atualizadas. Escolha a linha e o
+                sentido novamente.
+              </p>
+            </div>
+          ) : null}
           <div className={styles.list}>
             {state.nearbyCandidates.map((route) => (
               <RouteCard
@@ -193,9 +201,21 @@ export function OnboardingFlowScreen({
               value={manualQueryDraft}
             />
           </label>
+          {state.routeRefreshNotice === "routeVersionStale" ? (
+            <div className={styles.noticePanel} role="status">
+              <p>
+                As opções desta linha foram atualizadas. Escolha a linha e o
+                sentido novamente.
+              </p>
+            </div>
+          ) : null}
           {manualQueryDraft.trim().length === 0 ? (
             <p className={styles.metaText}>
               Busque pelo número, terminal ou destino.
+            </p>
+          ) : state.requestStatus === "loading" ? (
+            <p className={styles.metaText} role="status">
+              Buscando linhas...
             </p>
           ) : state.manualCandidates.length > 0 ? (
             <div
@@ -233,26 +253,18 @@ export function OnboardingFlowScreen({
       );
       break;
 
-    case "liveRouteSelectedUnsupported":
+    case "loadingDirectionChoices":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
+          <p className={styles.progress}>2 de 4</p>
           <h1 id="screen-title" className={styles.titleCompact}>
-            Linha carregada ao vivo
+            Carregando sentidos desta linha...
           </h1>
-          <p className={styles.body}>
-            Ainda não é possível continuar com dados ao vivo neste ambiente. A
-            próxima etapa vai conectar sentido, confirmação e conselho.
-          </p>
-          <RouteSummary label="Linha" routeLabel={selectedRouteLabel} />
+          <RouteSummary
+            label="Linha escolhida"
+            routeLabel={selectedRouteLabel}
+          />
         </section>
-      );
-      stickyPrimary = (
-        <Button onClick={actions.changeRoute}>Voltar para linhas</Button>
-      );
-      stickySecondary = (
-        <Button onClick={actions.openManualSearch} variant="secondary">
-          Procurar outra linha
-        </Button>
       );
       break;
 
@@ -280,6 +292,31 @@ export function OnboardingFlowScreen({
             ))}
           </div>
         </section>
+      );
+      stickySecondary = (
+        <Button onClick={actions.changeRoute} variant="secondary">
+          Trocar linha
+        </Button>
+      );
+      break;
+
+    case "liveDirectionSelectedUnsupported":
+      content = (
+        <section className={styles.stack} aria-labelledby="screen-title">
+          <h1 id="screen-title" className={styles.titleCompact}>
+            Sentido escolhido
+          </h1>
+          <p className={styles.body}>
+            Confira a linha e o sentido antes da próxima etapa.
+          </p>
+          <RouteSummary
+            directionLabel={state.selectedDirection?.name}
+            routeLabel={selectedRouteLabel}
+          />
+        </section>
+      );
+      stickyPrimary = (
+        <Button onClick={actions.changeDirection}>Trocar sentido</Button>
       );
       stickySecondary = (
         <Button onClick={actions.changeRoute} variant="secondary">

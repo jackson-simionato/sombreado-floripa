@@ -64,11 +64,6 @@ export type FlowEvent =
       requestId: RequestId;
     }
   | {
-      type: "routeSelectionStopped";
-      route: RouteCandidate;
-      source: RouteSelectionSource;
-    }
-  | {
       type: "directionsSucceeded";
       requestId: RequestId;
       directions: DirectionChoice[];
@@ -231,19 +226,6 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         ...state,
         screen: "findingNearbyRoutes",
       });
-
-    case "routeSelectionStopped":
-      return clearAdviceAndGeometry(
-        clearError({
-          ...state,
-          screen: "liveRouteSelectedUnsupported",
-          requestStatus: "success",
-          selectedRoute: toSelectedRoute(event.route, event.source),
-          selectedDirection: undefined,
-          directionChoices: [],
-          pendingRequests: {},
-        })
-      );
 
     case "routeSelected":
       return clearAdviceAndGeometry(
