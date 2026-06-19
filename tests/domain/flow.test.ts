@@ -91,7 +91,7 @@ describe("flow reducer", () => {
       source: "nearby",
       requestId: directionsRequestId,
     });
-    expect(state.screen).toBe("findingNearbyRoutes");
+    expect(state.screen).toBe("loadingDirectionChoices");
     expect(state.selectedRoute).toEqual({
       routeId: "route-a",
       routeVersionId: "version-a",
@@ -160,26 +160,98 @@ describe("flow reducer", () => {
       requestId: "directions-1",
     });
 
-    expect(state.screen).toBe("findingNearbyRoutes");
+    expect(state.screen).toBe("loadingDirectionChoices");
     expect(state.selectedRoute?.source).toBe("manual");
     expect(state.manualQuery).toBe("lagoa");
   });
 
-  test("stops live route selection before direction choice", () => {
-    const state = flowReducer(initialFlowState, {
-      type: "routeSelectionStopped",
+  test("stops live direction selection before geometry", () => {
+    const routeSelected = flowReducer(initialFlowState, {
+      type: "routeSelected",
       route,
       source: "nearby",
+      requestId: "directions-1",
+    });
+    const directionsLoaded = flowReducer(routeSelected, {
+      type: "directionsSucceeded",
+      requestId: "directions-1",
+      directions: [direction],
+    });
+    const state = flowReducer(directionsLoaded, {
+      type: "directionSelectionStopped",
+      direction,
     });
 
-    expect(state.screen).toBe("liveRouteSelectedUnsupported");
+    expect(state.screen).toBe("liveDirectionSelectedUnsupported");
     expect(state.requestStatus).toBe("success");
     expect(state.selectedRoute).toMatchObject({
       routeId: "route-a",
       routeVersionId: "version-a",
       source: "nearby",
     });
+    expect(state.selectedDirection).toMatchObject({
+      routeDirectionId: "direction-a",
+    });
     expect(state.pendingRequests).toEqual({});
+  });
+
+  test("clears manual results and pending state when the query is cleared", () => {
+    const searching = flowReducer(
+      {
+        ...initialFlowState,
+        screen: "manualRouteSearch",
+        manualQuery: "lagoa",
+        manualCandidates: [route],
+        error: { kind: "api", message: "failed" },
+        pendingRequests: { manualSearch: "manual-1" },
+      },
+      { type: "manualSearchCleared" }
+    );
+
+    expect(searching).toMatchObject({
+      screen: "manualRouteSearch",
+      requestStatus: "idle",
+      manualQuery: "",
+      manualCandidates: [],
+      pendingRequests: {},
+    });
+    expect(searching.error).toBeUndefined();
+    expect(flowReducer(searching, { type: "manualSearchCleared" })).toBe(
+      searching
+    );
+  });
+
+  test("clears stale selection and marks candidates for explicit reselection", () => {
+    const selected = flowReducer(initialFlowState, {
+      type: "routeSelected",
+      route,
+      source: "manual",
+      requestId: "directions-1",
+    });
+    const state = flowReducer(selected, {
+      type: "routeVersionStaleDetected",
+    });
+
+    expect(state.screen).toBe("manualRouteSearch");
+    expect(state.selectedRoute).toBeUndefined();
+    expect(state.selectedDirection).toBeUndefined();
+    expect(state.directionChoices).toEqual([]);
+    expect(state.routeRefreshNotice).toBe("routeVersionStale");
+    expect(state.pendingRequests).toEqual({});
+  });
+
+  test("clears previous manual candidates when a new query starts", () => {
+    const state = flowReducer(
+      { ...initialFlowState, manualCandidates: [route] },
+      {
+        type: "manualSearchRequested",
+        requestId: "manual-2",
+        query: "centro",
+      }
+    );
+
+    expect(state.manualCandidates).toEqual([]);
+    expect(state.pendingRequests.manualSearch).toBe("manual-2");
   });
 
   test.each([["denied"], ["unavailable"], ["timeout"]] as const)(

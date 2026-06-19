@@ -389,6 +389,7 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
         retryTarget: {
           kind: "directions",
           routeId: selectedNearbyRoute.routeId,
+          routeVersionId: selectedNearbyRoute.routeVersionId,
         },
       }),
       mockScenarioId: "nearby-routes",

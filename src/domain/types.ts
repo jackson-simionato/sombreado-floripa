@@ -218,7 +218,9 @@ export type ScreenStateName =
   | "manualRouteSearch"
   | "noManualResults"
   | "liveRouteSelectedUnsupported"
+  | "loadingDirectionChoices"
   | "directionChoice"
+  | "liveDirectionSelectedUnsupported"
   | "routeWithoutDirections"
   | "routeConfirmation"
   | "routeConfirmationFallback"
@@ -239,7 +241,7 @@ export type RetryTarget =
       limit?: number;
     }
   | { kind: "manualSearch"; query: string; limit?: number }
-  | { kind: "directions"; routeId: string }
+  | { kind: "directions"; routeId: string; routeVersionId: string }
   | {
       kind: "geometry";
       routeId: string;
@@ -287,6 +289,8 @@ export type PendingRetry = {
   retryTarget: RetryTarget;
 };
 
+export type RouteRefreshNotice = "routeVersionStale";
+
 export type FlowState = {
   screen: ScreenStateName;
   requestStatus: RequestStatus;
@@ -303,6 +307,7 @@ export type FlowState = {
   advice?: UiAdviceState;
   advisoryRequest?: TargetAdvisoryRequest;
   error?: FlowError;
+  routeRefreshNotice?: RouteRefreshNotice;
   pendingRetry?: PendingRetry;
   pendingRequests: {
     nearbyRoutes?: RequestId;

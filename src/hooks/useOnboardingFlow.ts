@@ -280,6 +280,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         failOperation(requestId, error, {
           kind: "directions",
           routeId: route.routeId,
+          routeVersionId: route.routeVersionId,
         });
       }
     },

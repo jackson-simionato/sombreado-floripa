@@ -55,6 +55,7 @@ export type FlowEvent =
       requestId: RequestId;
       candidates: RouteCandidate[];
     }
+  | { type: "manualSearchCleared" }
   | { type: "continueWaiting" }
   | {
       type: "routeSelected";
@@ -77,6 +78,8 @@ export type FlowEvent =
       direction: DirectionChoice;
       requestId: RequestId;
     }
+  | { type: "directionSelectionStopped"; direction: DirectionChoice }
+  | { type: "routeVersionStaleDetected" }
   | {
       type: "geometrySucceeded";
       requestId: RequestId;
@@ -175,9 +178,32 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         screen: "manualRouteSearch",
         requestStatus: "loading",
         manualQuery: event.query,
+        manualCandidates: [],
         pendingRequests: {
           ...state.pendingRequests,
           manualSearch: event.requestId,
+        },
+      });
+
+    case "manualSearchCleared":
+      if (
+        state.manualQuery.length === 0 &&
+        state.manualCandidates.length === 0 &&
+        state.pendingRequests.manualSearch === undefined &&
+        state.error === undefined
+      ) {
+        return state;
+      }
+      return compactState({
+        ...state,
+        screen: "manualRouteSearch",
+        requestStatus: "idle",
+        manualQuery: "",
+        manualCandidates: [],
+        error: undefined,
+        pendingRequests: {
+          ...state.pendingRequests,
+          manualSearch: undefined,
         },
       });
 
@@ -223,11 +249,12 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
       return clearAdviceAndGeometry(
         clearError({
           ...state,
-          screen: "findingNearbyRoutes",
+          screen: "loadingDirectionChoices",
           requestStatus: "loading",
           selectedRoute: toSelectedRoute(event.route, event.source),
           selectedDirection: undefined,
           directionChoices: [],
+          routeRefreshNotice: undefined,
           pendingRequests: {
             ...state.pendingRequests,
             directions: event.requestId,
@@ -255,6 +282,39 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
           directions: undefined,
         },
       });
+
+    case "directionSelectionStopped":
+      if (state.selectedRoute === undefined) {
+        return state;
+      }
+      return clearAdviceAndGeometry(
+        clearError({
+          ...state,
+          screen: "liveDirectionSelectedUnsupported",
+          requestStatus: "success",
+          selectedDirection: toSelectedDirection(event.direction),
+          pendingRequests: {},
+        })
+      );
+
+    case "routeVersionStaleDetected": {
+      const source = state.selectedRoute?.source;
+      return clearAdviceAndGeometry(
+        clearError({
+          ...state,
+          screen:
+            source === "manual" ? "manualRouteSearch" : "findingNearbyRoutes",
+          requestStatus: "loading",
+          manualCandidates: source === "manual" ? [] : state.manualCandidates,
+          nearbyCandidates: source === "nearby" ? [] : state.nearbyCandidates,
+          selectedRoute: undefined,
+          selectedDirection: undefined,
+          directionChoices: [],
+          routeRefreshNotice: "routeVersionStale",
+          pendingRequests: {},
+        })
+      );
+    }
 
     case "directionSelected":
       if (state.selectedRoute === undefined) {
