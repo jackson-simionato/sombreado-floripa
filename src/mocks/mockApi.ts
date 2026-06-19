@@ -90,9 +90,19 @@ export function createMockApi(
       };
     },
 
-    async getRouteDirections(routeId, _routeVersionId) {
+    async getRouteDirections(routeId, routeVersionId) {
       await delay(delays.directionsMs);
       rejectIfApiError(scenarioId, "directions");
+
+      const route = routesResponse.routes.find(
+        (candidate) => candidate.route_id === routeId
+      );
+      if (route !== undefined && route.route_version_id !== routeVersionId) {
+        throw new MockApiError({
+          kind: "routeVersionStale",
+          message: "Mock route version is stale",
+        });
+      }
 
       if (
         scenarioId === "route-no-directions" ||

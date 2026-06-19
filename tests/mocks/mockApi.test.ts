@@ -174,6 +174,19 @@ describe("mock fixtures and API", () => {
     });
   });
 
+  test("rejects direction lookup against a stale route version", async () => {
+    await expect(
+      createMockApi().getRouteDirections(
+        fixtureIds.routes.lagoa,
+        "stale-version"
+      )
+    ).rejects.toMatchObject({
+      flowError: {
+        kind: "routeVersionStale",
+      },
+    });
+  });
+
   test("provides deterministic mock location results for denied, unavailable, and timeout", async () => {
     await expect(
       createMockLocationProvider({ kind: "denied" }).getCurrentLocation()
