@@ -9,10 +9,8 @@ import {
   useState,
 } from "react";
 
-import {
-  buildTargetAdvisoryRequest,
-  toDirectionChoices,
-} from "../domain/adapters";
+import { buildTargetAdvisoryRequest } from "../domain/adapters";
+import { isAbortedApiError } from "../api/browserApi";
 import {
   LiveRiderFlowClientError,
   createMockRiderFlowClient,
@@ -48,7 +46,7 @@ type UseOnboardingFlowOptions = {
   mockScenarioId?: MockScenarioId;
   riderFlowClient?: RiderFlowClient;
   scenarioId?: MockScenarioId;
-  stopAfterRouteSelection?: boolean;
+  stopAfterDirectionSelection?: boolean;
   prototypeScenarioId?: PrototypeScenarioId;
   locationResult?: MockLocationResult;
   mapAvailabilityOverride?: MapAvailability;
@@ -75,7 +73,8 @@ export type OnboardingFlowController = {
 export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   const injectedLocationProvider = options.locationProvider;
   const injectedRiderFlowClient = options.riderFlowClient;
-  const stopAfterRouteSelection = options.stopAfterRouteSelection ?? false;
+  const stopAfterDirectionSelection =
+    options.stopAfterDirectionSelection ?? false;
   const seededScenario =
     options.prototypeScenarioId === undefined
       ? undefined
@@ -91,6 +90,8 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     seededScenario === undefined
   );
   const requestSequenceRef = useRef(0);
+  const manualSearchAbortRef = useRef<AbortController | undefined>(undefined);
+  const directionsAbortRef = useRef<AbortController | undefined>(undefined);
 
   const scenarioId =
     options.mockScenarioId ??
@@ -116,7 +117,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     [scenarioId]
   );
 
-  const routeCandidateClient = useMemo(
+  const riderFlowClient = useMemo(
     () => injectedRiderFlowClient ?? createMockRiderFlowClient(api),
     [api, injectedRiderFlowClient]
   );
@@ -212,71 +213,102 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     dispatch({ type: "manualSearchOpened" });
   }, []);
 
+  const requestNearbyCandidates = useCallback(
+    async (location: { lat: number; lng: number }) => {
+      const requestId = nextRequestId("nearby");
+      dispatch({
+        type: "locationResolved",
+        requestId,
+        result: { kind: "granted", ...location },
+        radiusMeters: 1200,
+        limit: 5,
+      });
+
+      window.setTimeout(() => {
+        dispatch({ type: "nearbySlowThresholdReached", requestId });
+      }, 500);
+
+      try {
+        const candidates = await riderFlowClient.listNearbyRouteCandidates({
+          lat: location.lat,
+          lng: location.lng,
+          radiusMeters: 1200,
+          limit: 5,
+        });
+        dispatch({
+          type: "nearbyRoutesSucceeded",
+          requestId,
+          candidates,
+        });
+      } catch (error) {
+        failOperation(requestId, error, {
+          kind: "nearbyRoutes",
+          lat: location.lat,
+          lng: location.lng,
+          radiusMeters: 1200,
+          limit: 5,
+        });
+      }
+    },
+    [failOperation, nextRequestId, riderFlowClient]
+  );
+
   const requestLocation = useCallback(async () => {
     dispatch({ type: "locationRequested" });
 
-    const requestId = nextRequestId("nearby");
     const location = await locationProvider.getCurrentLocation();
-    dispatch({
-      type: "locationResolved",
-      requestId,
-      result: location,
-      radiusMeters: 1200,
-      limit: 5,
-    });
-
     if (location.kind !== "granted") {
+      dispatch({
+        type: "locationResolved",
+        requestId: nextRequestId("nearby"),
+        result: location,
+      });
       return;
     }
 
-    window.setTimeout(() => {
-      dispatch({ type: "nearbySlowThresholdReached", requestId });
-    }, 500);
-
-    try {
-      const candidates = await routeCandidateClient.listNearbyRouteCandidates({
-        lat: location.lat,
-        lng: location.lng,
-        radiusMeters: 1200,
-        limit: 5,
-      });
-      dispatch({
-        type: "nearbyRoutesSucceeded",
-        requestId,
-        candidates,
-      });
-    } catch (error) {
-      failOperation(requestId, error, {
-        kind: "nearbyRoutes",
-        lat: location.lat,
-        lng: location.lng,
-        radiusMeters: 1200,
-        limit: 5,
-      });
-    }
-  }, [failOperation, locationProvider, nextRequestId, routeCandidateClient]);
+    await requestNearbyCandidates({ lat: location.lat, lng: location.lng });
+  }, [locationProvider, nextRequestId, requestNearbyCandidates]);
 
   const selectRoute = useCallback(
     async (route: RouteCandidate, source: "nearby" | "manual") => {
-      if (stopAfterRouteSelection) {
-        dispatch({ type: "routeSelectionStopped", route, source });
-        return;
-      }
-
       const requestId = nextRequestId("directions");
+      directionsAbortRef.current?.abort();
+      const controller = new AbortController();
+      directionsAbortRef.current = controller;
       dispatch({ type: "routeSelected", route, source, requestId });
 
       try {
-        const response = await api.getRouteDirections(
-          route.routeId,
-          route.routeVersionId
+        const directions = await riderFlowClient.listRouteDirections(
+          { routeId: route.routeId, routeVersionId: route.routeVersionId },
+          { signal: controller.signal }
         );
         dispatch({
           type: "directionsSucceeded",
           requestId,
-          directions: toDirectionChoices(response),
+          directions,
         });
       } catch (error) {
+        if (isAbortedApiError(error)) {
+          return;
+        }
+
+        if (
+          error instanceof LiveRiderFlowClientError &&
+          error.flowError.kind === "routeVersionStale"
+        ) {
+          dispatch({ type: "routeVersionStaleDetected" });
+          if (source === "manual") {
+            setManualSearchEnabled(true);
+            return;
+          }
+          if (state.latestLocation !== undefined) {
+            void requestNearbyCandidates(state.latestLocation);
+          } else {
+            void requestLocation();
+          }
+          return;
+        }
+
         failOperation(requestId, error, {
           kind: "directions",
           routeId: route.routeId,
@@ -284,12 +316,24 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         });
       }
     },
-    [api, failOperation, nextRequestId, stopAfterRouteSelection]
+    [
+      failOperation,
+      nextRequestId,
+      requestLocation,
+      requestNearbyCandidates,
+      riderFlowClient,
+      state.latestLocation,
+    ]
   );
 
   const selectDirection = useCallback(
     async (direction: DirectionChoice) => {
       if (state.selectedRoute === undefined) {
+        return;
+      }
+
+      if (stopAfterDirectionSelection) {
+        dispatch({ type: "directionSelectionStopped", direction });
         return;
       }
 
@@ -316,7 +360,14 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         });
       }
     },
-    [api, failOperation, mapAvailability, nextRequestId, state.selectedRoute]
+    [
+      api,
+      failOperation,
+      mapAvailability,
+      nextRequestId,
+      state.selectedRoute,
+      stopAfterDirectionSelection,
+    ]
   );
 
   const confirmRoute = useCallback(() => {
@@ -380,7 +431,11 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     }
 
     if (retryTarget.kind === "directions") {
-      const route = sourceRouteForRetry(state, retryTarget.routeId);
+      const route = sourceRouteForRetry(
+        state,
+        retryTarget.routeId,
+        retryTarget.routeVersionId
+      );
       if (route !== undefined && state.selectedRoute !== undefined) {
         void selectRoute(route, state.selectedRoute.source);
       }
@@ -430,24 +485,33 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
 
     const query = manualQueryDraft.trim();
     if (query.length === 0) {
+      manualSearchAbortRef.current?.abort();
+      manualSearchAbortRef.current = undefined;
+      dispatch({ type: "manualSearchCleared" });
       return;
     }
 
     const requestId = nextRequestId("manual");
+    let controller: AbortController | undefined;
     const timerId = window.setTimeout(async () => {
+      controller = new AbortController();
+      manualSearchAbortRef.current = controller;
       dispatch({ type: "manualSearchRequested", requestId, query, limit: 8 });
 
       try {
-        const candidates = await routeCandidateClient.searchRouteCandidates({
-          query,
-          limit: 8,
-        });
+        const candidates = await riderFlowClient.searchRouteCandidates(
+          { query, limit: 8 },
+          { signal: controller.signal }
+        );
         dispatch({
           type: "manualSearchSucceeded",
           requestId,
           candidates,
         });
       } catch (error) {
+        if (isAbortedApiError(error)) {
+          return;
+        }
         failOperation(requestId, error, {
           kind: "manualSearch",
           query,
@@ -458,15 +522,27 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
 
     return () => {
       window.clearTimeout(timerId);
+      controller?.abort();
+      if (manualSearchAbortRef.current === controller) {
+        manualSearchAbortRef.current = undefined;
+      }
     };
   }, [
     failOperation,
     manualQueryDraft,
     manualSearchEnabled,
     nextRequestId,
-    routeCandidateClient,
+    riderFlowClient,
     state.screen,
   ]);
+
+  useEffect(
+    () => () => {
+      manualSearchAbortRef.current?.abort();
+      directionsAbortRef.current?.abort();
+    },
+    []
+  );
 
   return {
     manualQueryDraft,
@@ -518,9 +594,11 @@ function mapAvailabilityForScenario(
 
 function sourceRouteForRetry(
   state: FlowState,
-  routeId: string
+  routeId: string,
+  routeVersionId: string
 ): RouteCandidate | undefined {
   return [...state.nearbyCandidates, ...state.manualCandidates].find(
-    (route) => route.routeId === routeId
+    (route) =>
+      route.routeId === routeId && route.routeVersionId === routeVersionId
   );
 }

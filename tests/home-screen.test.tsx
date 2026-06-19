@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
@@ -48,22 +48,37 @@ describe("home screen flow", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("loads manual route candidates live and stops before mocked directions", async () => {
+  test("loads manual route candidates and version-pinned directions live", async () => {
     const user = userEvent.setup();
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          routes: [
-            {
-              routeId: "route-124",
-              routeVersionId: "version-124",
-              routeCode: "124",
-              routeName: "TICEN - Lagoa",
-              directionHints: ["TICEN", "Lagoa"],
-            },
-          ],
-        }),
-        { headers: { "content-type": "application/json" }, status: 200 }
+    const fetchMock = vi.fn().mockImplementation((url: string) =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify(
+            url.includes("/directions?")
+              ? {
+                  directions: [
+                    {
+                      routeDirectionId: "direction-124-outbound",
+                      sequence: 1,
+                      name: "TICEN para Lagoa",
+                      departureLabels: ["TICEN", "Lagoa"],
+                    },
+                  ],
+                }
+              : {
+                  routes: [
+                    {
+                      routeId: "route-124",
+                      routeVersionId: "version-124",
+                      routeCode: "124",
+                      routeName: "TICEN - Lagoa",
+                      directionHints: ["TICEN", "Lagoa"],
+                    },
+                  ],
+                }
+          ),
+          { headers: { "content-type": "application/json" }, status: 200 }
+        )
       )
     );
     vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000/v1");
@@ -87,20 +102,30 @@ describe("home screen flow", () => {
     ).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/v1/route-candidates/search?query=TICEN+Lagoa&limit=8",
-      { credentials: "omit", method: "GET" }
+      {
+        credentials: "omit",
+        method: "GET",
+        signal: expect.any(AbortSignal),
+      }
     );
 
     await user.click(routeButton);
 
     expect(
-      await screen.findByRole("heading", { name: "Linha carregada ao vivo" })
+      await screen.findByRole("heading", { name: "Escolha o sentido" })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Ainda não é possível continuar com dados ao vivo/i)
+      screen.getByRole("button", {
+        name: "Selecionar sentido TICEN para Lagoa",
+      })
     ).toBeInTheDocument();
     expect(
-      screen.queryByRole("heading", { name: "Escolha o sentido" })
-    ).not.toBeInTheDocument();
+      fetchMock.mock.calls.some(
+        ([url]) =>
+          url ===
+          "http://localhost:8000/v1/routes/route-124/directions?routeVersionId=version-124"
+      )
+    ).toBe(true);
   });
 
   test("loads nearby route candidates live after rider location action", async () => {
@@ -174,6 +199,108 @@ describe("home screen flow", () => {
       "http://localhost:8000/v1/route-candidates/nearby?lat=-27.5969&lng=-48.5488&radiusMeters=1200&limit=5",
       { credentials: "omit", method: "GET" }
     );
+  });
+
+  test("silently aborts manual search when the query is cleared", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn(
+      (_url: string, init?: RequestInit) =>
+        new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener("abort", () => {
+            const error = new Error("aborted");
+            error.name = "AbortError";
+            reject(error);
+          });
+        })
+    );
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000/v1");
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<HomePage />);
+    await user.click(
+      screen.getByRole("button", { name: "Procurar linha manualmente" })
+    );
+    const searchInput = await screen.findByRole("searchbox", { name: "Linha" });
+    await user.type(searchInput, "124");
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+
+    const signal = fetchMock.mock.calls[0]?.[1]?.signal;
+    await user.clear(searchInput);
+
+    await waitFor(() => expect(signal?.aborted).toBe(true));
+    expect(
+      screen.getByRole("heading", { name: "Procurar linha" })
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Algo deu errado")).not.toBeInTheDocument();
+  });
+
+  test("refreshes manual candidates after a stale route version without reselection", async () => {
+    const user = userEvent.setup();
+    let searchRequests = 0;
+    const fetchMock = vi.fn((url: string) => {
+      if (url.includes("/route-candidates/search")) {
+        searchRequests += 1;
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              routes: [
+                {
+                  routeId: "route-124",
+                  routeVersionId:
+                    searchRequests === 1 ? "version-old" : "version-current",
+                  routeCode: "124",
+                  routeName: "TICEN - Lagoa",
+                },
+              ],
+            }),
+            { headers: { "content-type": "application/json" }, status: 200 }
+          )
+        );
+      }
+
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            error: {
+              code: "routeVersionStale",
+              message: "internal diagnostic",
+            },
+          }),
+          { headers: { "content-type": "application/json" }, status: 409 }
+        )
+      );
+    });
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000/v1");
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<HomePage />);
+    await user.click(
+      screen.getByRole("button", { name: "Procurar linha manualmente" })
+    );
+    await user.type(
+      await screen.findByRole("searchbox", { name: "Linha" }),
+      "124"
+    );
+    await user.click(
+      await screen.findByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    await waitFor(() => expect(searchRequests).toBe(2));
+    expect(
+      await screen.findByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Escolha o sentido" })
+    ).not.toBeInTheDocument();
+    expect(
+      fetchMock.mock.calls.some(([url]) =>
+        String(url).includes("routeVersionId=version-old")
+      )
+    ).toBe(true);
   });
 
   test("prototype route renders the default location screen without calling browser geolocation before rider action", async () => {
