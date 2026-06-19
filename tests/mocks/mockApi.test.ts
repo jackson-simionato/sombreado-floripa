@@ -75,7 +75,10 @@ describe("mock fixtures and API", () => {
     });
 
     await expect(
-      api.getRouteDirections(fixtureIds.routes.lagoa)
+      api.getRouteDirections(
+        fixtureIds.routes.lagoa,
+        fixtureIds.routeVersions.lagoaCurrent
+      )
     ).resolves.toMatchObject({
       directions: expect.arrayContaining([
         expect.objectContaining({
@@ -138,7 +141,8 @@ describe("mock fixtures and API", () => {
 
     await expect(
       createMockApi({ scenarioId: "route-no-directions" }).getRouteDirections(
-        fixtureIds.routes.noDirections
+        fixtureIds.routes.noDirections,
+        fixtureIds.routeVersions.noDirectionsCurrent
       )
     ).resolves.toEqual({
       directions: [],

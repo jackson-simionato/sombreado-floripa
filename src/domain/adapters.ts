@@ -43,14 +43,12 @@ export function toRouteCandidates(
 export function toDirectionChoices(
   routeDirectionsResponse: RouteDirectionsResponse
 ): DirectionChoice[] {
-  return [...routeDirectionsResponse.directions]
-    .sort((left, right) => left.sequence - right.sequence)
-    .map((direction) => ({
-      routeDirectionId: direction.route_direction_id,
-      sequence: direction.sequence,
-      name: direction.name,
-      departureLabels: [...direction.departure_labels],
-    }));
+  return routeDirectionsResponse.directions.map((direction) => ({
+    routeDirectionId: direction.route_direction_id,
+    sequence: direction.sequence,
+    name: direction.name,
+    departureLabels: [...direction.departure_labels],
+  }));
 }
 
 export function toRoutePolyline(

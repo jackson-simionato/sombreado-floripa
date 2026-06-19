@@ -14,7 +14,7 @@ import {
   toDirectionChoices,
 } from "../domain/adapters";
 import {
-  LiveRouteCandidateClientError,
+  LiveRiderFlowClientError,
   createMockRiderFlowClient,
 } from "../api/riderFlowClient";
 import type { RiderFlowClient } from "../api/riderFlowClient";
@@ -149,7 +149,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       const normalized =
         error instanceof MockApiError
           ? error.flowError
-          : error instanceof LiveRouteCandidateClientError
+          : error instanceof LiveRiderFlowClientError
             ? error.flowError
             : normalizeFlowError(error);
       const flowError: FlowError = {
@@ -267,7 +267,10 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       dispatch({ type: "routeSelected", route, source, requestId });
 
       try {
-        const response = await api.getRouteDirections(route.routeId);
+        const response = await api.getRouteDirections(
+          route.routeId,
+          route.routeVersionId
+        );
         dispatch({
           type: "directionsSucceeded",
           requestId,

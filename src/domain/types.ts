@@ -249,7 +249,13 @@ export type RetryTarget =
   | { kind: "advisory"; request: TargetAdvisoryRequest };
 
 export type FlowError = {
-  kind: "api" | "timeout" | "permission" | "notFound" | "unknown";
+  kind:
+    | "api"
+    | "timeout"
+    | "permission"
+    | "notFound"
+    | "unknown"
+    | "routeVersionStale";
   message: string;
   retryTarget?: RetryTarget;
 };

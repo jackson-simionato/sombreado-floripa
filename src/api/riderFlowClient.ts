@@ -1,13 +1,24 @@
-import { toRouteCandidates } from "../domain/adapters";
-import type { FlowError, RouteCandidate } from "../domain/types";
+import { toDirectionChoices, toRouteCandidates } from "../domain/adapters";
+import type {
+  DirectionChoice,
+  FlowError,
+  RouteCandidate,
+} from "../domain/types";
 import type { MockApi } from "../mocks/mockApi";
-import { LiveApiError, createRouteCandidatesClient } from "./routeCandidates";
+import { LiveApiError } from "./browserApi";
+import type { BrowserRequestOptions } from "./browserApi";
+import { createRouteCandidatesClient } from "./routeCandidates";
 import type {
   RouteCandidateRequestOptions,
   RouteCandidateTransport,
   RouteCandidatesClient,
   RouteCandidatesResponseTransport,
 } from "./routeCandidates";
+import { createRouteDirectionsClient } from "./routeDirections";
+import type {
+  DirectionChoicesResponseTransport,
+  RouteDirectionsClient,
+} from "./routeDirections";
 
 export type NearbyRouteCandidateInput = {
   lat: number;
@@ -30,14 +41,18 @@ export type RiderFlowClient = {
     input: ManualRouteCandidateInput,
     options?: RouteCandidateRequestOptions
   ): Promise<RouteCandidate[]>;
+  listRouteDirections(
+    input: { routeId: string; routeVersionId: string },
+    options?: BrowserRequestOptions
+  ): Promise<DirectionChoice[]>;
 };
 
-export class LiveRouteCandidateClientError extends Error {
+export class LiveRiderFlowClientError extends Error {
   readonly flowError: FlowError;
 
   constructor(flowError: FlowError) {
     super(flowError.message);
-    this.name = "LiveRouteCandidateClientError";
+    this.name = "LiveRiderFlowClientError";
     this.flowError = flowError;
   }
 }
@@ -49,8 +64,9 @@ export function createLiveRiderFlowClient({
   baseUrl: string;
   fetchImpl?: typeof fetch;
 }): RiderFlowClient {
-  return createRiderFlowClientFromRouteCandidatesClient(
-    createRouteCandidatesClient({ baseUrl, fetchImpl })
+  return createRiderFlowClientFromTransportClients(
+    createRouteCandidatesClient({ baseUrl, fetchImpl }),
+    createRouteDirectionsClient({ baseUrl, fetchImpl })
   );
 }
 
@@ -64,29 +80,44 @@ export function createMockRiderFlowClient(api: MockApi): RiderFlowClient {
       const response = await api.listRoutes(input);
       return toRouteCandidates(response, { source: "manual" });
     },
+    async listRouteDirections(input) {
+      return toDirectionChoices(
+        await api.getRouteDirections(input.routeId, input.routeVersionId)
+      );
+    },
   };
 }
 
-function createRiderFlowClientFromRouteCandidatesClient(
-  client: RouteCandidatesClient
+function createRiderFlowClientFromTransportClients(
+  routeCandidatesClient: RouteCandidatesClient,
+  routeDirectionsClient: RouteDirectionsClient
 ): RiderFlowClient {
   return {
     async listNearbyRouteCandidates(input, options) {
       try {
         return toLiveRouteCandidates(
-          await client.listNearbyRouteCandidates(input, options)
+          await routeCandidatesClient.listNearbyRouteCandidates(input, options)
         );
       } catch (error) {
-        throw normalizeLiveRouteCandidateError(error);
+        throw normalizeLiveRiderFlowError(error);
       }
     },
     async searchRouteCandidates(input, options) {
       try {
         return toLiveRouteCandidates(
-          await client.searchRouteCandidates(input, options)
+          await routeCandidatesClient.searchRouteCandidates(input, options)
         );
       } catch (error) {
-        throw normalizeLiveRouteCandidateError(error);
+        throw normalizeLiveRiderFlowError(error);
+      }
+    },
+    async listRouteDirections(input, options) {
+      try {
+        return toLiveDirectionChoices(
+          await routeDirectionsClient.listRouteDirections(input, options)
+        );
+      } catch (error) {
+        throw normalizeLiveRiderFlowError(error);
       }
     },
   };
@@ -111,9 +142,31 @@ function toLiveRouteCandidate(route: RouteCandidateTransport): RouteCandidate {
   };
 }
 
-function normalizeLiveRouteCandidateError(error: unknown): Error {
+function toLiveDirectionChoices(
+  response: DirectionChoicesResponseTransport
+): DirectionChoice[] {
+  return response.directions.map((direction) => ({
+    routeDirectionId: direction.routeDirectionId,
+    sequence: direction.sequence,
+    name: direction.name,
+    departureLabels: [...direction.departureLabels],
+  }));
+}
+
+function normalizeLiveRiderFlowError(error: unknown): Error {
   if (error instanceof LiveApiError) {
-    return new LiveRouteCandidateClientError({
+    if (error.kind === "aborted") {
+      return error;
+    }
+
+    if (error.code === "routeVersionStale") {
+      return new LiveRiderFlowClientError({
+        kind: "routeVersionStale",
+        message: "As opções desta linha foram atualizadas.",
+      });
+    }
+
+    return new LiveRiderFlowClientError({
       kind: "api",
       message: "Não consegui carregar as linhas agora.",
     });
@@ -121,7 +174,7 @@ function normalizeLiveRouteCandidateError(error: unknown): Error {
 
   return error instanceof Error
     ? error
-    : new LiveRouteCandidateClientError({
+    : new LiveRiderFlowClientError({
         kind: "unknown",
         message: "Não consegui carregar as linhas agora.",
       });

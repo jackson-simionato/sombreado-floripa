@@ -35,7 +35,10 @@ export type MockApiDelays = {
 
 export type MockApi = {
   listRoutes(params: ListRoutesParams): Promise<RoutesResponse>;
-  getRouteDirections(routeId: string): Promise<RouteDirectionsResponse>;
+  getRouteDirections(
+    routeId: string,
+    routeVersionId: string
+  ): Promise<RouteDirectionsResponse>;
   getRouteGeometry(
     routeDirectionId: string,
     routeVersionId: string
@@ -87,7 +90,7 @@ export function createMockApi(
       };
     },
 
-    async getRouteDirections(routeId) {
+    async getRouteDirections(routeId, _routeVersionId) {
       await delay(delays.directionsMs);
       rejectIfApiError(scenarioId, "directions");
 

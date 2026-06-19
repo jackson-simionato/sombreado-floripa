@@ -98,7 +98,7 @@ describe("domain adapters", () => {
     });
   });
 
-  test("converts and sorts direction choices without exposing raw IDs as labels", () => {
+  test("converts direction choices in service order without exposing raw IDs as labels", () => {
     const response: RouteDirectionsResponse = {
       directions: [
         {
@@ -118,16 +118,16 @@ describe("domain adapters", () => {
 
     expect(toDirectionChoices(response)).toEqual([
       {
-        routeDirectionId: "direction-1",
-        sequence: 1,
-        name: "TICEN para Lagoa",
-        departureLabels: ["TICEN", "UFSC"],
-      },
-      {
         routeDirectionId: "direction-2",
         sequence: 2,
         name: "Lagoa para TICEN",
         departureLabels: ["Lagoa"],
+      },
+      {
+        routeDirectionId: "direction-1",
+        sequence: 1,
+        name: "TICEN para Lagoa",
+        departureLabels: ["TICEN", "UFSC"],
       },
     ]);
   });

@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 
 import {
-  LiveRouteCandidateClientError,
+  LiveRiderFlowClientError,
   createLiveRiderFlowClient,
   createMockRiderFlowClient,
 } from "../../src/api/riderFlowClient";
@@ -116,7 +116,78 @@ describe("rider-flow route candidate client", () => {
         kind: "api",
         message: "Não consegui carregar as linhas agora.",
       },
-    } satisfies Partial<LiveRouteCandidateClientError>);
+    } satisfies Partial<LiveRiderFlowClientError>);
+  });
+
+  test("maps live directions into domain state while preserving service order", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          directions: [
+            {
+              routeDirectionId: "direction-second",
+              sequence: 2,
+              name: "Lagoa para TICEN",
+              departureLabels: ["Lagoa", "TICEN"],
+            },
+            {
+              routeDirectionId: "direction-first",
+              sequence: 1,
+              name: "TICEN para Lagoa",
+              departureLabels: ["TICEN", "Lagoa"],
+            },
+          ],
+        }),
+        { headers: { "content-type": "application/json" }, status: 200 }
+      )
+    );
+    const client = createLiveRiderFlowClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+
+    const result = await client.listRouteDirections({
+      routeId: "route-124",
+      routeVersionId: "version-124",
+    });
+
+    expect(result.map((item) => item.routeDirectionId)).toEqual([
+      "direction-second",
+      "direction-first",
+    ]);
+    expect(fetchMock.mock.calls[0]?.[0]).toContain(
+      "routeVersionId=version-124"
+    );
+  });
+
+  test("normalizes stale route versions distinctly", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          error: {
+            code: "routeVersionStale",
+            message: "internal diagnostic",
+          },
+        }),
+        { headers: { "content-type": "application/json" }, status: 409 }
+      )
+    );
+    const client = createLiveRiderFlowClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+
+    await expect(
+      client.listRouteDirections({
+        routeId: "route-124",
+        routeVersionId: "version-124",
+      })
+    ).rejects.toMatchObject({
+      flowError: {
+        kind: "routeVersionStale",
+        message: "As opções desta linha foram atualizadas.",
+      },
+    } satisfies Partial<LiveRiderFlowClientError>);
   });
 
   test("keeps prototype mock route candidates available", async () => {
@@ -132,5 +203,21 @@ describe("rider-flow route candidate client", () => {
     expect(result.length).toBeGreaterThan(0);
     expect(result[0]).toHaveProperty("routeId");
     expect(result[0]).toHaveProperty("directionHints");
+  });
+
+  test("keeps prototype mock directions behind the same route-version operation", async () => {
+    const api = createMockApi();
+    const getRouteDirections = vi.spyOn(api, "getRouteDirections");
+    const client = createMockRiderFlowClient(api);
+
+    await client.listRouteDirections({
+      routeId: "00000000-0000-0000-0000-000000000124",
+      routeVersionId: "00000000-0000-0000-0000-000000001124",
+    });
+
+    expect(getRouteDirections).toHaveBeenCalledWith(
+      "00000000-0000-0000-0000-000000000124",
+      "00000000-0000-0000-0000-000000001124"
+    );
   });
 });
