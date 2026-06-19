@@ -155,4 +155,77 @@ describe("route candidate browser API client", () => {
       message: "A resposta da API de linhas veio em um formato inesperado.",
     } satisfies Partial<LiveApiError>);
   });
+
+  test("preserves documented public error codes without exposing backend messages", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      jsonResponse(
+        {
+          error: {
+            code: "routeVersionStale",
+            message: "internal diagnostic",
+            requestId: "req-1",
+          },
+        },
+        { status: 409 }
+      )
+    );
+    const client = createRouteCandidatesClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+
+    const request = client.searchRouteCandidates({ query: "124", limit: 8 });
+
+    await expect(request).rejects.toMatchObject({
+      kind: "http",
+      status: 409,
+      code: "routeVersionStale",
+      message: "Não consegui carregar as linhas agora.",
+    });
+    await expect(request).rejects.not.toMatchObject({
+      message: "internal diagnostic",
+    });
+  });
+
+  test("normalizes aborted fetches separately from network failures", async () => {
+    const abortError = new Error("The operation was aborted");
+    abortError.name = "AbortError";
+    const fetchMock = vi.fn().mockRejectedValue(abortError);
+    const client = createRouteCandidatesClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+
+    await expect(
+      client.searchRouteCandidates({ query: "124", limit: 8 })
+    ).rejects.toMatchObject({
+      kind: "aborted",
+    });
+  });
+
+  test.each([
+    [
+      "malformed",
+      jsonResponse({ error: { message: "missing code" } }, { status: 400 }),
+    ],
+    ["non-JSON", new Response("upstream unavailable", { status: 502 })],
+  ])(
+    "keeps %s error bodies as generic HTTP errors",
+    async (_caseName, response) => {
+      const fetchMock = vi.fn().mockResolvedValue(response);
+      const client = createRouteCandidatesClient({
+        baseUrl: "http://localhost:8000/v1",
+        fetchImpl: fetchMock,
+      });
+
+      const request = client.searchRouteCandidates({ query: "124", limit: 8 });
+
+      await expect(request).rejects.toMatchObject({
+        kind: "http",
+        status: response.status,
+        message: "Não consegui carregar as linhas agora.",
+      });
+      await expect(request).rejects.not.toHaveProperty("code");
+    }
+  );
 });
