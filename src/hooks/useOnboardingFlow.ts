@@ -474,15 +474,15 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     }
   }, [requestAdvisory, requestLocation, selectDirection, selectRoute, state]);
 
+  const manualSearchScreenActive =
+    state.screen === "manualRouteSearch" || state.screen === "noManualResults";
+
   useEffect(() => {
     if (!manualSearchEnabled) {
       return;
     }
 
-    if (
-      state.screen !== "manualRouteSearch" &&
-      state.screen !== "noManualResults"
-    ) {
+    if (!manualSearchScreenActive) {
       return;
     }
 
@@ -535,6 +535,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     manualQueryDraft,
     manualSearchEnabled,
     manualSearchRequestNonce,
+    manualSearchScreenActive,
     nextRequestId,
     riderFlowClient,
   ]);
