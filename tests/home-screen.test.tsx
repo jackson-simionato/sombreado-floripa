@@ -261,6 +261,33 @@ describe("home screen flow", () => {
     expect(screen.queryByText("Algo deu errado")).not.toBeInTheDocument();
   });
 
+  test("does not repeat an empty manual search until the query changes", async () => {
+    const user = userEvent.setup();
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ routes: [] }), {
+        headers: { "content-type": "application/json" },
+        status: 200,
+      })
+    );
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000/v1");
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<HomePage />);
+    await user.click(
+      screen.getByRole("button", { name: "Procurar linha manualmente" })
+    );
+    await user.type(
+      await screen.findByRole("searchbox", { name: "Linha" }),
+      "inexistente"
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Nenhuma linha encontrada" })
+    ).toBeInTheDocument();
+    await new Promise((resolve) => window.setTimeout(resolve, 250));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   test("refreshes manual candidates after a stale route version without reselection", async () => {
     const user = userEvent.setup();
     let searchRequests = 0;

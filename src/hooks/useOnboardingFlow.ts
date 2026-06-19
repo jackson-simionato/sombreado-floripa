@@ -89,6 +89,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   const [manualSearchEnabled, setManualSearchEnabled] = useState(
     seededScenario === undefined
   );
+  const [manualSearchRequestNonce, setManualSearchRequestNonce] = useState(0);
   const requestSequenceRef = useRef(0);
   const manualSearchAbortRef = useRef<AbortController | undefined>(undefined);
   const directionsAbortRef = useRef<AbortController | undefined>(undefined);
@@ -299,6 +300,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
           dispatch({ type: "routeVersionStaleDetected" });
           if (source === "manual") {
             setManualSearchEnabled(true);
+            setManualSearchRequestNonce((nonce) => nonce + 1);
             return;
           }
           if (state.latestLocation !== undefined) {
@@ -427,6 +429,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       dispatch({ type: "manualSearchOpened" });
       setManualQueryDraft(retryTarget.query);
       setManualSearchEnabled(true);
+      setManualSearchRequestNonce((nonce) => nonce + 1);
       return;
     }
 
@@ -531,9 +534,9 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     failOperation,
     manualQueryDraft,
     manualSearchEnabled,
+    manualSearchRequestNonce,
     nextRequestId,
     riderFlowClient,
-    state.screen,
   ]);
 
   useEffect(
