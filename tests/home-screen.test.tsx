@@ -5,6 +5,10 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import HomePage from "../app/page";
 import PrototypePage from "../app/prototype/page";
+import {
+  LiveRiderFlowClientError,
+  type RiderFlowClient,
+} from "../src/api/riderFlowClient";
 import { HomePageApp } from "../src/app/HomePageApp";
 
 describe("home screen flow", () => {
@@ -50,43 +54,52 @@ describe("home screen flow", () => {
 
   test("loads manual route candidates and version-pinned directions live", async () => {
     const user = userEvent.setup();
-    const fetchMock = vi.fn().mockImplementation((url: string) =>
-      Promise.resolve(
-        new Response(
-          JSON.stringify(
-            url.includes("/directions?")
-              ? {
-                  directions: [
-                    {
-                      routeDirectionId: "direction-124-inbound",
-                      sequence: 2,
-                      name: "Lagoa para TICEN",
-                      departureLabels: ["Lagoa", "TICEN"],
-                    },
-                    {
-                      routeDirectionId: "direction-124-outbound",
-                      sequence: 1,
-                      name: "TICEN para Lagoa",
-                      departureLabels: ["TICEN", "Lagoa"],
-                    },
-                  ],
-                }
-              : {
-                  routes: [
-                    {
-                      routeId: "route-124",
-                      routeVersionId: "version-124",
-                      routeCode: "124",
-                      routeName: "TICEN - Lagoa",
-                      directionHints: ["TICEN", "Lagoa"],
-                    },
-                  ],
-                }
-          ),
-          { headers: { "content-type": "application/json" }, status: 200 }
-        )
-      )
-    );
+    const fetchMock = vi.fn().mockImplementation((url: string) => {
+      const body = url.includes("/geometry?")
+        ? {
+            routeId: "route-124",
+            routeVersionId: "version-124",
+            routeDirectionId: "direction-124-inbound",
+            polyline: [
+              { lat: -27.5969, lng: -48.5488 },
+              { lat: -27.5961, lng: -48.5363 },
+            ],
+          }
+        : url.includes("/directions?")
+          ? {
+              directions: [
+                {
+                  routeDirectionId: "direction-124-inbound",
+                  sequence: 2,
+                  name: "Lagoa para TICEN",
+                  departureLabels: ["Lagoa", "TICEN"],
+                },
+                {
+                  routeDirectionId: "direction-124-outbound",
+                  sequence: 1,
+                  name: "TICEN para Lagoa",
+                  departureLabels: ["TICEN", "Lagoa"],
+                },
+              ],
+            }
+          : {
+              routes: [
+                {
+                  routeId: "route-124",
+                  routeVersionId: "version-124",
+                  routeCode: "124",
+                  routeName: "TICEN - Lagoa",
+                  directionHints: ["TICEN", "Lagoa"],
+                },
+              ],
+            };
+      return Promise.resolve(
+        new Response(JSON.stringify(body), {
+          headers: { "content-type": "application/json" },
+          status: 200,
+        })
+      );
+    });
     vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000/v1");
     vi.stubGlobal("fetch", fetchMock);
 
@@ -143,15 +156,20 @@ describe("home screen flow", () => {
     );
 
     expect(
-      await screen.findByRole("heading", { name: "Sentido escolhido" })
+      await screen.findByRole("heading", { name: "Confirme sua linha" })
     ).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/v1/routes/route-124/directions/direction-124-inbound/geometry?routeVersionId=version-124",
+      {
+        credentials: "omit",
+        method: "GET",
+        signal: expect.any(AbortSignal),
+      }
+    );
     expect(screen.getByText("124 TICEN - Lagoa")).toBeInTheDocument();
     expect(screen.getByText("Lagoa para TICEN")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Trocar sentido" })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Trocar linha" })
     ).toBeInTheDocument();
   });
 
@@ -226,6 +244,134 @@ describe("home screen flow", () => {
       "http://localhost:8000/v1/route-candidates/nearby?lat=-27.5969&lng=-48.5488&radiusMeters=1200&limit=5",
       { credentials: "omit", method: "GET" }
     );
+  });
+
+  test("uses fallback confirmation for matching empty live geometry", async () => {
+    const user = userEvent.setup();
+    render(
+      <HomePageApp
+        riderFlowClient={createLiveFlowClient({
+          getRouteGeometry: vi.fn().mockResolvedValue({
+            routeId: "route-124",
+            routeVersionId: "version-124",
+            routeDirectionId: "direction-124",
+            polyline: [],
+          }),
+        })}
+        stopAfterRouteConfirmation
+      />
+    );
+
+    await completeLiveManualSelection(user);
+
+    expect(await screen.findByText("Mapa indisponível")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Confirmar mesmo assim" })
+    ).toBeInTheDocument();
+  });
+
+  test("retries the exact live geometry selection after an API failure", async () => {
+    const user = userEvent.setup();
+    const getRouteGeometry = vi
+      .fn()
+      .mockRejectedValueOnce(
+        new LiveRiderFlowClientError({
+          kind: "api",
+          message: "geometry unavailable",
+        })
+      )
+      .mockResolvedValue({
+        routeId: "route-124",
+        routeVersionId: "version-124",
+        routeDirectionId: "direction-124",
+        polyline: [
+          { lat: -27.5969, lng: -48.5488 },
+          { lat: -27.5961, lng: -48.5363 },
+        ],
+      });
+    render(
+      <HomePageApp
+        riderFlowClient={createLiveFlowClient({ getRouteGeometry })}
+        stopAfterRouteConfirmation
+      />
+    );
+
+    await completeLiveManualSelection(user);
+    expect(
+      await screen.findByRole("heading", { name: "Algo deu errado" })
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Tentar de novo" }));
+
+    expect(
+      await screen.findByRole("heading", { name: "Confirme sua linha" })
+    ).toBeInTheDocument();
+    expect(getRouteGeometry).toHaveBeenCalledTimes(2);
+    expect(getRouteGeometry.mock.calls[0]?.[0]).toEqual(
+      getRouteGeometry.mock.calls[1]?.[0]
+    );
+  });
+
+  test("refreshes manual candidates after stale live geometry without reselection", async () => {
+    const user = userEvent.setup();
+    const searchRouteCandidates = vi.fn().mockResolvedValue([liveRoute]);
+    render(
+      <HomePageApp
+        riderFlowClient={createLiveFlowClient({
+          searchRouteCandidates,
+          getRouteGeometry: vi.fn().mockRejectedValue(
+            new LiveRiderFlowClientError({
+              kind: "routeVersionStale",
+              message: "stale",
+            })
+          ),
+        })}
+        stopAfterRouteConfirmation
+      />
+    );
+
+    await completeLiveManualSelection(user);
+
+    await waitFor(() => expect(searchRouteCandidates).toHaveBeenCalledTimes(2));
+    expect(
+      await screen.findByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "As opções desta linha foram atualizadas. Escolha a linha e o sentido novamente."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Escolha o sentido" })
+    ).not.toBeInTheDocument();
+  });
+
+  test("aborts live geometry when the flow unmounts", async () => {
+    const user = userEvent.setup();
+    let geometrySignal: AbortSignal | undefined;
+    const { unmount } = render(
+      <HomePageApp
+        riderFlowClient={createLiveFlowClient({
+          getRouteGeometry: vi.fn(
+            (
+              _input: Parameters<RiderFlowClient["getRouteGeometry"]>[0],
+              options?: Parameters<RiderFlowClient["getRouteGeometry"]>[1]
+            ) => {
+              geometrySignal = options?.signal;
+              return new Promise<never>(() => undefined);
+            }
+          ),
+        })}
+        stopAfterRouteConfirmation
+      />
+    );
+
+    await completeLiveManualSelection(user);
+    await waitFor(() => expect(geometrySignal).toBeDefined());
+    unmount();
+
+    expect(geometrySignal?.aborted).toBe(true);
   });
 
   test("silently aborts manual search when the query is cleared", async () => {
@@ -873,4 +1019,61 @@ async function completeNearbyFlow(user: ReturnType<typeof userEvent.setup>) {
     })
   );
   await screen.findByRole("heading", { name: "Confirme sua linha" });
+}
+
+const liveRoute = {
+  routeId: "route-124",
+  routeVersionId: "version-124",
+  code: "124",
+  name: "TICEN - Lagoa",
+  directionHints: ["TICEN", "Lagoa"],
+};
+
+function createLiveFlowClient(
+  overrides: Partial<RiderFlowClient> = {}
+): RiderFlowClient {
+  return {
+    listNearbyRouteCandidates: vi.fn().mockResolvedValue([liveRoute]),
+    searchRouteCandidates: vi.fn().mockResolvedValue([liveRoute]),
+    listRouteDirections: vi.fn().mockResolvedValue([
+      {
+        routeDirectionId: "direction-124",
+        sequence: 1,
+        name: "TICEN para Lagoa",
+        departureLabels: ["TICEN", "Lagoa"],
+      },
+    ]),
+    getRouteGeometry: vi.fn().mockResolvedValue({
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      polyline: [
+        { lat: -27.5969, lng: -48.5488 },
+        { lat: -27.5961, lng: -48.5363 },
+      ],
+    }),
+    ...overrides,
+  };
+}
+
+async function completeLiveManualSelection(
+  user: ReturnType<typeof userEvent.setup>
+) {
+  await user.click(
+    screen.getByRole("button", { name: "Procurar linha manualmente" })
+  );
+  await user.type(
+    await screen.findByRole("searchbox", { name: "Linha" }),
+    "124"
+  );
+  await user.click(
+    await screen.findByRole("button", {
+      name: "Selecionar linha 124 TICEN - Lagoa",
+    })
+  );
+  await user.click(
+    await screen.findByRole("button", {
+      name: "Selecionar sentido TICEN para Lagoa",
+    })
+  );
 }

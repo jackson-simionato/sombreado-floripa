@@ -46,7 +46,7 @@ type UseOnboardingFlowOptions = {
   mockScenarioId?: MockScenarioId;
   riderFlowClient?: RiderFlowClient;
   scenarioId?: MockScenarioId;
-  stopAfterDirectionSelection?: boolean;
+  stopAfterRouteConfirmation?: boolean;
   prototypeScenarioId?: PrototypeScenarioId;
   locationResult?: MockLocationResult;
   mapAvailabilityOverride?: MapAvailability;
@@ -73,8 +73,8 @@ export type OnboardingFlowController = {
 export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   const injectedLocationProvider = options.locationProvider;
   const injectedRiderFlowClient = options.riderFlowClient;
-  const stopAfterDirectionSelection =
-    options.stopAfterDirectionSelection ?? false;
+  const stopAfterRouteConfirmation =
+    options.stopAfterRouteConfirmation ?? false;
   const seededScenario =
     options.prototypeScenarioId === undefined
       ? undefined
@@ -93,6 +93,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   const requestSequenceRef = useRef(0);
   const manualSearchAbortRef = useRef<AbortController | undefined>(undefined);
   const directionsAbortRef = useRef<AbortController | undefined>(undefined);
+  const geometryAbortRef = useRef<AbortController | undefined>(undefined);
 
   const scenarioId =
     options.mockScenarioId ??
@@ -270,6 +271,23 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     await requestNearbyCandidates({ lat: location.lat, lng: location.lng });
   }, [locationProvider, nextRequestId, requestNearbyCandidates]);
 
+  const recoverStaleRouteVersion = useCallback(
+    (source: "nearby" | "manual") => {
+      dispatch({ type: "routeVersionStaleDetected" });
+      if (source === "manual") {
+        setManualSearchEnabled(true);
+        setManualSearchRequestNonce((nonce) => nonce + 1);
+        return;
+      }
+      if (state.latestLocation !== undefined) {
+        void requestNearbyCandidates(state.latestLocation);
+      } else {
+        void requestLocation();
+      }
+    },
+    [requestLocation, requestNearbyCandidates, state.latestLocation]
+  );
+
   const selectRoute = useCallback(
     async (route: RouteCandidate, source: "nearby" | "manual") => {
       const requestId = nextRequestId("directions");
@@ -297,17 +315,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
           error instanceof LiveRiderFlowClientError &&
           error.flowError.kind === "routeVersionStale"
         ) {
-          dispatch({ type: "routeVersionStaleDetected" });
-          if (source === "manual") {
-            setManualSearchEnabled(true);
-            setManualSearchRequestNonce((nonce) => nonce + 1);
-            return;
-          }
-          if (state.latestLocation !== undefined) {
-            void requestNearbyCandidates(state.latestLocation);
-          } else {
-            void requestLocation();
-          }
+          recoverStaleRouteVersion(source);
           return;
         }
 
@@ -318,35 +326,30 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         });
       }
     },
-    [
-      failOperation,
-      nextRequestId,
-      requestLocation,
-      requestNearbyCandidates,
-      riderFlowClient,
-      state.latestLocation,
-    ]
+    [failOperation, nextRequestId, recoverStaleRouteVersion, riderFlowClient]
   );
 
   const selectDirection = useCallback(
     async (direction: DirectionChoice) => {
-      if (state.selectedRoute === undefined) {
+      const route = state.selectedRoute;
+      if (route === undefined) {
         return;
       }
 
-      if (stopAfterDirectionSelection) {
-        dispatch({ type: "directionSelectionStopped", direction });
-        return;
-      }
-
+      geometryAbortRef.current?.abort();
+      const controller = new AbortController();
+      geometryAbortRef.current = controller;
       const requestId = nextRequestId("geometry");
       dispatch({ type: "directionSelected", direction, requestId });
 
       try {
-        const geometry = await api.getRouteGeometry(
-          state.selectedRoute.routeId,
-          direction.routeDirectionId,
-          state.selectedRoute.routeVersionId
+        const geometry = await riderFlowClient.getRouteGeometry(
+          {
+            routeId: route.routeId,
+            routeDirectionId: direction.routeDirectionId,
+            routeVersionId: route.routeVersionId,
+          },
+          { signal: controller.signal }
         );
         dispatch({
           type: "geometrySucceeded",
@@ -355,21 +358,33 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
           mapAvailability,
         });
       } catch (error) {
+        if (isAbortedApiError(error)) {
+          return;
+        }
+
+        if (
+          error instanceof LiveRiderFlowClientError &&
+          error.flowError.kind === "routeVersionStale"
+        ) {
+          recoverStaleRouteVersion(route.source);
+          return;
+        }
+
         failOperation(requestId, error, {
           kind: "geometry",
-          routeId: state.selectedRoute.routeId,
+          routeId: route.routeId,
           routeDirectionId: direction.routeDirectionId,
-          routeVersionId: state.selectedRoute.routeVersionId,
+          routeVersionId: route.routeVersionId,
         });
       }
     },
     [
-      api,
       failOperation,
       mapAvailability,
       nextRequestId,
+      recoverStaleRouteVersion,
+      riderFlowClient,
       state.selectedRoute,
-      stopAfterDirectionSelection,
     ]
   );
 
@@ -378,6 +393,11 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       state.selectedRoute === undefined ||
       state.selectedDirection === undefined
     ) {
+      return;
+    }
+
+    if (stopAfterRouteConfirmation) {
+      dispatch({ type: "routeConfirmationStopped" });
       return;
     }
 
@@ -392,6 +412,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     state.latestLocation,
     state.selectedDirection,
     state.selectedRoute,
+    stopAfterRouteConfirmation,
   ]);
 
   const refreshAdvice = useCallback(() => {
@@ -545,6 +566,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     () => () => {
       manualSearchAbortRef.current?.abort();
       directionsAbortRef.current?.abort();
+      geometryAbortRef.current?.abort();
     },
     []
   );
@@ -554,9 +576,11 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     state,
     actions: {
       changeDirection() {
+        geometryAbortRef.current?.abort();
         dispatch({ type: "changeDirection" });
       },
       changeRoute() {
+        geometryAbortRef.current?.abort();
         dispatch({ type: "changeRoute" });
       },
       continueWaiting() {

@@ -19,7 +19,7 @@ export type HomePageAppProps = {
   prototypeScenarioId?: PrototypeScenarioId;
   riderFlowClient?: RiderFlowClient;
   scenarioId?: MockScenarioId;
-  stopAfterDirectionSelection?: boolean;
+  stopAfterRouteConfirmation?: boolean;
 };
 
 export function HomePageApp(props: HomePageAppProps) {
