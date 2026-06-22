@@ -116,6 +116,40 @@ slice because it requires a separately running local `sombreado-service` with
 compatible seeded route data and CORS configuration. This is an environment
 dependency, not permission to add backend behavior to this repository.
 
+## Issue #5 Route Geometry And Confirmation
+
+Issue #5 completes the live flow through Route Confirmation. It stops after
+confirmation, before the initial Advice request owned by issue #6.
+
+Expected issue #5 behavior:
+
+- Selecting a Direction Choice loads Geometry through the shared rider-flow
+  client with the selected route, version, and direction identifiers.
+- Live Geometry uses the canonical camelCase frontend polyline contract.
+- Response identifiers must match the request context before Geometry renders.
+- Matching Geometry with at least two valid points renders the existing compact
+  schematic confirmation.
+- Matching empty or single-point Geometry renders Route Confirmation Fallback
+  and still allows confirmation.
+- Invalid coordinates, mismatched identifiers, network failures, and service
+  failures render retryable API Error.
+- Geometry retry repeats the exact route/version/direction request; the
+  secondary recovery action is "Trocar sentido".
+- `routeVersionStale` refreshes candidates and requires explicit route and
+  direction reselection.
+- AbortController and reducer request IDs prevent obsolete Geometry responses
+  from mutating current state.
+- Live confirmation enters a temporary "Linha confirmada" boundary and does
+  not call mocked Advice.
+- `/prototype` keeps fixture-backed Geometry and downstream Advice states
+  through the same rider-flow client interface.
+
+Automated coverage must verify transport validation, request context,
+success/fallback/error mapping, exact retry, stale-version recovery, aborted
+and late responses, the temporary live confirmation boundary, and prototype
+parity. Attempt local browser smoke with `sombreado-service`; record unavailable
+backend or CORS state as a blocker rather than adding backend behavior here.
+
 ## Local-Service Smoke Checklist
 
 Mark each state as verified against local service, verified with fixtures only, blocked by backend gap, or not checked.
