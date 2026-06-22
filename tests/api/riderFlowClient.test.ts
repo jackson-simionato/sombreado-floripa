@@ -5,7 +5,23 @@ import {
   createLiveRiderFlowClient,
   createMockRiderFlowClient,
 } from "../../src/api/riderFlowClient";
+import type { RouteGeometry } from "../../src/domain/types";
+import { fixtureIds } from "../../src/mocks/fixtures";
 import { createMockApi } from "../../src/mocks/mockApi";
+
+const geometryInput = {
+  routeId: fixtureIds.routes.lagoa,
+  routeVersionId: fixtureIds.routeVersions.lagoaCurrent,
+  routeDirectionId: fixtureIds.routeDirections.lagoaOutbound,
+};
+
+const validGeometry: RouteGeometry = {
+  ...geometryInput,
+  polyline: [
+    { lat: -27.5969, lng: -48.5488 },
+    { lat: -27.5961, lng: -48.5363 },
+  ],
+};
 
 describe("rider-flow route candidate client", () => {
   test("maps live nearby candidates into domain state while preserving service order", async () => {
@@ -190,6 +206,40 @@ describe("rider-flow route candidate client", () => {
     } satisfies Partial<LiveRiderFlowClientError>);
   });
 
+  test("returns canonical live geometry", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify(validGeometry)));
+    const client = createLiveRiderFlowClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+
+    await expect(client.getRouteGeometry(geometryInput)).resolves.toEqual(
+      validGeometry
+    );
+  });
+
+  test("normalizes malformed live geometry for flow errors", async () => {
+    const client = createLiveRiderFlowClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: vi
+        .fn()
+        .mockResolvedValue(
+          new Response(
+            JSON.stringify({ ...validGeometry, routeDirectionId: "wrong" })
+          )
+        ),
+    });
+
+    await expect(client.getRouteGeometry(geometryInput)).rejects.toMatchObject({
+      flowError: {
+        kind: "api",
+        message: "Não consegui carregar as linhas agora.",
+      },
+    } satisfies Partial<LiveRiderFlowClientError>);
+  });
+
   test("keeps prototype mock route candidates available", async () => {
     const client = createMockRiderFlowClient(createMockApi());
 
@@ -218,6 +268,20 @@ describe("rider-flow route candidate client", () => {
     expect(getRouteDirections).toHaveBeenCalledWith(
       "00000000-0000-0000-0000-000000000124",
       "00000000-0000-0000-0000-000000001124"
+    );
+  });
+
+  test("keeps mock geometry behind the same route context operation", async () => {
+    const api = createMockApi();
+    const getRouteGeometry = vi.spyOn(api, "getRouteGeometry");
+    const client = createMockRiderFlowClient(api);
+
+    await client.getRouteGeometry(geometryInput);
+
+    expect(getRouteGeometry).toHaveBeenCalledWith(
+      geometryInput.routeId,
+      geometryInput.routeDirectionId,
+      geometryInput.routeVersionId
     );
   });
 });

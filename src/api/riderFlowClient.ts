@@ -3,6 +3,7 @@ import type {
   DirectionChoice,
   FlowError,
   RouteCandidate,
+  RouteGeometry,
 } from "../domain/types";
 import type { MockApi } from "../mocks/mockApi";
 import { LiveApiError } from "./browserApi";
@@ -19,6 +20,12 @@ import type {
   DirectionChoicesResponseTransport,
   RouteDirectionsClient,
 } from "./routeDirections";
+import { createRouteGeometryClient } from "./routeGeometry";
+import type {
+  RouteGeometryClient,
+  RouteGeometryInput,
+  RouteGeometryTransport,
+} from "./routeGeometry";
 
 export type NearbyRouteCandidateInput = {
   lat: number;
@@ -45,6 +52,10 @@ export type RiderFlowClient = {
     input: { routeId: string; routeVersionId: string },
     options?: BrowserRequestOptions
   ): Promise<DirectionChoice[]>;
+  getRouteGeometry(
+    input: RouteGeometryInput,
+    options?: BrowserRequestOptions
+  ): Promise<RouteGeometry>;
 };
 
 export class LiveRiderFlowClientError extends Error {
@@ -66,7 +77,8 @@ export function createLiveRiderFlowClient({
 }): RiderFlowClient {
   return createRiderFlowClientFromTransportClients(
     createRouteCandidatesClient({ baseUrl, fetchImpl }),
-    createRouteDirectionsClient({ baseUrl, fetchImpl })
+    createRouteDirectionsClient({ baseUrl, fetchImpl }),
+    createRouteGeometryClient({ baseUrl, fetchImpl })
   );
 }
 
@@ -85,12 +97,20 @@ export function createMockRiderFlowClient(api: MockApi): RiderFlowClient {
         await api.getRouteDirections(input.routeId, input.routeVersionId)
       );
     },
+    async getRouteGeometry(input) {
+      return api.getRouteGeometry(
+        input.routeId,
+        input.routeDirectionId,
+        input.routeVersionId
+      );
+    },
   };
 }
 
 function createRiderFlowClientFromTransportClients(
   routeCandidatesClient: RouteCandidatesClient,
-  routeDirectionsClient: RouteDirectionsClient
+  routeDirectionsClient: RouteDirectionsClient,
+  routeGeometryClient: RouteGeometryClient
 ): RiderFlowClient {
   return {
     async listNearbyRouteCandidates(input, options) {
@@ -115,6 +135,15 @@ function createRiderFlowClientFromTransportClients(
       try {
         return toLiveDirectionChoices(
           await routeDirectionsClient.listRouteDirections(input, options)
+        );
+      } catch (error) {
+        throw normalizeLiveRiderFlowError(error);
+      }
+    },
+    async getRouteGeometry(input, options) {
+      try {
+        return toLiveRouteGeometry(
+          await routeGeometryClient.getRouteGeometry(input, options)
         );
       } catch (error) {
         throw normalizeLiveRiderFlowError(error);
@@ -151,6 +180,13 @@ function toLiveDirectionChoices(
     name: direction.name,
     departureLabels: [...direction.departureLabels],
   }));
+}
+
+function toLiveRouteGeometry(geometry: RouteGeometryTransport): RouteGeometry {
+  return {
+    ...geometry,
+    polyline: geometry.polyline.map(({ lat, lng }) => ({ lat, lng })),
+  };
 }
 
 function normalizeLiveRiderFlowError(error: unknown): Error {
