@@ -213,6 +213,7 @@ export type ScreenStateName =
   | "routeWithoutDirections"
   | "routeConfirmation"
   | "routeConfirmationFallback"
+  | "liveRouteConfirmedUnsupported"
   | "computingAdvice"
   | "onboardAdviceResult"
   | "routePreviewAdviceResult"

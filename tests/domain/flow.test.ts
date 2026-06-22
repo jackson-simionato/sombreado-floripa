@@ -190,6 +190,24 @@ describe("flow reducer", () => {
     expect(state.pendingRequests).toEqual({});
   });
 
+  test("stops live route confirmation before advice", () => {
+    const confirmation = flowReducer(selectDirection("geometry-1"), {
+      type: "geometrySucceeded",
+      requestId: "geometry-1",
+      geometry,
+      mapAvailability: "available",
+    });
+    const confirmed = flowReducer(confirmation, {
+      type: "routeConfirmationStopped",
+    });
+
+    expect(confirmed.screen).toBe("liveRouteConfirmedUnsupported");
+    expect(confirmed.requestStatus).toBe("success");
+    expect(confirmed.selectedRoute?.routeId).toBe("route-a");
+    expect(confirmed.selectedDirection?.routeDirectionId).toBe("direction-a");
+    expect(confirmed.pendingRequests).toEqual({});
+  });
+
   test("clears manual results and pending state when the query is cleared", () => {
     const searching = flowReducer(
       {
@@ -356,6 +374,35 @@ describe("flow reducer", () => {
       routeDirectionId: "direction-a",
       routeVersionId: "version-a",
     });
+  });
+
+  test("ignores stale geometry success and failure events", () => {
+    const loading = selectDirection("geometry-current");
+
+    expect(
+      flowReducer(loading, {
+        type: "geometrySucceeded",
+        requestId: "geometry-old",
+        geometry,
+        mapAvailability: "available",
+      })
+    ).toBe(loading);
+    expect(
+      flowReducer(loading, {
+        type: "operationFailed",
+        requestId: "geometry-old",
+        error: {
+          kind: "api",
+          message: "old failure",
+          retryTarget: {
+            kind: "geometry",
+            routeId: "route-a",
+            routeVersionId: "version-a",
+            routeDirectionId: "direction-a",
+          },
+        },
+      })
+    ).toBe(loading);
   });
 
   test("maps preview, neutral, and withheld advisory results to distinct screens or advice states", () => {

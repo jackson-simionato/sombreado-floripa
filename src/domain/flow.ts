@@ -81,6 +81,7 @@ export type FlowEvent =
       geometry: RouteGeometry;
       mapAvailability: MapAvailability;
     }
+  | { type: "routeConfirmationStopped" }
   | {
       type: "routeConfirmed";
       requestId: RequestId;
@@ -338,6 +339,22 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
           ...state.pendingRequests,
           geometry: undefined,
         },
+      });
+
+    case "routeConfirmationStopped":
+      if (
+        state.selectedRoute === undefined ||
+        state.selectedDirection === undefined ||
+        (state.screen !== "routeConfirmation" &&
+          state.screen !== "routeConfirmationFallback")
+      ) {
+        return state;
+      }
+      return clearError({
+        ...state,
+        screen: "liveRouteConfirmedUnsupported",
+        requestStatus: "success",
+        pendingRequests: {},
       });
 
     case "routeConfirmed":
