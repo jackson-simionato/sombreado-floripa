@@ -300,6 +300,12 @@ describe("home screen flow", () => {
     expect(
       await screen.findByRole("heading", { name: "Algo deu errado" })
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Trocar sentido" })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Procurar linha manualmente" })
+    ).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Tentar de novo" }));
 
     expect(
@@ -372,6 +378,40 @@ describe("home screen flow", () => {
     unmount();
 
     expect(geometrySignal?.aborted).toBe(true);
+  });
+
+  test("stops live mode at the route-confirmed boundary without advice", async () => {
+    const user = userEvent.setup();
+    const riderFlowClient = createLiveFlowClient();
+    render(
+      <HomePageApp
+        riderFlowClient={riderFlowClient}
+        stopAfterRouteConfirmation
+      />
+    );
+
+    await completeLiveManualSelection(user);
+    await screen.findByRole("heading", { name: "Confirme sua linha" });
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Linha confirmada" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "A linha e o sentido estão prontos para calcular a recomendação."
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByText("124 TICEN - Lagoa")).toBeInTheDocument();
+    expect(screen.getByText("TICEN para Lagoa")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Trocar sentido" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Trocar linha" })
+    ).toBeInTheDocument();
   });
 
   test("silently aborts manual search when the query is cleared", async () => {

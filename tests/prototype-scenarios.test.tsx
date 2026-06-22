@@ -108,12 +108,7 @@ describe("prototype scenarios", () => {
       "Tentar de novo",
       "Procurar linha manualmente",
     ],
-    [
-      "error-geometry",
-      "Algo deu errado",
-      "Tentar de novo",
-      "Procurar linha manualmente",
-    ],
+    ["error-geometry", "Algo deu errado", "Tentar de novo", "Trocar sentido"],
     [
       "error-advice",
       "Algo deu errado",

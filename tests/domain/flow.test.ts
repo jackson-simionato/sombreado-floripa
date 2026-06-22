@@ -160,36 +160,6 @@ describe("flow reducer", () => {
     expect(state.manualQuery).toBe("lagoa");
   });
 
-  test("stops live direction selection before geometry", () => {
-    const routeSelected = flowReducer(initialFlowState, {
-      type: "routeSelected",
-      route,
-      source: "nearby",
-      requestId: "directions-1",
-    });
-    const directionsLoaded = flowReducer(routeSelected, {
-      type: "directionsSucceeded",
-      requestId: "directions-1",
-      directions: [direction],
-    });
-    const state = flowReducer(directionsLoaded, {
-      type: "directionSelectionStopped",
-      direction,
-    });
-
-    expect(state.screen).toBe("liveDirectionSelectedUnsupported");
-    expect(state.requestStatus).toBe("success");
-    expect(state.selectedRoute).toMatchObject({
-      routeId: "route-a",
-      routeVersionId: "version-a",
-      source: "nearby",
-    });
-    expect(state.selectedDirection).toMatchObject({
-      routeDirectionId: "direction-a",
-    });
-    expect(state.pendingRequests).toEqual({});
-  });
-
   test("stops live route confirmation before advice", () => {
     const confirmation = flowReducer(selectDirection("geometry-1"), {
       type: "geometrySucceeded",

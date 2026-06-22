@@ -296,14 +296,14 @@ export function OnboardingFlowScreen({
       );
       break;
 
-    case "liveDirectionSelectedUnsupported":
+    case "liveRouteConfirmedUnsupported":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
           <h1 id="screen-title" className={styles.titleCompact}>
-            Sentido escolhido
+            Linha confirmada
           </h1>
           <p className={styles.body}>
-            Confira a linha e o sentido antes da próxima etapa.
+            A linha e o sentido estão prontos para calcular a recomendação.
           </p>
           <RouteSummary
             directionLabel={state.selectedDirection?.name}
@@ -876,6 +876,14 @@ function renderApiErrorFallbackAction(
   state: OnboardingFlowController["state"],
   actions: OnboardingFlowController["actions"]
 ) {
+  if (state.error?.retryTarget?.kind === "geometry") {
+    return (
+      <Button onClick={actions.changeDirection} variant="secondary">
+        Trocar sentido
+      </Button>
+    );
+  }
+
   if (state.error?.retryTarget?.kind === "manualSearch") {
     return (
       <Button onClick={actions.useLocation} variant="secondary">

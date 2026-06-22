@@ -73,7 +73,6 @@ export type FlowEvent =
       direction: DirectionChoice;
       requestId: RequestId;
     }
-  | { type: "directionSelectionStopped"; direction: DirectionChoice }
   | { type: "routeVersionStaleDetected" }
   | {
       type: "geometrySucceeded";
@@ -265,20 +264,6 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
           directions: undefined,
         },
       });
-
-    case "directionSelectionStopped":
-      if (state.selectedRoute === undefined) {
-        return state;
-      }
-      return clearAdviceAndGeometry(
-        clearError({
-          ...state,
-          screen: "liveDirectionSelectedUnsupported",
-          requestStatus: "success",
-          selectedDirection: toSelectedDirection(event.direction),
-          pendingRequests: {},
-        })
-      );
 
     case "routeVersionStaleDetected": {
       const source = state.selectedRoute?.source;

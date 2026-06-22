@@ -209,7 +209,6 @@ export type ScreenStateName =
   | "noManualResults"
   | "loadingDirectionChoices"
   | "directionChoice"
-  | "liveDirectionSelectedUnsupported"
   | "routeWithoutDirections"
   | "routeConfirmation"
   | "routeConfirmationFallback"
