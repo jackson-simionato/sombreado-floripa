@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import type { ReactNode } from "react";
 
 import { AdviceBusDiagram } from "../components/AdviceBusDiagram";
@@ -6,7 +6,6 @@ import { AppShell } from "../components/AppShell";
 import { BusSplitDiagram } from "../components/BusSplitDiagram";
 import { Button } from "../components/Button";
 import { StickyActions } from "../components/StickyActions";
-import { toRoutePolyline } from "../domain/adapters";
 import type {
   AdvisoryReasonCode,
   DirectionChoice,
@@ -32,10 +31,7 @@ export function OnboardingFlowScreen({
       ? undefined
       : `${state.selectedRoute.code} ${state.selectedRoute.name}`;
 
-  const mapPoints = useMemo(
-    () => (state.geometry === undefined ? [] : toRoutePolyline(state.geometry)),
-    [state.geometry]
-  );
+  const mapPoints = state.geometry?.polyline ?? [];
 
   let content: ReactNode;
   let stickyPrimary: ReactNode = null;

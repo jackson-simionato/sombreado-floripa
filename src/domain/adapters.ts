@@ -2,10 +2,8 @@ import type {
   DirectionChoice,
   DirectionalExposure,
   ExposureDirection,
-  LatLng,
   RouteCandidate,
   RouteDirectionsResponse,
-  RouteGeometryResponse,
   RouteSelectionSource,
   RoutesResponse,
   TargetAdvisoryRequest,
@@ -49,16 +47,6 @@ export function toDirectionChoices(
     name: direction.name,
     departureLabels: [...direction.departure_labels],
   }));
-}
-
-export function toRoutePolyline(
-  routeGeometryResponse: RouteGeometryResponse
-): LatLng[] {
-  return [...routeGeometryResponse.segments]
-    .sort((left, right) => left.sequence - right.sequence)
-    .flatMap((segment) =>
-      segment.coordinates.map(([lng, lat]) => ({ lat, lng }))
-    );
 }
 
 export function toUiAdvice(

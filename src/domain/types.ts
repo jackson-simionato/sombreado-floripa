@@ -1,5 +1,3 @@
-export type ServiceCoordinate = [lng: number, lat: number];
-
 export type LatLng = {
   lat: number;
   lng: number;
@@ -55,19 +53,11 @@ export type RouteDirectionsResponse = {
   directions: LightweightRouteDirection[];
 };
 
-export type RouteSegment = {
-  id: string;
-  sequence: number;
-  coordinates: ServiceCoordinate[];
-  bearing_degrees: number;
-  distance_meters: number;
-  cumulative_distance_meters: number;
-};
-
-export type RouteGeometryResponse = {
-  route_version_id: string;
-  route_direction_id: string;
-  segments: RouteSegment[];
+export type RouteGeometry = {
+  routeId: string;
+  routeVersionId: string;
+  routeDirectionId: string;
+  polyline: LatLng[];
 };
 
 export type ProjectedRoutePosition = {
@@ -301,7 +291,7 @@ export type FlowState = {
   directionChoices: DirectionChoice[];
   selectedRoute?: SelectedRoute;
   selectedDirection?: SelectedDirection;
-  geometry?: RouteGeometryResponse;
+  geometry?: RouteGeometry;
   mapAvailability: MapAvailability;
   advice?: UiAdviceState;
   advisoryRequest?: TargetAdvisoryRequest;

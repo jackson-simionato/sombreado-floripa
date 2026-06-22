@@ -3,7 +3,7 @@ import type {
   MockLocationResult,
   MockScenarioId,
   RouteDirectionsResponse,
-  RouteGeometryResponse,
+  RouteGeometry,
   RoutesResponse,
   TargetAdvisoryRequest,
   TargetAdvisoryResponse,
@@ -40,9 +40,10 @@ export type MockApi = {
     routeVersionId: string
   ): Promise<RouteDirectionsResponse>;
   getRouteGeometry(
+    routeId: string,
     routeDirectionId: string,
     routeVersionId: string
-  ): Promise<RouteGeometryResponse>;
+  ): Promise<RouteGeometry>;
   createOnboardAdvisory(
     request: TargetAdvisoryRequest
   ): Promise<TargetAdvisoryResponse>;
@@ -114,24 +115,33 @@ export function createMockApi(
       return routeDirectionsByRouteId[routeId] ?? { directions: [] };
     },
 
-    async getRouteGeometry(routeDirectionId, routeVersionId) {
+    async getRouteGeometry(routeId, routeDirectionId, routeVersionId) {
       await delay(delays.geometryMs);
       rejectIfApiError(scenarioId, "geometry");
 
       if (scenarioId === "confirmation-fallback-missing-geometry") {
         return {
-          route_direction_id: routeDirectionId,
-          route_version_id: routeVersionId,
-          segments: [],
+          routeId,
+          routeVersionId,
+          routeDirectionId,
+          polyline: [],
         };
       }
 
+      const geometry = routeGeometryByDirectionId[routeDirectionId];
+      if (
+        geometry !== undefined &&
+        (geometry.routeId !== routeId ||
+          geometry.routeVersionId !== routeVersionId)
+      ) {
+        throw new MockApiError({
+          kind: "routeVersionStale",
+          message: "Mock route version is stale",
+        });
+      }
+
       return (
-        routeGeometryByDirectionId[routeDirectionId] ?? {
-          route_direction_id: routeDirectionId,
-          route_version_id: routeVersionId,
-          segments: [],
-        }
+        geometry ?? { routeId, routeVersionId, routeDirectionId, polyline: [] }
       );
     },
 

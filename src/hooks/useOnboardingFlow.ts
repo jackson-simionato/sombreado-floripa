@@ -344,6 +344,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
 
       try {
         const geometry = await api.getRouteGeometry(
+          state.selectedRoute.routeId,
           direction.routeDirectionId,
           state.selectedRoute.routeVersionId
         );

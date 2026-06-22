@@ -2,7 +2,7 @@ import type {
   ExposureDirection,
   MockScenarioId,
   RouteDirectionsResponse,
-  RouteGeometryResponse,
+  RouteGeometry,
   RoutesResponse,
   TargetAdvisoryResponse,
 } from "../domain/types";
@@ -29,8 +29,6 @@ export const fixtureIds = {
   },
   segments: {
     lagoaA: "00000000-0000-0000-0000-000000004124",
-    lagoaB: "00000000-0000-0000-0000-000000005124",
-    tilagA: "00000000-0000-0000-0000-000000004330",
   },
 } as const;
 
@@ -125,62 +123,37 @@ export const routeDirectionsByRouteId: Record<string, RouteDirectionsResponse> =
     },
   };
 
-export const routeGeometryByDirectionId: Record<string, RouteGeometryResponse> =
-  {
-    [fixtureIds.routeDirections.lagoaOutbound]: {
-      route_version_id: fixtureIds.routeVersions.lagoaCurrent,
-      route_direction_id: fixtureIds.routeDirections.lagoaOutbound,
-      segments: [
-        {
-          id: fixtureIds.segments.lagoaA,
-          sequence: 1,
-          coordinates: [
-            [-48.5488, -27.5969],
-            [-48.5363, -27.5961],
-            [-48.5238, -27.5991],
-          ],
-          bearing_degrees: 82,
-          distance_meters: 1350,
-          cumulative_distance_meters: 1350,
-        },
-        {
-          id: fixtureIds.segments.lagoaB,
-          sequence: 2,
-          coordinates: [
-            [-48.5238, -27.5991],
-            [-48.5052, -27.6023],
-            [-48.4789, -27.6049],
-          ],
-          bearing_degrees: 96,
-          distance_meters: 2100,
-          cumulative_distance_meters: 3450,
-        },
-      ],
-    },
-    [fixtureIds.routeDirections.tilagCentroOutbound]: {
-      route_version_id: fixtureIds.routeVersions.tilagCentroCurrent,
-      route_direction_id: fixtureIds.routeDirections.tilagCentroOutbound,
-      segments: [
-        {
-          id: fixtureIds.segments.tilagA,
-          sequence: 1,
-          coordinates: [
-            [-48.5156, -27.5907],
-            [-48.5249, -27.5958],
-            [-48.5484, -27.5968],
-          ],
-          bearing_degrees: 252,
-          distance_meters: 2400,
-          cumulative_distance_meters: 2400,
-        },
-      ],
-    },
-    [fixtureIds.routeDirections.missingGeometryOutbound]: {
-      route_version_id: fixtureIds.routeVersions.missingGeometryCurrent,
-      route_direction_id: fixtureIds.routeDirections.missingGeometryOutbound,
-      segments: [],
-    },
-  };
+export const routeGeometryByDirectionId: Record<string, RouteGeometry> = {
+  [fixtureIds.routeDirections.lagoaOutbound]: {
+    routeId: fixtureIds.routes.lagoa,
+    routeVersionId: fixtureIds.routeVersions.lagoaCurrent,
+    routeDirectionId: fixtureIds.routeDirections.lagoaOutbound,
+    polyline: [
+      { lat: -27.5969, lng: -48.5488 },
+      { lat: -27.5961, lng: -48.5363 },
+      { lat: -27.5991, lng: -48.5238 },
+      { lat: -27.5991, lng: -48.5238 },
+      { lat: -27.6023, lng: -48.5052 },
+      { lat: -27.6049, lng: -48.4789 },
+    ],
+  },
+  [fixtureIds.routeDirections.tilagCentroOutbound]: {
+    routeId: fixtureIds.routes.tilagCentro,
+    routeVersionId: fixtureIds.routeVersions.tilagCentroCurrent,
+    routeDirectionId: fixtureIds.routeDirections.tilagCentroOutbound,
+    polyline: [
+      { lat: -27.5907, lng: -48.5156 },
+      { lat: -27.5958, lng: -48.5249 },
+      { lat: -27.5968, lng: -48.5484 },
+    ],
+  },
+  [fixtureIds.routeDirections.missingGeometryOutbound]: {
+    routeId: fixtureIds.routes.missingGeometry,
+    routeVersionId: fixtureIds.routeVersions.missingGeometryCurrent,
+    routeDirectionId: fixtureIds.routeDirections.missingGeometryOutbound,
+    polyline: [],
+  },
+};
 
 export const mockAdvisories = {
   advisoryExposureRightRecommendsLeft: advisory("right", "on_route"),

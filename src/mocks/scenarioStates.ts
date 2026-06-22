@@ -527,10 +527,7 @@ function cloneState(state: FlowState): FlowState {
         ? undefined
         : {
             ...state.geometry,
-            segments: state.geometry.segments.map((segment) => ({
-              ...segment,
-              coordinates: segment.coordinates.map(([lng, lat]) => [lng, lat]),
-            })),
+            polyline: state.geometry.polyline.map((point) => ({ ...point })),
           },
     advice: state.advice === undefined ? undefined : { ...state.advice },
     advisoryRequest:

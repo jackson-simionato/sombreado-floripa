@@ -8,7 +8,7 @@ import type {
   RequestId,
   RetryTarget,
   RouteCandidate,
-  RouteGeometryResponse,
+  RouteGeometry,
   RouteSelectionSource,
   ScreenStateName,
   SelectedDirection,
@@ -78,7 +78,7 @@ export type FlowEvent =
   | {
       type: "geometrySucceeded";
       requestId: RequestId;
-      geometry: RouteGeometryResponse;
+      geometry: RouteGeometry;
       mapAvailability: MapAvailability;
     }
   | {
@@ -477,10 +477,10 @@ function screenForAdvice(advice: TargetAdvisoryResponse): ScreenStateName {
 }
 
 function geometryAllowsConfirmation(
-  geometry: RouteGeometryResponse,
+  geometry: RouteGeometry,
   mapAvailability: MapAvailability
 ): boolean {
-  return mapAvailability === "available" && geometry.segments.length > 0;
+  return mapAvailability === "available" && geometry.polyline.length >= 2;
 }
 
 function requestIsPending(state: FlowState, requestId: RequestId): boolean {
@@ -556,13 +556,10 @@ function cloneDirectionChoices(
   }));
 }
 
-function cloneGeometry(geometry: RouteGeometryResponse): RouteGeometryResponse {
+function cloneGeometry(geometry: RouteGeometry): RouteGeometry {
   return {
     ...geometry,
-    segments: geometry.segments.map((segment) => ({
-      ...segment,
-      coordinates: segment.coordinates.map(([lng, lat]) => [lng, lat]),
-    })),
+    polyline: geometry.polyline.map((point) => ({ ...point })),
   };
 }
 

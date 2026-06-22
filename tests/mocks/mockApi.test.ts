@@ -69,7 +69,7 @@ describe("mock fixtures and API", () => {
     });
   });
 
-  test("returns direction, geometry, and advisory payloads in service-shaped snake_case", async () => {
+  test("returns direction, canonical geometry, and advisory payloads", async () => {
     const api = createMockApi({
       scenarioId: "advice-exposure-right-recommends-left",
     });
@@ -90,18 +90,22 @@ describe("mock fixtures and API", () => {
 
     await expect(
       api.getRouteGeometry(
+        fixtureIds.routes.lagoa,
         fixtureIds.routeDirections.lagoaOutbound,
         fixtureIds.routeVersions.lagoaCurrent
       )
-    ).resolves.toMatchObject({
-      route_direction_id: fixtureIds.routeDirections.lagoaOutbound,
-      segments: expect.arrayContaining([
-        expect.objectContaining({
-          coordinates: expect.arrayContaining([
-            [expect.any(Number), expect.any(Number)],
-          ]),
-        }),
-      ]),
+    ).resolves.toEqual({
+      routeId: fixtureIds.routes.lagoa,
+      routeVersionId: fixtureIds.routeVersions.lagoaCurrent,
+      routeDirectionId: fixtureIds.routeDirections.lagoaOutbound,
+      polyline: [
+        { lat: -27.5969, lng: -48.5488 },
+        { lat: -27.5961, lng: -48.5363 },
+        { lat: -27.5991, lng: -48.5238 },
+        { lat: -27.5991, lng: -48.5238 },
+        { lat: -27.6023, lng: -48.5052 },
+        { lat: -27.6049, lng: -48.4789 },
+      ],
     });
 
     await expect(
@@ -152,10 +156,16 @@ describe("mock fixtures and API", () => {
       createMockApi({
         scenarioId: "confirmation-fallback-missing-geometry",
       }).getRouteGeometry(
+        fixtureIds.routes.missingGeometry,
         fixtureIds.routeDirections.missingGeometryOutbound,
         fixtureIds.routeVersions.missingGeometryCurrent
       )
-    ).resolves.toMatchObject({ segments: [] });
+    ).resolves.toEqual({
+      routeId: fixtureIds.routes.missingGeometry,
+      routeVersionId: fixtureIds.routeVersions.missingGeometryCurrent,
+      routeDirectionId: fixtureIds.routeDirections.missingGeometryOutbound,
+      polyline: [],
+    });
   });
 
   test("rejects failures with typed mock errors", async () => {

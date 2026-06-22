@@ -5,12 +5,10 @@ import {
   buildTargetAdvisoryRequest,
   toDirectionChoices,
   toRouteCandidates,
-  toRoutePolyline,
   toUiAdvice,
 } from "../../src/domain/adapters";
 import type {
   RouteDirectionsResponse,
-  RouteGeometryResponse,
   RoutesResponse,
   TargetAdvisoryResponse,
 } from "../../src/domain/types";
@@ -129,44 +127,6 @@ describe("domain adapters", () => {
         name: "TICEN para Lagoa",
         departureLabels: ["TICEN", "UFSC"],
       },
-    ]);
-  });
-
-  test("flattens service geometry and converts [lng, lat] coordinates to LatLng points", () => {
-    const response: RouteGeometryResponse = {
-      route_version_id: "version-a",
-      route_direction_id: "direction-a",
-      segments: [
-        {
-          id: "segment-2",
-          sequence: 2,
-          coordinates: [
-            [-48.522, -27.603],
-            [-48.52, -27.604],
-          ],
-          bearing_degrees: 100,
-          distance_meters: 120,
-          cumulative_distance_meters: 220,
-        },
-        {
-          id: "segment-1",
-          sequence: 1,
-          coordinates: [
-            [-48.525, -27.601],
-            [-48.522, -27.603],
-          ],
-          bearing_degrees: 90,
-          distance_meters: 100,
-          cumulative_distance_meters: 100,
-        },
-      ],
-    };
-
-    expect(toRoutePolyline(response)).toEqual([
-      { lat: -27.601, lng: -48.525 },
-      { lat: -27.603, lng: -48.522 },
-      { lat: -27.603, lng: -48.522 },
-      { lat: -27.604, lng: -48.52 },
     ]);
   });
 

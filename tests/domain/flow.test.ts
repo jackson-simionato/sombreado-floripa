@@ -9,7 +9,7 @@ import type {
   DirectionChoice,
   FlowState,
   RouteCandidate,
-  RouteGeometryResponse,
+  RouteGeometry,
   TargetAdvisoryRequest,
   TargetAdvisoryResponse,
 } from "../../src/domain/types";
@@ -32,21 +32,13 @@ const direction: DirectionChoice = {
   departureLabels: ["TICEN", "UFSC"],
 };
 
-const geometry: RouteGeometryResponse = {
-  route_version_id: "version-a",
-  route_direction_id: "direction-a",
-  segments: [
-    {
-      id: "segment-a",
-      sequence: 1,
-      coordinates: [
-        [-48.525, -27.601],
-        [-48.522, -27.603],
-      ],
-      bearing_degrees: 90,
-      distance_meters: 100,
-      cumulative_distance_meters: 100,
-    },
+const geometry: RouteGeometry = {
+  routeId: "route-a",
+  routeVersionId: "version-a",
+  routeDirectionId: "direction-a",
+  polyline: [
+    { lat: -27.601, lng: -48.525 },
+    { lat: -27.603, lng: -48.522 },
   ],
 };
 
@@ -120,6 +112,9 @@ describe("flow reducer", () => {
       mapAvailability: "available",
     });
     expect(state.screen).toBe("routeConfirmation");
+    expect(state.geometry).not.toBe(geometry);
+    expect(state.geometry?.polyline).not.toBe(geometry.polyline);
+    expect(state.geometry?.polyline[0]).not.toBe(geometry.polyline[0]);
 
     state = flowReducer(state, {
       type: "routeConfirmed",
@@ -306,13 +301,23 @@ describe("flow reducer", () => {
     ).toBe("routeWithoutDirections");
   });
 
-  test("uses fallback when geometry is missing or map is unavailable", () => {
+  test("uses fallback when geometry has fewer than two points or map is unavailable", () => {
     const missingGeometryState = selectDirection("geometry-1");
     expect(
       flowReducer(missingGeometryState, {
         type: "geometrySucceeded",
         requestId: "geometry-1",
-        geometry: { ...geometry, segments: [] },
+        geometry: { ...geometry, polyline: [] },
+        mapAvailability: "available",
+      }).screen
+    ).toBe("routeConfirmationFallback");
+
+    const onePointGeometryState = selectDirection("geometry-one-point");
+    expect(
+      flowReducer(onePointGeometryState, {
+        type: "geometrySucceeded",
+        requestId: "geometry-one-point",
+        geometry: { ...geometry, polyline: [geometry.polyline[0]!] },
         mapAvailability: "available",
       }).screen
     ).toBe("routeConfirmationFallback");
