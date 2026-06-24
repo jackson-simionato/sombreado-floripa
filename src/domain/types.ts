@@ -1,6 +1,16 @@
+import type {
+  AdviceRequestTransport,
+  AdviceResponseTransport,
+} from "../api/advice";
+
 export type LatLng = {
   lat: number;
   lng: number;
+};
+
+export type LocationFix = LatLng & {
+  accuracyMeters?: number;
+  observedAt?: string;
 };
 
 export type ExposureDirection =
@@ -27,7 +37,12 @@ export type AdvisoryReasonCode =
   | "off_route_preview_available"
   | "off_route_no_preview_point"
   | "insufficient_sun_signal"
-  | "service_unavailable";
+  | "service_unavailable"
+  | "missingRouteGeometry"
+  | "insufficientSunSignal"
+  | "unsupportedDirection"
+  | "noAdviceForSelectedHorizon"
+  | "locationOffRoute";
 
 export type LightweightRouteDirection = {
   route_direction_id: string;
@@ -100,6 +115,13 @@ export type TargetAdvisoryResponse = {
   reason_code?: AdvisoryReasonCode;
 };
 
+export type BrowserAdviceRequest = AdviceRequestTransport;
+export type BrowserAdviceResponse = AdviceResponseTransport;
+export type FlowAdvisoryRequest = BrowserAdviceRequest | TargetAdvisoryRequest;
+export type FlowAdvisoryResponse =
+  | BrowserAdviceResponse
+  | TargetAdvisoryResponse;
+
 export type RouteCandidate = {
   routeId: string;
   routeVersionId: string;
@@ -121,6 +143,7 @@ export type UiAdviceState =
       mode: "onboard";
       directSunExposure: DirectionalExposure;
       recommendedSeatArea: DirectionalExposure;
+      freshnessNotice?: "recentFallback";
     }
   | {
       mode: "preview";
@@ -132,6 +155,7 @@ export type UiAdviceState =
   | {
       mode: "neutralComputed";
       directSunExposure: "overhead" | "none";
+      freshnessNotice?: "recentFallback";
     }
   | {
       mode: "withheld";
@@ -237,7 +261,7 @@ export type RetryTarget =
       routeDirectionId: string;
       routeVersionId: string;
     }
-  | { kind: "advisory"; request: TargetAdvisoryRequest };
+  | { kind: "advisory"; request: FlowAdvisoryRequest };
 
 export type FlowError = {
   kind:
@@ -252,7 +276,7 @@ export type FlowError = {
 };
 
 export type MockLocationResult =
-  | { kind: "granted"; lat: number; lng: number }
+  | ({ kind: "granted" } & LocationFix)
   | { kind: "denied" }
   | { kind: "unavailable" }
   | { kind: "timeout" };
@@ -283,7 +307,7 @@ export type RouteRefreshNotice = "routeVersionStale";
 export type FlowState = {
   screen: ScreenStateName;
   requestStatus: RequestStatus;
-  latestLocation?: LatLng;
+  latestLocation?: LocationFix;
   locationIssue?: Exclude<MockLocationResult["kind"], "granted">;
   manualQuery: string;
   nearbyCandidates: RouteCandidate[];
@@ -294,7 +318,7 @@ export type FlowState = {
   geometry?: RouteGeometry;
   mapAvailability: MapAvailability;
   advice?: UiAdviceState;
-  advisoryRequest?: TargetAdvisoryRequest;
+  advisoryRequest?: FlowAdvisoryRequest;
   error?: FlowError;
   routeRefreshNotice?: RouteRefreshNotice;
   pendingRetry?: PendingRetry;

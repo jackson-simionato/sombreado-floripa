@@ -12,6 +12,7 @@ import type {
   RoutesResponse,
   TargetAdvisoryResponse,
 } from "../../src/domain/types";
+import type { AdviceResponseTransport } from "../../src/api/advice";
 
 const routeResponse: RoutesResponse = {
   routes: [
@@ -128,6 +129,28 @@ describe("domain adapters", () => {
         departureLabels: ["TICEN", "UFSC"],
       },
     ]);
+  });
+
+  test("uses backend-provided advice recommendation without deriving it from exposure", () => {
+    const response = {
+      status: "advice",
+      mode: "onboard",
+      horizon: "upcoming",
+      routeId: "route-a",
+      routeVersionId: "version-a",
+      routeDirectionId: "direction-a",
+      directSunExposure: "right",
+      recommendedSeatArea: "front",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    } satisfies AdviceResponseTransport;
+
+    expect(toUiAdvice(response as never)).toEqual({
+      mode: "onboard",
+      directSunExposure: "right",
+      recommendedSeatArea: "front",
+      freshnessNotice: undefined,
+    });
   });
 
   test.each([

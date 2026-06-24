@@ -9,7 +9,6 @@ import {
   useState,
 } from "react";
 
-import { buildTargetAdvisoryRequest } from "../domain/adapters";
 import { isAbortedApiError } from "../api/browserApi";
 import {
   LiveRiderFlowClientError,
@@ -24,8 +23,10 @@ import {
 import type { LocationProvider } from "../location/locationProvider";
 import type {
   DirectionChoice,
+  FlowAdvisoryRequest,
   FlowError,
   FlowState,
+  LocationFix,
   MapAvailability,
   MockLocationResult,
   MockScenarioId,
@@ -94,6 +95,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   const manualSearchAbortRef = useRef<AbortController | undefined>(undefined);
   const directionsAbortRef = useRef<AbortController | undefined>(undefined);
   const geometryAbortRef = useRef<AbortController | undefined>(undefined);
+  const advisoryAbortRef = useRef<AbortController | undefined>(undefined);
 
   const scenarioId =
     options.mockScenarioId ??
@@ -132,7 +134,13 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
           seededScenario?.locationResult ??
           (scenarioId === "location-denied"
             ? { kind: "denied" }
-            : { kind: "granted", lat: -27.5969, lng: -48.5488 })
+            : {
+                kind: "granted",
+                lat: -27.5969,
+                lng: -48.5488,
+                accuracyMeters: 25,
+                observedAt: new Date().toISOString(),
+              })
       ),
     [
       injectedLocationProvider,
@@ -166,49 +174,85 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
 
   const requestAdvisory = useCallback(
     async (input: {
-      includeFreshLocation: boolean;
-      fallbackLocation?: { lat: number; lng: number };
+      fallbackLocation?: LocationFix;
+      routeId: string;
       routeDirectionId: string;
+      routeSource: "nearby" | "manual";
       routeVersionId: string;
     }) => {
       const requestId = nextRequestId("advisory");
-      const locationResult = input.includeFreshLocation
-        ? await locationProvider.getCurrentLocation()
-        : undefined;
-      const referenceLocation =
-        locationResult?.kind === "granted"
-          ? { lat: locationResult.lat, lng: locationResult.lng }
-          : (input.fallbackLocation ?? { lat: -27.5969, lng: -48.5488 });
-
-      const advisoryRequest = buildTargetAdvisoryRequest({
-        lat: referenceLocation.lat,
-        lng: referenceLocation.lng,
-        routeVersionId: input.routeVersionId,
-        routeDirectionId: input.routeDirectionId,
+      const locationResult = await locationProvider.getCurrentLocation();
+      const decision = chooseAdviceLocation(locationResult, {
+        fallbackLocation: input.fallbackLocation,
       });
+      const observedAt = new Date().toISOString();
+      const advisoryRequest =
+        decision.location === undefined
+          ? {
+              routeId: input.routeId,
+              routeVersionId: input.routeVersionId,
+              routeDirectionId: input.routeDirectionId,
+              mode: "preview" as const,
+              horizon: "remainingRoute" as const,
+              observedAt,
+            }
+          : {
+              routeId: input.routeId,
+              routeVersionId: input.routeVersionId,
+              routeDirectionId: input.routeDirectionId,
+              mode: "onboard" as const,
+              horizon: "upcoming" as const,
+              observedAt,
+              fallbackToPreview: true,
+              location: decision.location,
+            };
 
       dispatch({
         type: "routeConfirmed",
         requestId,
         advisoryRequest,
-        referenceLocation,
+        referenceLocation: decision.location,
+        freshnessNotice: decision.freshnessNotice,
       });
 
+      advisoryAbortRef.current?.abort();
+      const controller = new AbortController();
+      advisoryAbortRef.current = controller;
+
       try {
-        const advice = await api.createOnboardAdvisory(advisoryRequest);
+        const advice = await riderFlowClient.requestAdvice(advisoryRequest, {
+          signal: controller.signal,
+        });
         dispatch({
           type: "advisorySucceeded",
           requestId,
           advice,
+          freshnessNotice: decision.freshnessNotice,
         });
       } catch (error) {
+        if (isAbortedApiError(error)) {
+          return;
+        }
+
+        if (
+          error instanceof LiveRiderFlowClientError &&
+          error.flowError.kind === "routeVersionStale"
+        ) {
+          dispatch({ type: "routeVersionStaleDetected" });
+          if (input.routeSource === "manual") {
+            setManualSearchEnabled(true);
+            setManualSearchRequestNonce((nonce) => nonce + 1);
+          }
+          return;
+        }
+
         failOperation(requestId, error, {
           kind: "advisory",
           request: advisoryRequest,
         });
       }
     },
-    [api, failOperation, locationProvider, nextRequestId]
+    [failOperation, locationProvider, nextRequestId, riderFlowClient]
   );
 
   const openManualSearch = useCallback(() => {
@@ -216,7 +260,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   }, []);
 
   const requestNearbyCandidates = useCallback(
-    async (location: { lat: number; lng: number }) => {
+    async (location: LocationFix) => {
       const requestId = nextRequestId("nearby");
       dispatch({
         type: "locationResolved",
@@ -268,7 +312,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       return;
     }
 
-    await requestNearbyCandidates({ lat: location.lat, lng: location.lng });
+    await requestNearbyCandidates(location);
   }, [locationProvider, nextRequestId, requestNearbyCandidates]);
 
   const recoverStaleRouteVersion = useCallback(
@@ -402,9 +446,10 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     }
 
     void requestAdvisory({
-      includeFreshLocation: false,
       fallbackLocation: state.latestLocation,
+      routeId: state.selectedRoute.routeId,
       routeDirectionId: state.selectedDirection.routeDirectionId,
+      routeSource: state.selectedRoute.source,
       routeVersionId: state.selectedRoute.routeVersionId,
     });
   }, [
@@ -424,9 +469,10 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     }
 
     void requestAdvisory({
-      includeFreshLocation: true,
       fallbackLocation: state.latestLocation,
+      routeId: state.selectedRoute.routeId,
       routeDirectionId: state.selectedDirection.routeDirectionId,
+      routeSource: state.selectedRoute.source,
       routeVersionId: state.selectedRoute.routeVersionId,
     });
   }, [
@@ -480,17 +526,17 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     if (retryTarget.kind === "advisory") {
       const routeVersionId =
         state.selectedRoute?.routeVersionId ??
-        retryTarget.request.route_version_id;
+        routeVersionIdForAdviceRequest(retryTarget.request);
       const routeDirectionId =
         state.selectedDirection?.routeDirectionId ??
-        retryTarget.request.route_direction_id;
+        routeDirectionIdForAdviceRequest(retryTarget.request);
       void requestAdvisory({
-        includeFreshLocation: false,
-        fallbackLocation: {
-          lat: retryTarget.request.lat,
-          lng: retryTarget.request.lng,
-        },
+        fallbackLocation: state.latestLocation,
+        routeId:
+          state.selectedRoute?.routeId ??
+          routeIdForAdviceRequest(retryTarget.request),
         routeDirectionId,
+        routeSource: state.selectedRoute?.source ?? "manual",
         routeVersionId,
       });
     }
@@ -567,6 +613,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       manualSearchAbortRef.current?.abort();
       directionsAbortRef.current?.abort();
       geometryAbortRef.current?.abort();
+      advisoryAbortRef.current?.abort();
     },
     []
   );
@@ -619,6 +666,98 @@ function mapAvailabilityForScenario(
   return scenarioId === "confirmation-fallback-map-unavailable"
     ? "unavailable"
     : "available";
+}
+
+const MAX_USABLE_LOCATION_ACCURACY_METERS = 100;
+const FRESH_LOCATION_MAX_AGE_MS = 30_000;
+const RECENT_FALLBACK_LOCATION_MAX_AGE_MS = 120_000;
+
+function chooseAdviceLocation(
+  result: MockLocationResult,
+  options: { fallbackLocation?: LocationFix; now?: () => Date }
+): {
+  location?: LocationFix & { observedAt: string };
+  freshnessNotice?: "recentFallback";
+} {
+  const now = options.now?.() ?? new Date();
+  const freshLocation =
+    result.kind === "granted" ? normalizeLocationFix(result) : undefined;
+
+  if (
+    freshLocation !== undefined &&
+    isUsableLocation(freshLocation, now, FRESH_LOCATION_MAX_AGE_MS)
+  ) {
+    return { location: freshLocation };
+  }
+
+  if (
+    options.fallbackLocation !== undefined &&
+    isUsableLocation(
+      options.fallbackLocation,
+      now,
+      RECENT_FALLBACK_LOCATION_MAX_AGE_MS
+    )
+  ) {
+    return {
+      location: normalizeLocationFix(options.fallbackLocation),
+      freshnessNotice: "recentFallback",
+    };
+  }
+
+  return {};
+}
+
+function normalizeLocationFix(
+  location: LocationFix
+): LocationFix & { observedAt: string } {
+  return {
+    lat: location.lat,
+    lng: location.lng,
+    ...(location.accuracyMeters === undefined
+      ? {}
+      : { accuracyMeters: location.accuracyMeters }),
+    observedAt: location.observedAt ?? new Date().toISOString(),
+  };
+}
+
+function isUsableLocation(
+  location: LocationFix,
+  now: Date,
+  maxAgeMs: number
+): boolean {
+  if (
+    location.accuracyMeters !== undefined &&
+    location.accuracyMeters > MAX_USABLE_LOCATION_ACCURACY_METERS
+  ) {
+    return false;
+  }
+
+  if (location.observedAt === undefined) {
+    return false;
+  }
+
+  const observedAtMs = Date.parse(location.observedAt);
+  return (
+    Number.isFinite(observedAtMs) && now.getTime() - observedAtMs <= maxAgeMs
+  );
+}
+
+function routeIdForAdviceRequest(request: FlowAdvisoryRequest): string {
+  return "routeId" in request ? request.routeId : "";
+}
+
+function routeVersionIdForAdviceRequest(request: FlowAdvisoryRequest): string {
+  return "routeVersionId" in request
+    ? request.routeVersionId
+    : request.route_version_id;
+}
+
+function routeDirectionIdForAdviceRequest(
+  request: FlowAdvisoryRequest
+): string {
+  return "routeDirectionId" in request
+    ? request.routeDirectionId
+    : request.route_direction_id;
 }
 
 function sourceRouteForRetry(

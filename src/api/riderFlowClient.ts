@@ -4,8 +4,15 @@ import type {
   FlowError,
   RouteCandidate,
   RouteGeometry,
+  TargetAdvisoryRequest,
 } from "../domain/types";
 import type { MockApi } from "../mocks/mockApi";
+import { createAdviceClient } from "./advice";
+import type {
+  AdviceClient,
+  AdviceRequestTransport,
+  AdviceResponseTransport,
+} from "./advice";
 import { LiveApiError } from "./browserApi";
 import type { BrowserRequestOptions } from "./browserApi";
 import { createRouteCandidatesClient } from "./routeCandidates";
@@ -56,6 +63,10 @@ export type RiderFlowClient = {
     input: RouteGeometryInput,
     options?: BrowserRequestOptions
   ): Promise<RouteGeometry>;
+  requestAdvice(
+    input: AdviceRequestTransport,
+    options?: BrowserRequestOptions
+  ): Promise<AdviceResponseTransport>;
 };
 
 export class LiveRiderFlowClientError extends Error {
@@ -76,6 +87,7 @@ export function createLiveRiderFlowClient({
   fetchImpl?: typeof fetch;
 }): RiderFlowClient {
   return createRiderFlowClientFromTransportClients(
+    createAdviceClient({ baseUrl, fetchImpl }),
     createRouteCandidatesClient({ baseUrl, fetchImpl }),
     createRouteDirectionsClient({ baseUrl, fetchImpl }),
     createRouteGeometryClient({ baseUrl, fetchImpl })
@@ -104,10 +116,17 @@ export function createMockRiderFlowClient(api: MockApi): RiderFlowClient {
         input.routeVersionId
       );
     },
+    async requestAdvice(input) {
+      return toContractAdvice(
+        await api.createOnboardAdvisory(toLegacyAdvisoryRequest(input)),
+        input
+      );
+    },
   };
 }
 
 function createRiderFlowClientFromTransportClients(
+  adviceClient: AdviceClient,
   routeCandidatesClient: RouteCandidatesClient,
   routeDirectionsClient: RouteDirectionsClient,
   routeGeometryClient: RouteGeometryClient
@@ -145,6 +164,13 @@ function createRiderFlowClientFromTransportClients(
         return toLiveRouteGeometry(
           await routeGeometryClient.getRouteGeometry(input, options)
         );
+      } catch (error) {
+        throw normalizeLiveRiderFlowError(error);
+      }
+    },
+    async requestAdvice(input, options) {
+      try {
+        return await adviceClient.requestAdvice(input, options);
       } catch (error) {
         throw normalizeLiveRiderFlowError(error);
       }
@@ -187,6 +213,129 @@ function toLiveRouteGeometry(geometry: RouteGeometryTransport): RouteGeometry {
     ...geometry,
     polyline: geometry.polyline.map(({ lat, lng }) => ({ lat, lng })),
   };
+}
+
+function toLegacyAdvisoryRequest(
+  input: AdviceRequestTransport
+): TargetAdvisoryRequest {
+  return {
+    lat: input.location?.lat ?? -27.5969,
+    lng: input.location?.lng ?? -48.5488,
+    route_version_id: input.routeVersionId,
+    route_direction_id: input.routeDirectionId,
+    datetime: input.observedAt,
+    window_minutes: 15,
+    include_remaining: input.horizon === "remainingRoute",
+  };
+}
+
+function toContractAdvice(
+  response: Awaited<ReturnType<MockApi["createOnboardAdvisory"]>>,
+  input: AdviceRequestTransport
+): AdviceResponseTransport {
+  const mode =
+    response.status === "advisory" &&
+    response.advisory_context === "estimated_route_point"
+      ? "preview"
+      : input.mode;
+  const horizon = mode === "preview" ? "remainingRoute" : input.horizon;
+
+  if (response.status === "withheld") {
+    return {
+      status: "withheld",
+      mode,
+      horizon,
+      routeId: input.routeId,
+      routeVersionId: input.routeVersionId,
+      routeDirectionId: input.routeDirectionId,
+      reasonCode: toContractWithheldReason(response.reason_code),
+      computedAt: response.requested_at,
+    };
+  }
+
+  const window =
+    horizon === "remainingRoute"
+      ? (response.remaining_route ?? response.upcoming_window)
+      : response.upcoming_window;
+  const directSunExposure = window?.dominant_direction ?? "none";
+  const recommendedSeatArea =
+    directSunExposure === "overhead" || directSunExposure === "none"
+      ? "neutral"
+      : invertMockExposure(directSunExposure);
+
+  return {
+    status: "advice",
+    mode,
+    horizon,
+    routeId: input.routeId,
+    routeVersionId: input.routeVersionId,
+    routeDirectionId: input.routeDirectionId,
+    directSunExposure,
+    recommendedSeatArea,
+    sunCondition:
+      directSunExposure === "none"
+        ? "night"
+        : directSunExposure === "overhead"
+          ? "overhead"
+          : "daylight",
+    computedAt: response.requested_at,
+    ...(response.projected_position === undefined
+      ? {}
+      : {
+          position: {
+            lat: response.projected_position.lat,
+            lng: response.projected_position.lng,
+            source:
+              mode === "preview"
+                ? ("directionStart" as const)
+                : ("liveLocation" as const),
+            distanceFromRouteMeters:
+              response.projected_position.distance_from_route_meters,
+          },
+        }),
+  };
+}
+
+function invertMockExposure(
+  exposure: Exclude<
+    AdviceResponseTransport & { status: "advice" },
+    { status: "withheld" }
+  >["directSunExposure"]
+): Exclude<
+  AdviceResponseTransport & { status: "advice" },
+  { status: "withheld" }
+>["recommendedSeatArea"] {
+  switch (exposure) {
+    case "left":
+      return "right";
+    case "right":
+      return "left";
+    case "front":
+      return "back";
+    case "back":
+      return "front";
+    case "overhead":
+    case "none":
+      return "neutral";
+  }
+}
+
+function toContractWithheldReason(
+  reasonCode: Awaited<
+    ReturnType<MockApi["createOnboardAdvisory"]>
+  >["reason_code"]
+): Extract<AdviceResponseTransport, { status: "withheld" }>["reasonCode"] {
+  switch (reasonCode) {
+    case "insufficient_sun_signal":
+      return "insufficientSunSignal";
+    case "direction_unconfirmed":
+      return "unsupportedDirection";
+    case "off_route_no_preview_point":
+      return "locationOffRoute";
+    case "missing_route_geometry":
+    default:
+      return "missingRouteGeometry";
+  }
 }
 
 function normalizeLiveRiderFlowError(error: unknown): Error {

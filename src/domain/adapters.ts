@@ -2,12 +2,12 @@ import type {
   DirectionChoice,
   DirectionalExposure,
   ExposureDirection,
+  FlowAdvisoryResponse,
   RouteCandidate,
   RouteDirectionsResponse,
   RouteSelectionSource,
   RoutesResponse,
   TargetAdvisoryRequest,
-  TargetAdvisoryResponse,
   UiAdviceState,
 } from "./types";
 
@@ -50,12 +50,56 @@ export function toDirectionChoices(
 }
 
 export function toUiAdvice(
-  advisoryResponse: TargetAdvisoryResponse
+  advisoryResponse: FlowAdvisoryResponse
 ): UiAdviceState {
+  if (advisoryResponse.status === "advice") {
+    const recommendedSeatArea = advisoryResponse.recommendedSeatArea;
+
+    if (
+      recommendedSeatArea === "neutral" ||
+      advisoryResponse.directSunExposure === "overhead" ||
+      advisoryResponse.directSunExposure === "none"
+    ) {
+      return {
+        mode: "neutralComputed",
+        directSunExposure:
+          advisoryResponse.directSunExposure === "overhead"
+            ? "overhead"
+            : "none",
+      };
+    }
+
+    if (advisoryResponse.mode === "preview") {
+      return {
+        mode: "preview",
+        directSunExposure:
+          advisoryResponse.directSunExposure as DirectionalExposure,
+        recommendedSeatArea,
+        previewSource: "estimated_route_point",
+        ...(advisoryResponse.position?.distanceFromRouteMeters === undefined
+          ? {}
+          : {
+              distanceFromRouteMeters:
+                advisoryResponse.position.distanceFromRouteMeters,
+            }),
+      };
+    }
+
+    return {
+      mode: "onboard",
+      directSunExposure:
+        advisoryResponse.directSunExposure as DirectionalExposure,
+      recommendedSeatArea,
+    };
+  }
+
   if (advisoryResponse.status === "withheld") {
     return {
       mode: "withheld",
-      reasonCode: advisoryResponse.reason_code ?? "service_unavailable",
+      reasonCode:
+        "reasonCode" in advisoryResponse
+          ? advisoryResponse.reasonCode
+          : (advisoryResponse.reason_code ?? "service_unavailable"),
     };
   }
 

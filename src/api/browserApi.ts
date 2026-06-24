@@ -63,6 +63,8 @@ export function isAbortedApiError(error: unknown): boolean {
 
 export async function requestBrowserJson<T>({
   fetchImpl,
+  method = "GET",
+  requestBody,
   url,
   schema,
   options,
@@ -70,6 +72,8 @@ export async function requestBrowserJson<T>({
   malformedResponseMessage,
 }: {
   fetchImpl: typeof fetch;
+  method?: "GET" | "POST";
+  requestBody?: unknown;
   url: string;
   schema: z.ZodType<T>;
   options?: BrowserRequestOptions;
@@ -80,8 +84,14 @@ export async function requestBrowserJson<T>({
 
   try {
     response = await fetchImpl(url, {
-      method: "GET",
+      method,
       credentials: "omit",
+      ...(requestBody === undefined
+        ? {}
+        : {
+            body: JSON.stringify(requestBody),
+            headers: { "content-type": "application/json" },
+          }),
       ...(options?.signal === undefined ? {} : { signal: options.signal }),
     });
   } catch (error) {

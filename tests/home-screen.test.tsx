@@ -55,44 +55,57 @@ describe("home screen flow", () => {
   test("loads manual route candidates and version-pinned directions live", async () => {
     const user = userEvent.setup();
     const fetchMock = vi.fn().mockImplementation((url: string) => {
-      const body = url.includes("/geometry?")
+      const body = url.endsWith("/advice")
         ? {
+            status: "advice",
+            mode: "onboard",
+            horizon: "upcoming",
             routeId: "route-124",
             routeVersionId: "version-124",
             routeDirectionId: "direction-124-inbound",
-            polyline: [
-              { lat: -27.5969, lng: -48.5488 },
-              { lat: -27.5961, lng: -48.5363 },
-            ],
+            directSunExposure: "right",
+            recommendedSeatArea: "left",
+            sunCondition: "daylight",
+            computedAt: "2026-06-23T12:00:00.000Z",
           }
-        : url.includes("/directions?")
+        : url.includes("/geometry?")
           ? {
-              directions: [
-                {
-                  routeDirectionId: "direction-124-inbound",
-                  sequence: 2,
-                  name: "Lagoa para TICEN",
-                  departureLabels: ["Lagoa", "TICEN"],
-                },
-                {
-                  routeDirectionId: "direction-124-outbound",
-                  sequence: 1,
-                  name: "TICEN para Lagoa",
-                  departureLabels: ["TICEN", "Lagoa"],
-                },
+              routeId: "route-124",
+              routeVersionId: "version-124",
+              routeDirectionId: "direction-124-inbound",
+              polyline: [
+                { lat: -27.5969, lng: -48.5488 },
+                { lat: -27.5961, lng: -48.5363 },
               ],
             }
-          : {
-              routes: [
-                {
-                  routeId: "route-124",
-                  routeVersionId: "version-124",
-                  routeCode: "124",
-                  routeName: "TICEN - Lagoa",
-                  directionHints: ["TICEN", "Lagoa"],
-                },
-              ],
-            };
+          : url.includes("/directions?")
+            ? {
+                directions: [
+                  {
+                    routeDirectionId: "direction-124-inbound",
+                    sequence: 2,
+                    name: "Lagoa para TICEN",
+                    departureLabels: ["Lagoa", "TICEN"],
+                  },
+                  {
+                    routeDirectionId: "direction-124-outbound",
+                    sequence: 1,
+                    name: "TICEN para Lagoa",
+                    departureLabels: ["TICEN", "Lagoa"],
+                  },
+                ],
+              }
+            : {
+                routes: [
+                  {
+                    routeId: "route-124",
+                    routeVersionId: "version-124",
+                    routeCode: "124",
+                    routeName: "TICEN - Lagoa",
+                    directionHints: ["TICEN", "Lagoa"],
+                  },
+                ],
+              };
       return Promise.resolve(
         new Response(JSON.stringify(body), {
           headers: { "content-type": "application/json" },
@@ -102,6 +115,27 @@ describe("home screen flow", () => {
     });
     vi.stubEnv("NEXT_PUBLIC_API_URL", "http://localhost:8000/v1");
     vi.stubGlobal("fetch", fetchMock);
+    Object.defineProperty(navigator, "geolocation", {
+      configurable: true,
+      value: {
+        clearWatch: vi.fn(),
+        getCurrentPosition: vi.fn((success: PositionCallback) => {
+          success({
+            coords: {
+              accuracy: 25,
+              altitude: null,
+              altitudeAccuracy: null,
+              heading: null,
+              latitude: -27.5969,
+              longitude: -48.5488,
+              speed: null,
+            },
+            timestamp: Date.now(),
+          } as GeolocationPosition);
+        }),
+        watchPosition: vi.fn(),
+      },
+    });
 
     render(<HomePage />);
 
@@ -171,6 +205,20 @@ describe("home screen flow", () => {
     expect(
       screen.getByRole("button", { name: "Trocar sentido" })
     ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Sente à esquerda" })
+    ).toBeInTheDocument();
+    expect(
+      fetchMock.mock.calls.some(
+        ([url, init]) =>
+          url === "http://localhost:8000/v1/advice" && init?.method === "POST"
+      )
+    ).toBe(true);
   });
 
   test("loads nearby route candidates live after rider location action", async () => {
@@ -412,6 +460,261 @@ describe("home screen flow", () => {
     expect(
       screen.getByRole("button", { name: "Trocar linha" })
     ).toBeInTheDocument();
+  });
+
+  test("requests fresh location before initial live onboard advice", async () => {
+    const user = userEvent.setup();
+    const observedAt = new Date().toISOString();
+    const getCurrentLocation = vi.fn().mockResolvedValue({
+      kind: "granted",
+      lat: -27.5969,
+      lng: -48.5488,
+      accuracyMeters: 35,
+      observedAt,
+    });
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "onboard",
+      horizon: "upcoming",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "right",
+      recommendedSeatArea: "front",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    });
+    render(
+      <HomePageApp
+        locationProvider={{ getCurrentLocation }}
+        riderFlowClient={createLiveFlowClient({ requestAdvice })}
+      />
+    );
+
+    await completeLiveManualSelection(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(
+      await screen.findByRole("heading", {
+        name: "Prefira sentar mais à frente",
+      })
+    ).toBeInTheDocument();
+    expect(requestAdvice).toHaveBeenCalledWith(
+      {
+        routeId: "route-124",
+        routeVersionId: "version-124",
+        routeDirectionId: "direction-124",
+        mode: "onboard",
+        horizon: "upcoming",
+        observedAt: expect.any(String),
+        fallbackToPreview: true,
+        location: {
+          lat: -27.5969,
+          lng: -48.5488,
+          accuracyMeters: 35,
+          observedAt,
+        },
+      },
+      expect.any(Object)
+    );
+  });
+
+  test("requests route preview advice when confirmation location is denied", async () => {
+    const user = userEvent.setup();
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "preview",
+      horizon: "remainingRoute",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "left",
+      recommendedSeatArea: "right",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+      position: {
+        lat: -27.5969,
+        lng: -48.5488,
+        source: "directionStart",
+      },
+    });
+    render(
+      <HomePageApp
+        locationProvider={{
+          getCurrentLocation: vi.fn().mockResolvedValue({ kind: "denied" }),
+        }}
+        riderFlowClient={createLiveFlowClient({ requestAdvice })}
+      />
+    );
+
+    await completeLiveManualSelection(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
+      mode: "preview",
+      horizon: "remainingRoute",
+    });
+    expect(requestAdvice.mock.calls[0]?.[0]).not.toHaveProperty("location");
+  });
+
+  test("uses a recent fallback location with visible rider copy", async () => {
+    const user = userEvent.setup();
+    const fallbackObservedAt = new Date().toISOString();
+    const getCurrentLocation = vi
+      .fn()
+      .mockResolvedValueOnce({
+        kind: "granted",
+        lat: -27.5969,
+        lng: -48.5488,
+        accuracyMeters: 30,
+        observedAt: fallbackObservedAt,
+      })
+      .mockResolvedValueOnce({ kind: "timeout" });
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "onboard",
+      horizon: "upcoming",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "right",
+      recommendedSeatArea: "left",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    });
+    render(
+      <HomePageApp
+        locationProvider={{ getCurrentLocation }}
+        riderFlowClient={createLiveFlowClient({ requestAdvice })}
+      />
+    );
+
+    await completeNearbyFlow(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(
+      screen.getByText(/última localização conhecida/i)
+    ).toBeInTheDocument();
+    expect(requestAdvice).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: "onboard",
+        horizon: "upcoming",
+        location: expect.objectContaining({
+          observedAt: fallbackObservedAt,
+        }),
+      }),
+      expect.any(Object)
+    );
+  });
+
+  test.each([
+    [
+      "stale",
+      {
+        kind: "granted",
+        lat: -27.5969,
+        lng: -48.5488,
+        accuracyMeters: 30,
+        observedAt: new Date(Date.now() - 180_000).toISOString(),
+      },
+    ],
+    [
+      "inaccurate",
+      {
+        kind: "granted",
+        lat: -27.5969,
+        lng: -48.5488,
+        accuracyMeters: 250,
+        observedAt: new Date().toISOString(),
+      },
+    ],
+  ] as const)(
+    "requests route preview advice when confirmation location is %s",
+    async (_label, locationResult) => {
+      const user = userEvent.setup();
+      const requestAdvice = vi.fn().mockResolvedValue({
+        status: "advice",
+        mode: "preview",
+        horizon: "remainingRoute",
+        routeId: "route-124",
+        routeVersionId: "version-124",
+        routeDirectionId: "direction-124",
+        directSunExposure: "left",
+        recommendedSeatArea: "right",
+        sunCondition: "daylight",
+        computedAt: "2026-06-23T12:00:00.000Z",
+      });
+      render(
+        <HomePageApp
+          locationProvider={{
+            getCurrentLocation: vi.fn().mockResolvedValue(locationResult),
+          }}
+          riderFlowClient={createLiveFlowClient({ requestAdvice })}
+        />
+      );
+
+      await completeLiveManualSelection(user);
+      await user.click(
+        screen.getByRole("button", { name: "Confirmar esta linha" })
+      );
+
+      expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+      expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
+        mode: "preview",
+        horizon: "remainingRoute",
+      });
+      expect(requestAdvice.mock.calls[0]?.[0]).not.toHaveProperty("location");
+    }
+  );
+
+  test("refreshes manual candidates after stale live advice without keeping confirmation", async () => {
+    const user = userEvent.setup();
+    const searchRouteCandidates = vi.fn().mockResolvedValue([liveRoute]);
+    render(
+      <HomePageApp
+        locationProvider={{
+          getCurrentLocation: vi.fn().mockResolvedValue({
+            kind: "granted",
+            lat: -27.5969,
+            lng: -48.5488,
+            accuracyMeters: 30,
+            observedAt: new Date().toISOString(),
+          }),
+        }}
+        riderFlowClient={createLiveFlowClient({
+          searchRouteCandidates,
+          requestAdvice: vi.fn().mockRejectedValue(
+            new LiveRiderFlowClientError({
+              kind: "routeVersionStale",
+              message: "stale",
+            })
+          ),
+        })}
+      />
+    );
+
+    await completeLiveManualSelection(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    await waitFor(() => expect(searchRouteCandidates).toHaveBeenCalledTimes(2));
+    expect(
+      screen.getByText(
+        "As opções desta linha foram atualizadas. Escolha a linha e o sentido novamente."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Confirme sua linha" })
+    ).not.toBeInTheDocument();
   });
 
   test("silently aborts manual search when the query is cleared", async () => {
@@ -1091,6 +1394,18 @@ function createLiveFlowClient(
         { lat: -27.5969, lng: -48.5488 },
         { lat: -27.5961, lng: -48.5363 },
       ],
+    }),
+    requestAdvice: vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "onboard",
+      horizon: "upcoming",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "right",
+      recommendedSeatArea: "left",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
     }),
     ...overrides,
   };

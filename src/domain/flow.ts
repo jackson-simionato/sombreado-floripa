@@ -2,7 +2,10 @@ import { toUiAdvice } from "./adapters";
 import type {
   DirectionChoice,
   FlowError,
+  FlowAdvisoryRequest,
+  FlowAdvisoryResponse,
   FlowState,
+  LocationFix,
   MapAvailability,
   MockLocationResult,
   RequestId,
@@ -13,8 +16,6 @@ import type {
   ScreenStateName,
   SelectedDirection,
   SelectedRoute,
-  TargetAdvisoryRequest,
-  TargetAdvisoryResponse,
 } from "./types";
 
 export const initialFlowState: FlowState = {
@@ -84,13 +85,15 @@ export type FlowEvent =
   | {
       type: "routeConfirmed";
       requestId: RequestId;
-      advisoryRequest: TargetAdvisoryRequest;
-      referenceLocation?: { lat: number; lng: number };
+      advisoryRequest: FlowAdvisoryRequest;
+      referenceLocation?: LocationFix;
+      freshnessNotice?: "recentFallback";
     }
   | {
       type: "advisorySucceeded";
       requestId: RequestId;
-      advice: TargetAdvisoryResponse;
+      advice: FlowAdvisoryResponse;
+      freshnessNotice?: "recentFallback";
     }
   | { type: "operationFailed"; requestId: RequestId; error: FlowError }
   | { type: "retryRequested"; requestId: RequestId; retryTarget: RetryTarget }
@@ -132,7 +135,14 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         ...state,
         screen: "findingNearbyRoutes",
         requestStatus: "loading",
-        latestLocation: { lat: event.result.lat, lng: event.result.lng },
+        latestLocation: {
+          lat: event.result.lat,
+          lng: event.result.lng,
+          ...(event.result.accuracyMeters === undefined
+            ? {}
+            : { accuracyMeters: event.result.accuracyMeters }),
+          observedAt: event.result.observedAt,
+        },
         locationIssue: undefined,
         pendingRequests: {
           ...state.pendingRequests,
@@ -373,7 +383,10 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         ...state,
         screen: screenForAdvice(event.advice),
         requestStatus: "success",
-        advice: toUiAdvice(event.advice),
+        advice: applyFreshnessNotice(
+          toUiAdvice(event.advice),
+          event.freshnessNotice
+        ),
         pendingRequests: {
           ...state.pendingRequests,
           advisory: undefined,
@@ -468,11 +481,17 @@ export function normalizeFlowError(
   };
 }
 
-function screenForAdvice(advice: TargetAdvisoryResponse): ScreenStateName {
+function screenForAdvice(advice: FlowAdvisoryResponse): ScreenStateName {
   if (advice.status === "withheld") {
     return "trueWithheld";
   }
-  if (advice.advisory_context === "estimated_route_point") {
+  if ("mode" in advice && advice.mode === "preview") {
+    return "routePreviewAdviceResult";
+  }
+  if (
+    "advisory_context" in advice &&
+    advice.advisory_context === "estimated_route_point"
+  ) {
     return "routePreviewAdviceResult";
   }
   return "onboardAdviceResult";
@@ -573,6 +592,22 @@ function cloneRetryTarget(retryTarget: RetryTarget): RetryTarget {
     };
   }
   return { ...retryTarget };
+}
+
+function applyFreshnessNotice(
+  advice: FlowState["advice"],
+  freshnessNotice: "recentFallback" | undefined
+): FlowState["advice"] {
+  if (
+    freshnessNotice === undefined ||
+    advice === undefined ||
+    advice.mode === "preview" ||
+    advice.mode === "withheld"
+  ) {
+    return advice;
+  }
+
+  return { ...advice, freshnessNotice };
 }
 
 function isFlowError(error: unknown): error is FlowError {

@@ -23,6 +23,35 @@ const validGeometry: RouteGeometry = {
   ],
 };
 
+const adviceInput = {
+  routeId: "route-124",
+  routeVersionId: "version-124",
+  routeDirectionId: "direction-124",
+  mode: "onboard",
+  horizon: "upcoming",
+  observedAt: "2026-06-23T12:00:00.000Z",
+  fallbackToPreview: true,
+  location: {
+    lat: -27.5969,
+    lng: -48.5488,
+    accuracyMeters: 40,
+    observedAt: "2026-06-23T11:59:59.000Z",
+  },
+} as const;
+
+const validAdvice = {
+  status: "advice",
+  mode: "onboard",
+  horizon: "upcoming",
+  routeId: "route-124",
+  routeVersionId: "version-124",
+  routeDirectionId: "direction-124",
+  directSunExposure: "right",
+  recommendedSeatArea: "front",
+  sunCondition: "daylight",
+  computedAt: "2026-06-23T12:00:01.000Z",
+} as const;
+
 describe("rider-flow route candidate client", () => {
   test("maps live nearby candidates into domain state while preserving service order", async () => {
     const fetchMock = vi.fn().mockResolvedValue(
@@ -220,6 +249,20 @@ describe("rider-flow route candidate client", () => {
     );
   });
 
+  test("returns live advice without deriving backend recommendation", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify(validAdvice)));
+    const client = createLiveRiderFlowClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+
+    await expect(client.requestAdvice(adviceInput)).resolves.toEqual(
+      validAdvice
+    );
+  });
+
   test("normalizes malformed live geometry for flow errors", async () => {
     const client = createLiveRiderFlowClient({
       baseUrl: "http://localhost:8000/v1",
@@ -283,5 +326,15 @@ describe("rider-flow route candidate client", () => {
       geometryInput.routeDirectionId,
       geometryInput.routeVersionId
     );
+  });
+
+  test("keeps mock advice behind the same route context operation", async () => {
+    const client = createMockRiderFlowClient(createMockApi());
+
+    const advice = await client.requestAdvice(adviceInput);
+
+    expect(advice.routeId).toBe(adviceInput.routeId);
+    expect(advice.routeVersionId).toBe(adviceInput.routeVersionId);
+    expect(advice.routeDirectionId).toBe(adviceInput.routeDirectionId);
   });
 });

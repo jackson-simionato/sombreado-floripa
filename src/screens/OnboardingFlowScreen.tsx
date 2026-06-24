@@ -592,6 +592,15 @@ function renderAdviceResult({
           label="Linha confirmada"
           routeLabel={routeLabel}
         />
+        {advice.mode !== "preview" &&
+        advice.freshnessNotice === "recentFallback" ? (
+          <div className={styles.noticePanel} role="status">
+            <p>
+              Usando sua última localização conhecida. Atualize quando estiver
+              no ônibus.
+            </p>
+          </div>
+        ) : null}
         {variant.previewNote !== undefined ? (
           <p className={styles.metaText}>{variant.previewNote}</p>
         ) : null}

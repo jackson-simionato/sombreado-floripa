@@ -33,7 +33,6 @@ export function LiveProductHomePage({ apiBaseUrl }: LiveProductHomePageProps) {
     <HomePageApp
       locationProvider={locationProvider}
       riderFlowClient={riderFlowClient}
-      stopAfterRouteConfirmation
     />
   );
 }

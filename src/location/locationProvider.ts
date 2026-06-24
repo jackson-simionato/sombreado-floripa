@@ -19,6 +19,8 @@ export function createBrowserLocationProvider(): LocationProvider {
               kind: "granted",
               lat: position.coords.latitude,
               lng: position.coords.longitude,
+              accuracyMeters: position.coords.accuracy,
+              observedAt: new Date(position.timestamp).toISOString(),
             }),
           (error) => {
             if (error.code === error.PERMISSION_DENIED) {

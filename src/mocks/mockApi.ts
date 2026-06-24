@@ -155,13 +155,26 @@ export function createMockApi(
 }
 
 export function createMockLocationProvider(
-  result: MockLocationResult = { kind: "granted", lat: -27.5969, lng: -48.5488 }
+  result: MockLocationResult = {
+    kind: "granted",
+    lat: -27.5969,
+    lng: -48.5488,
+    accuracyMeters: 25,
+    observedAt: new Date().toISOString(),
+  }
 ): {
   getCurrentLocation(): Promise<MockLocationResult>;
 } {
   return {
     async getCurrentLocation() {
-      return result;
+      if (result.kind !== "granted") {
+        return result;
+      }
+
+      return {
+        ...result,
+        observedAt: result.observedAt ?? new Date().toISOString(),
+      };
     },
   };
 }
