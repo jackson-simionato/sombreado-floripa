@@ -187,13 +187,38 @@ Automated coverage verifies fresh-location-first nearby recovery, recent
 fallback, manual rerun, current advice request recovery, and no silent
 reselection. Local browser smoke was not rerun for this slice.
 
+## Issue #8 Runtime Split And Prototype QA
+
+Issue #8 locks the final Plan 05 runtime split instead of adding new backend
+behavior.
+
+Expected issue #8 behavior:
+
+- `/` is the live product runtime and requires `NEXT_PUBLIC_API_URL`.
+- `/` never falls back to fixture-backed route, direction, geometry, or advice
+  data when live configuration is missing or miswired.
+- `/prototype` is the fixture-backed QA runtime and keeps the prototype
+  scenario switcher.
+- `/prototype` does not require `NEXT_PUBLIC_API_URL`.
+- Prototype scenarios use the same rider-flow client operation shape as live
+  mode, but remain backed by shared mock fixtures.
+
+Automated coverage verifies missing live config behavior, live route separation
+from the prototype switcher, explicit live-flow dependency guards, prototype
+route availability, and prototype scenario reachability. Local browser smoke
+should record the live-service path separately from fixture-only prototype
+coverage in the checklist below.
+
 ## Local-Service Smoke Checklist
 
 Mark each state as verified against local service, verified with fixtures only, blocked by backend gap, or not checked.
 
 | State or behavior                                                | Local service | Fixtures | Notes                                                                                                                    |
 | ---------------------------------------------------------------- | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Missing `NEXT_PUBLIC_API_URL` fails clearly in live mode         |               |          |                                                                                                                          |
+| Missing `NEXT_PUBLIC_API_URL` fails clearly in live mode         | Not checked   | Verified | Automated route-split coverage renders the live missing-config screen without prototype switcher                         |
+| Main `/` route does not render prototype scenario switcher       | Not checked   | Verified | Automated coverage verifies `/` stays live-only when `NEXT_PUBLIC_API_URL` is present                                    |
+| `/prototype` is available without `NEXT_PUBLIC_API_URL`          | Not checked   | Verified | Fixture-backed prototype route keeps the scenario switcher and default location screen                                   |
+| Main `/` route cannot silently fall back to fixtures             | Not checked   | Verified | Explicit live-flow dependency guard fails fast if live dependencies are missing                                          |
 | Nearby route lookup after rider taps location                    |               |          |                                                                                                                          |
 | Nearby empty result                                              |               |          |                                                                                                                          |
 | Manual route search                                              |               |          |                                                                                                                          |

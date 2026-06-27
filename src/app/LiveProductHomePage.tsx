@@ -32,6 +32,7 @@ export function LiveProductHomePage({ apiBaseUrl }: LiveProductHomePageProps) {
   return (
     <HomePageApp
       locationProvider={locationProvider}
+      runtime="live"
       riderFlowClient={riderFlowClient}
     />
   );

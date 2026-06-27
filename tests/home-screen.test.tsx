@@ -10,6 +10,7 @@ import {
   type RiderFlowClient,
 } from "../src/api/riderFlowClient";
 import { HomePageApp } from "../src/app/HomePageApp";
+import type { HomePageAppProps } from "../src/app/HomePageApp";
 
 describe("home screen flow", () => {
   afterEach(() => {
@@ -50,6 +51,12 @@ describe("home screen flow", () => {
     expect(
       screen.queryByRole("combobox", { name: "Protótipo" })
     ).not.toBeInTheDocument();
+  });
+
+  test("fails fast if live flow mounts without live dependencies", () => {
+    expect(() =>
+      render(<HomePageApp {...({ runtime: "live" } as HomePageAppProps)} />)
+    ).toThrow("Live runtime requires a rider flow client.");
   });
 
   test("loads manual route candidates and version-pinned directions live", async () => {
@@ -296,19 +303,17 @@ describe("home screen flow", () => {
 
   test("uses fallback confirmation for matching empty live geometry", async () => {
     const user = userEvent.setup();
-    render(
-      <HomePageApp
-        riderFlowClient={createLiveFlowClient({
-          getRouteGeometry: vi.fn().mockResolvedValue({
-            routeId: "route-124",
-            routeVersionId: "version-124",
-            routeDirectionId: "direction-124",
-            polyline: [],
-          }),
-        })}
-        stopAfterRouteConfirmation
-      />
-    );
+    renderPrototypeHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        getRouteGeometry: vi.fn().mockResolvedValue({
+          routeId: "route-124",
+          routeVersionId: "version-124",
+          routeDirectionId: "direction-124",
+          polyline: [],
+        }),
+      }),
+      stopAfterRouteConfirmation: true,
+    });
 
     await completeLiveManualSelection(user);
 
@@ -337,12 +342,10 @@ describe("home screen flow", () => {
           { lat: -27.5961, lng: -48.5363 },
         ],
       });
-    render(
-      <HomePageApp
-        riderFlowClient={createLiveFlowClient({ getRouteGeometry })}
-        stopAfterRouteConfirmation
-      />
-    );
+    renderPrototypeHomePageApp({
+      riderFlowClient: createLiveFlowClient({ getRouteGeometry }),
+      stopAfterRouteConfirmation: true,
+    });
 
     await completeLiveManualSelection(user);
     expect(
@@ -368,20 +371,18 @@ describe("home screen flow", () => {
   test("refreshes manual candidates after stale live geometry without reselection", async () => {
     const user = userEvent.setup();
     const searchRouteCandidates = vi.fn().mockResolvedValue([liveRoute]);
-    render(
-      <HomePageApp
-        riderFlowClient={createLiveFlowClient({
-          searchRouteCandidates,
-          getRouteGeometry: vi.fn().mockRejectedValue(
-            new LiveRiderFlowClientError({
-              kind: "routeVersionStale",
-              message: "stale",
-            })
-          ),
-        })}
-        stopAfterRouteConfirmation
-      />
-    );
+    renderPrototypeHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        searchRouteCandidates,
+        getRouteGeometry: vi.fn().mockRejectedValue(
+          new LiveRiderFlowClientError({
+            kind: "routeVersionStale",
+            message: "stale",
+          })
+        ),
+      }),
+      stopAfterRouteConfirmation: true,
+    });
 
     await completeLiveManualSelection(user);
 
@@ -427,15 +428,13 @@ describe("home screen flow", () => {
       })
     );
 
-    render(
-      <HomePageApp
-        locationProvider={{ getCurrentLocation }}
-        riderFlowClient={createLiveFlowClient({
-          listNearbyRouteCandidates,
-          listRouteDirections,
-        })}
-      />
-    );
+    renderLiveHomePageApp({
+      locationProvider: { getCurrentLocation },
+      riderFlowClient: createLiveFlowClient({
+        listNearbyRouteCandidates,
+        listRouteDirections,
+      }),
+    });
 
     await user.click(
       screen.getByRole("button", { name: "Usar minha localização" })
@@ -486,15 +485,13 @@ describe("home screen flow", () => {
       })
     );
 
-    render(
-      <HomePageApp
-        locationProvider={{ getCurrentLocation }}
-        riderFlowClient={createLiveFlowClient({
-          listNearbyRouteCandidates,
-          listRouteDirections,
-        })}
-      />
-    );
+    renderLiveHomePageApp({
+      locationProvider: { getCurrentLocation },
+      riderFlowClient: createLiveFlowClient({
+        listNearbyRouteCandidates,
+        listRouteDirections,
+      }),
+    });
 
     await user.click(
       screen.getByRole("button", { name: "Usar minha localização" })
@@ -538,15 +535,13 @@ describe("home screen flow", () => {
       })
     );
 
-    render(
-      <HomePageApp
-        locationProvider={{ getCurrentLocation }}
-        riderFlowClient={createLiveFlowClient({
-          listNearbyRouteCandidates,
-          listRouteDirections,
-        })}
-      />
-    );
+    renderLiveHomePageApp({
+      locationProvider: { getCurrentLocation },
+      riderFlowClient: createLiveFlowClient({
+        listNearbyRouteCandidates,
+        listRouteDirections,
+      }),
+    });
 
     await user.click(
       screen.getByRole("button", { name: "Usar minha localização" })
@@ -571,22 +566,20 @@ describe("home screen flow", () => {
   test("aborts live geometry when the flow unmounts", async () => {
     const user = userEvent.setup();
     let geometrySignal: AbortSignal | undefined;
-    const { unmount } = render(
-      <HomePageApp
-        riderFlowClient={createLiveFlowClient({
-          getRouteGeometry: vi.fn(
-            (
-              _input: Parameters<RiderFlowClient["getRouteGeometry"]>[0],
-              options?: Parameters<RiderFlowClient["getRouteGeometry"]>[1]
-            ) => {
-              geometrySignal = options?.signal;
-              return new Promise<never>(() => undefined);
-            }
-          ),
-        })}
-        stopAfterRouteConfirmation
-      />
-    );
+    const { unmount } = renderPrototypeHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        getRouteGeometry: vi.fn(
+          (
+            _input: Parameters<RiderFlowClient["getRouteGeometry"]>[0],
+            options?: Parameters<RiderFlowClient["getRouteGeometry"]>[1]
+          ) => {
+            geometrySignal = options?.signal;
+            return new Promise<never>(() => undefined);
+          }
+        ),
+      }),
+      stopAfterRouteConfirmation: true,
+    });
 
     await completeLiveManualSelection(user);
     await waitFor(() => expect(geometrySignal).toBeDefined());
@@ -595,15 +588,13 @@ describe("home screen flow", () => {
     expect(geometrySignal?.aborted).toBe(true);
   });
 
-  test("stops live mode at the route-confirmed boundary without advice", async () => {
+  test("stops prototype test mode at the route-confirmed boundary without advice", async () => {
     const user = userEvent.setup();
     const riderFlowClient = createLiveFlowClient();
-    render(
-      <HomePageApp
-        riderFlowClient={riderFlowClient}
-        stopAfterRouteConfirmation
-      />
-    );
+    renderPrototypeHomePageApp({
+      riderFlowClient,
+      stopAfterRouteConfirmation: true,
+    });
 
     await completeLiveManualSelection(user);
     await screen.findByRole("heading", { name: "Confirme sua linha" });
@@ -651,12 +642,10 @@ describe("home screen flow", () => {
       sunCondition: "daylight",
       computedAt: "2026-06-23T12:00:00.000Z",
     });
-    render(
-      <HomePageApp
-        locationProvider={{ getCurrentLocation }}
-        riderFlowClient={createLiveFlowClient({ requestAdvice })}
-      />
-    );
+    renderLiveHomePageApp({
+      locationProvider: { getCurrentLocation },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
 
     await completeLiveManualSelection(user);
     await user.click(
@@ -707,14 +696,12 @@ describe("home screen flow", () => {
         source: "directionStart",
       },
     });
-    render(
-      <HomePageApp
-        locationProvider={{
-          getCurrentLocation: vi.fn().mockResolvedValue({ kind: "denied" }),
-        }}
-        riderFlowClient={createLiveFlowClient({ requestAdvice })}
-      />
-    );
+    renderLiveHomePageApp({
+      locationProvider: {
+        getCurrentLocation: vi.fn().mockResolvedValue({ kind: "denied" }),
+      },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
 
     await completeLiveManualSelection(user);
     await user.click(
@@ -754,12 +741,10 @@ describe("home screen flow", () => {
       sunCondition: "daylight",
       computedAt: "2026-06-23T12:00:00.000Z",
     });
-    render(
-      <HomePageApp
-        locationProvider={{ getCurrentLocation }}
-        riderFlowClient={createLiveFlowClient({ requestAdvice })}
-      />
-    );
+    renderLiveHomePageApp({
+      locationProvider: { getCurrentLocation },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
 
     await completeNearbyFlow(user);
     await user.click(
@@ -819,14 +804,12 @@ describe("home screen flow", () => {
         sunCondition: "daylight",
         computedAt: "2026-06-23T12:00:00.000Z",
       });
-      render(
-        <HomePageApp
-          locationProvider={{
-            getCurrentLocation: vi.fn().mockResolvedValue(locationResult),
-          }}
-          riderFlowClient={createLiveFlowClient({ requestAdvice })}
-        />
-      );
+      renderLiveHomePageApp({
+        locationProvider: {
+          getCurrentLocation: vi.fn().mockResolvedValue(locationResult),
+        },
+        riderFlowClient: createLiveFlowClient({ requestAdvice }),
+      });
 
       await completeLiveManualSelection(user);
       await user.click(
@@ -845,28 +828,26 @@ describe("home screen flow", () => {
   test("refreshes manual candidates after stale live advice without keeping confirmation", async () => {
     const user = userEvent.setup();
     const searchRouteCandidates = vi.fn().mockResolvedValue([liveRoute]);
-    render(
-      <HomePageApp
-        locationProvider={{
-          getCurrentLocation: vi.fn().mockResolvedValue({
-            kind: "granted",
-            lat: -27.5969,
-            lng: -48.5488,
-            accuracyMeters: 30,
-            observedAt: new Date().toISOString(),
-          }),
-        }}
-        riderFlowClient={createLiveFlowClient({
-          searchRouteCandidates,
-          requestAdvice: vi.fn().mockRejectedValue(
-            new LiveRiderFlowClientError({
-              kind: "routeVersionStale",
-              message: "stale",
-            })
-          ),
-        })}
-      />
-    );
+    renderLiveHomePageApp({
+      locationProvider: {
+        getCurrentLocation: vi.fn().mockResolvedValue({
+          kind: "granted",
+          lat: -27.5969,
+          lng: -48.5488,
+          accuracyMeters: 30,
+          observedAt: new Date().toISOString(),
+        }),
+      },
+      riderFlowClient: createLiveFlowClient({
+        searchRouteCandidates,
+        requestAdvice: vi.fn().mockRejectedValue(
+          new LiveRiderFlowClientError({
+            kind: "routeVersionStale",
+            message: "stale",
+          })
+        ),
+      }),
+    });
 
     await completeLiveManualSelection(user);
     await user.click(
@@ -908,23 +889,21 @@ describe("home screen flow", () => {
         })
       );
 
-    render(
-      <HomePageApp
-        locationProvider={{
-          getCurrentLocation: vi.fn().mockResolvedValue({
-            kind: "granted",
-            lat: -27.5969,
-            lng: -48.5488,
-            accuracyMeters: 30,
-            observedAt: new Date().toISOString(),
-          }),
-        }}
-        riderFlowClient={createLiveFlowClient({
-          requestAdvice,
-          searchRouteCandidates,
-        })}
-      />
-    );
+    renderLiveHomePageApp({
+      locationProvider: {
+        getCurrentLocation: vi.fn().mockResolvedValue({
+          kind: "granted",
+          lat: -27.5969,
+          lng: -48.5488,
+          accuracyMeters: 30,
+          observedAt: new Date().toISOString(),
+        }),
+      },
+      riderFlowClient: createLiveFlowClient({
+        requestAdvice,
+        searchRouteCandidates,
+      }),
+    });
 
     await completeLiveManualSelection(user);
     await user.click(
@@ -1085,6 +1064,7 @@ describe("home screen flow", () => {
     const user = userEvent.setup();
     const geolocationSpy = vi.fn();
     const originalGeolocation = navigator.geolocation;
+    vi.stubEnv("NEXT_PUBLIC_API_URL", "");
 
     Object.defineProperty(navigator, "geolocation", {
       configurable: true,
@@ -1108,6 +1088,9 @@ describe("home screen flow", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByLabelText(/Diagrama do ônibus visto de cima/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("combobox", { name: "Protótipo" })
     ).toBeInTheDocument();
     expect(geolocationSpy).not.toHaveBeenCalled();
 
@@ -1193,7 +1176,7 @@ describe("home screen flow", () => {
   test("shows computing state before advice when advisory mock is delayed", async () => {
     const user = userEvent.setup();
 
-    render(<HomePageApp scenarioId="computing-advice" />);
+    renderPrototypeHomePageApp({ scenarioId: "computing-advice" });
 
     await completeNearbyFlow(user);
     await user.click(
@@ -1345,7 +1328,9 @@ describe("home screen flow", () => {
   test("uses the fallback confirmation when map availability is disabled by test options", async () => {
     const user = userEvent.setup();
 
-    render(<HomePageApp scenarioId="confirmation-fallback-map-unavailable" />);
+    renderPrototypeHomePageApp({
+      scenarioId: "confirmation-fallback-map-unavailable",
+    });
 
     await user.click(
       screen.getByRole("button", { name: "Usar minha localização" })
@@ -1370,7 +1355,7 @@ describe("home screen flow", () => {
   test("renders preview advice as lightweight distinct result", async () => {
     const user = userEvent.setup();
 
-    render(<HomePageApp scenarioId="advice-preview-left" />);
+    renderPrototypeHomePageApp({ scenarioId: "advice-preview-left" });
 
     await completeNearbyFlow(user);
     await user.click(
@@ -1403,7 +1388,7 @@ describe("home screen flow", () => {
     async (scenarioId, heading, summaryLabel) => {
       const user = userEvent.setup();
 
-      render(<HomePageApp scenarioId={scenarioId} />);
+      renderPrototypeHomePageApp({ scenarioId });
 
       await completeNearbyFlow(user);
       await user.click(
@@ -1429,7 +1414,7 @@ describe("home screen flow", () => {
     async (scenarioId, heading) => {
       const user = userEvent.setup();
 
-      render(<HomePageApp scenarioId={scenarioId} />);
+      renderPrototypeHomePageApp({ scenarioId });
 
       await completeNearbyFlow(user);
       await user.click(
@@ -1452,7 +1437,7 @@ describe("home screen flow", () => {
   test("renders withheld state without progress and with retry actions", async () => {
     const user = userEvent.setup();
 
-    render(<HomePageApp scenarioId="advice-withheld" />);
+    renderPrototypeHomePageApp({ scenarioId: "advice-withheld" });
 
     await completeNearbyFlow(user);
     await user.click(
@@ -1542,7 +1527,9 @@ describe("home screen flow", () => {
   test("keeps onboard advice text-distinct with an accessible diagram summary", async () => {
     const user = userEvent.setup();
 
-    render(<HomePageApp scenarioId="advice-exposure-right-recommends-left" />);
+    renderPrototypeHomePageApp({
+      scenarioId: "advice-exposure-right-recommends-left",
+    });
 
     await completeNearbyFlow(user);
     await user.click(
@@ -1562,7 +1549,7 @@ describe("home screen flow", () => {
   test("keeps preview advice text-distinct with an accessible diagram summary", async () => {
     const user = userEvent.setup();
 
-    render(<HomePageApp scenarioId="advice-preview-left" />);
+    renderPrototypeHomePageApp({ scenarioId: "advice-preview-left" });
 
     await completeNearbyFlow(user);
     await user.click(
@@ -1601,6 +1588,42 @@ const liveRoute = {
   name: "TICEN - Lagoa",
   directionHints: ["TICEN", "Lagoa"],
 };
+
+function renderLiveHomePageApp(
+  props: Partial<
+    Omit<Extract<HomePageAppProps, { runtime: "live" }>, "runtime">
+  >
+): ReturnType<typeof render> {
+  return render(
+    <HomePageApp
+      locationProvider={props.locationProvider ?? createTestLocationProvider()}
+      mapAvailabilityOverride={props.mapAvailabilityOverride}
+      riderFlowClient={props.riderFlowClient ?? createLiveFlowClient()}
+      runtime="live"
+    />
+  );
+}
+
+function renderPrototypeHomePageApp(
+  props: Omit<Extract<HomePageAppProps, { runtime: "prototype" }>, "runtime">
+): ReturnType<typeof render> {
+  return render(<HomePageApp {...props} runtime="prototype" />);
+}
+
+function createTestLocationProvider(): Extract<
+  HomePageAppProps,
+  { runtime: "live" }
+>["locationProvider"] {
+  return {
+    getCurrentLocation: vi.fn().mockResolvedValue({
+      kind: "granted",
+      lat: -27.5969,
+      lng: -48.5488,
+      accuracyMeters: 25,
+      observedAt: new Date().toISOString(),
+    }),
+  };
+}
 
 function createLiveFlowClient(
   overrides: Partial<RiderFlowClient> = {}

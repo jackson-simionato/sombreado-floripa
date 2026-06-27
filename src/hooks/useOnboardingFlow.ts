@@ -42,7 +42,8 @@ import {
 } from "../mocks/mockApi";
 import { getPrototypeScenario } from "../mocks/scenarioStates";
 
-type UseOnboardingFlowOptions = {
+type PrototypeOnboardingFlowOptions = {
+  runtime: "prototype";
   locationProvider?: LocationProvider;
   mockScenarioId?: MockScenarioId;
   riderFlowClient?: RiderFlowClient;
@@ -52,6 +53,17 @@ type UseOnboardingFlowOptions = {
   locationResult?: MockLocationResult;
   mapAvailabilityOverride?: MapAvailability;
 };
+
+type LiveOnboardingFlowOptions = {
+  runtime: "live";
+  locationProvider: LocationProvider;
+  mapAvailabilityOverride?: MapAvailability;
+  riderFlowClient: RiderFlowClient;
+};
+
+type UseOnboardingFlowOptions =
+  | PrototypeOnboardingFlowOptions
+  | LiveOnboardingFlowOptions;
 
 export type OnboardingFlowController = {
   manualQueryDraft: string;
@@ -71,13 +83,22 @@ export type OnboardingFlowController = {
   };
 };
 
-export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
+export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
+  if (options.runtime === "live" && options.riderFlowClient === undefined) {
+    throw new Error("Live runtime requires a rider flow client.");
+  }
+  if (options.runtime === "live" && options.locationProvider === undefined) {
+    throw new Error("Live runtime requires a location provider.");
+  }
+
   const injectedLocationProvider = options.locationProvider;
   const injectedRiderFlowClient = options.riderFlowClient;
   const stopAfterRouteConfirmation =
-    options.stopAfterRouteConfirmation ?? false;
+    options.runtime === "prototype"
+      ? (options.stopAfterRouteConfirmation ?? false)
+      : false;
   const seededScenario =
-    options.prototypeScenarioId === undefined
+    options.runtime === "live" || options.prototypeScenarioId === undefined
       ? undefined
       : getPrototypeScenario(options.prototypeScenarioId).seed;
   const [state, dispatch] = useReducer(
@@ -99,14 +120,16 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   const nearbySlowTimeoutRef = useRef<number | undefined>(undefined);
 
   const scenarioId =
-    options.mockScenarioId ??
-    options.scenarioId ??
+    (options.runtime === "prototype" ? options.mockScenarioId : undefined) ??
+    (options.runtime === "prototype" ? options.scenarioId : undefined) ??
     seededScenario?.mockScenarioId ??
     "nearby-routes";
   const mapAvailability =
     options.mapAvailabilityOverride ??
     seededScenario?.mapAvailabilityOverride ??
     mapAvailabilityForScenario(scenarioId);
+  const prototypeLocationResult =
+    options.runtime === "prototype" ? options.locationResult : undefined;
 
   const api = useMemo(
     () =>
@@ -131,7 +154,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     () =>
       injectedLocationProvider ??
       createMockLocationProvider(
-        options.locationResult ??
+        prototypeLocationResult ??
           seededScenario?.locationResult ??
           (scenarioId === "location-denied"
             ? { kind: "denied" }
@@ -145,7 +168,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       ),
     [
       injectedLocationProvider,
-      options.locationResult,
+      prototypeLocationResult,
       scenarioId,
       seededScenario?.locationResult,
     ]

@@ -25,6 +25,7 @@ export function PrototypeHomePage() {
         mockScenarioId={scenario.seed.mockScenarioId}
         prototypeScenarioId={prototypeScenarioId}
         locationResult={scenario.seed.locationResult}
+        runtime="prototype"
       />
     </>
   );

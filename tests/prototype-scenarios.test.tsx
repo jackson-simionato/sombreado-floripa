@@ -39,7 +39,12 @@ describe("prototype scenarios", () => {
   test.each(scenarioExpectations)(
     "renders %s",
     async (prototypeScenarioId, expectedHeading) => {
-      render(<HomePageApp prototypeScenarioId={prototypeScenarioId} />);
+      render(
+        <HomePageApp
+          prototypeScenarioId={prototypeScenarioId}
+          runtime="prototype"
+        />
+      );
 
       expect(
         await screen.findByRole("heading", { name: expectedHeading })
@@ -123,7 +128,12 @@ describe("prototype scenarios", () => {
       primaryActionLabel,
       fallbackActionLabel
     ) => {
-      render(<HomePageApp prototypeScenarioId={prototypeScenarioId} />);
+      render(
+        <HomePageApp
+          prototypeScenarioId={prototypeScenarioId}
+          runtime="prototype"
+        />
+      );
 
       expect(
         await screen.findByRole("heading", { name: expectedHeading })
@@ -140,7 +150,12 @@ describe("prototype scenarios", () => {
   test("manual-search retry keeps the query and returns to the search results", async () => {
     const user = userEvent.setup();
 
-    render(<HomePageApp prototypeScenarioId="error-manual-search" />);
+    render(
+      <HomePageApp
+        prototypeScenarioId="error-manual-search"
+        runtime="prototype"
+      />
+    );
 
     await user.click(screen.getByRole("button", { name: "Tentar de novo" }));
 
@@ -160,7 +175,12 @@ describe("prototype scenarios", () => {
   test("nearby retry returns to the route candidates", async () => {
     const user = userEvent.setup();
 
-    render(<HomePageApp prototypeScenarioId="error-nearby-routes" />);
+    render(
+      <HomePageApp
+        prototypeScenarioId="error-nearby-routes"
+        runtime="prototype"
+      />
+    );
 
     await user.click(screen.getByRole("button", { name: "Tentar de novo" }));
 
@@ -178,7 +198,12 @@ describe("prototype scenarios", () => {
   ] as const)(
     "preserves post-selection context in %s",
     async (prototypeScenarioId, routeLabel, directionLabel) => {
-      render(<HomePageApp prototypeScenarioId={prototypeScenarioId} />);
+      render(
+        <HomePageApp
+          prototypeScenarioId={prototypeScenarioId}
+          runtime="prototype"
+        />
+      );
 
       expect(await screen.findByText(routeLabel)).toBeInTheDocument();
       expect(screen.getByText(directionLabel)).toBeInTheDocument();
@@ -188,7 +213,12 @@ describe("prototype scenarios", () => {
   test("slow loading remains inspectable until action and then returns to the nearby loading state", async () => {
     const user = userEvent.setup();
 
-    render(<HomePageApp prototypeScenarioId="location-slow-loading" />);
+    render(
+      <HomePageApp
+        prototypeScenarioId="location-slow-loading"
+        runtime="prototype"
+      />
+    );
 
     expect(
       await screen.findByRole("heading", { name: "Ainda buscando..." })
