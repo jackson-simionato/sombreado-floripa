@@ -164,38 +164,61 @@ Implementation evidence for issue #5:
   `.env.local` was configured with
   `NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/v1`.
 
+## Issue #7 Stale Route Version Recovery
+
+Issue #7 keeps stale route-version recovery explicit across direction,
+geometry, and advice-adjacent flows.
+
+Expected issue #7 behavior:
+
+- `routeVersionStale` clears the selected route, direction, geometry, and
+  advice state before recovery starts.
+- Nearby-origin stale recovery asks for a fresh browser location first, then
+  falls back to the most recent usable nearby location if the fresh lookup
+  fails.
+- Manual-origin stale recovery restores the previous query and reruns it
+  without requiring retyping.
+- If neither a fresh nor recent nearby location is usable, the flow lands in
+  `locationDeniedRecovery` with the manual-search escape hatch.
+- The stale notice stays visible on the refreshed candidate/search screen and
+  clears once the rider selects a new route.
+
+Automated coverage verifies fresh-location-first nearby recovery, recent
+fallback, manual rerun, current advice request recovery, and no silent
+reselection. Local browser smoke was not rerun for this slice.
+
 ## Local-Service Smoke Checklist
 
 Mark each state as verified against local service, verified with fixtures only, blocked by backend gap, or not checked.
 
-| State or behavior                                                | Local service | Fixtures | Notes                                                    |
-| ---------------------------------------------------------------- | ------------- | -------- | -------------------------------------------------------- |
-| Missing `NEXT_PUBLIC_API_URL` fails clearly in live mode         |               |          |                                                          |
-| Nearby route lookup after rider taps location                    |               |          |                                                          |
-| Nearby empty result                                              |               |          |                                                          |
-| Manual route search                                              |               |          |                                                          |
-| Manual empty result                                              |               |          |                                                          |
-| Route candidates stay route-only                                 |               |          |                                                          |
-| Direction choices load after route selection                     |               |          |                                                          |
-| Route without directions                                         |               |          |                                                          |
-| Stale route version recovery                                     | Blocked       | Verified | Service offline; automated manual-origin recovery passed |
-| Geometry loads for confirmation                                  | Blocked       | Verified | Service offline; live-client flow test passed            |
-| Missing geometry falls back to route confirmation fallback       | Blocked       | Verified | Service offline; empty-polyline flow test passed         |
-| Geometry network/API failure shows API error                     | Blocked       | Verified | Service offline; retry flow test passed                  |
-| Initial onboard advice request                                   |               |          |                                                          |
-| Preview advice without location                                  |               |          |                                                          |
-| Preview advice from far away/manual route selection              |               |          |                                                          |
-| Neutral night advice                                             |               |          |                                                          |
-| True withheld advice                                             |               |          |                                                          |
-| Initial advice API error                                         |               |          |                                                          |
-| Live location watch starts after confirmation/result             |               |          |                                                          |
-| Live advice refresh is throttled                                 |               |          |                                                          |
-| Background refresh failure preserves last advice                 |               |          |                                                          |
-| Live updates can be paused/stopped                               |               |          |                                                          |
-| Last-updated/freshness copy is visible                           |               |          |                                                          |
-| Browser location denial recovers through manual search           |               |          |                                                          |
-| Low-accuracy location does not produce misleading onboard advice |               |          |                                                          |
-| Abort/stale request behavior does not mutate current state       |               |          |                                                          |
+| State or behavior                                                | Local service | Fixtures | Notes                                                                                                                    |
+| ---------------------------------------------------------------- | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Missing `NEXT_PUBLIC_API_URL` fails clearly in live mode         |               |          |                                                                                                                          |
+| Nearby route lookup after rider taps location                    |               |          |                                                                                                                          |
+| Nearby empty result                                              |               |          |                                                                                                                          |
+| Manual route search                                              |               |          |                                                                                                                          |
+| Manual empty result                                              |               |          |                                                                                                                          |
+| Route candidates stay route-only                                 |               |          |                                                                                                                          |
+| Direction choices load after route selection                     |               |          |                                                                                                                          |
+| Route without directions                                         |               |          |                                                                                                                          |
+| Stale route version recovery                                     | Blocked       | Verified | Service offline; automated coverage now includes fresh-location-first nearby recovery, recent fallback, and manual rerun |
+| Geometry loads for confirmation                                  | Blocked       | Verified | Service offline; live-client flow test passed                                                                            |
+| Missing geometry falls back to route confirmation fallback       | Blocked       | Verified | Service offline; empty-polyline flow test passed                                                                         |
+| Geometry network/API failure shows API error                     | Blocked       | Verified | Service offline; retry flow test passed                                                                                  |
+| Initial onboard advice request                                   |               |          |                                                                                                                          |
+| Preview advice without location                                  |               |          |                                                                                                                          |
+| Preview advice from far away/manual route selection              |               |          |                                                                                                                          |
+| Neutral night advice                                             |               |          |                                                                                                                          |
+| True withheld advice                                             |               |          |                                                                                                                          |
+| Initial advice API error                                         |               |          |                                                                                                                          |
+| Live location watch starts after confirmation/result             |               |          |                                                                                                                          |
+| Live advice refresh is throttled                                 |               |          |                                                                                                                          |
+| Background refresh failure preserves last advice                 |               |          |                                                                                                                          |
+| Live updates can be paused/stopped                               |               |          |                                                                                                                          |
+| Last-updated/freshness copy is visible                           |               |          |                                                                                                                          |
+| Browser location denial recovers through manual search           |               |          |                                                                                                                          |
+| Low-accuracy location does not produce misleading onboard advice |               |          |                                                                                                                          |
+| Abort/stale request behavior does not mutate current state       |               |          |                                                                                                                          |
 
 ## Rider Copy Checks
 

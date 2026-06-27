@@ -401,6 +401,173 @@ describe("home screen flow", () => {
     ).not.toBeInTheDocument();
   });
 
+  test("refreshes nearby candidates after stale live directions by asking for a fresh location first", async () => {
+    const user = userEvent.setup();
+    const getCurrentLocation = vi
+      .fn()
+      .mockResolvedValueOnce({
+        kind: "granted" as const,
+        lat: -27.5969,
+        lng: -48.5488,
+        accuracyMeters: 25,
+        observedAt: new Date().toISOString(),
+      })
+      .mockResolvedValueOnce({
+        kind: "granted" as const,
+        lat: -27.6012,
+        lng: -48.5421,
+        accuracyMeters: 25,
+        observedAt: new Date().toISOString(),
+      });
+    const listNearbyRouteCandidates = vi.fn().mockResolvedValue([liveRoute]);
+    const listRouteDirections = vi.fn().mockRejectedValue(
+      new LiveRiderFlowClientError({
+        kind: "routeVersionStale",
+        message: "stale",
+      })
+    );
+
+    render(
+      <HomePageApp
+        locationProvider={{ getCurrentLocation }}
+        riderFlowClient={createLiveFlowClient({
+          listNearbyRouteCandidates,
+          listRouteDirections,
+        })}
+      />
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+    await user.click(
+      await screen.findByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    await waitFor(() => expect(getCurrentLocation).toHaveBeenCalledTimes(2));
+    expect(listNearbyRouteCandidates.mock.calls[0]?.[0]).toMatchObject({
+      lat: -27.5969,
+      lng: -48.5488,
+    });
+    expect(listNearbyRouteCandidates.mock.calls[1]?.[0]).toMatchObject({
+      lat: -27.6012,
+      lng: -48.5421,
+    });
+    expect(
+      screen.getByText(
+        "As opções desta linha foram atualizadas. Escolha a linha e o sentido novamente."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Escolha o sentido" })
+    ).not.toBeInTheDocument();
+  });
+
+  test("falls back to the recent nearby location when the fresh recovery location is unavailable", async () => {
+    const user = userEvent.setup();
+    const initialLocation = {
+      kind: "granted" as const,
+      lat: -27.5969,
+      lng: -48.5488,
+      accuracyMeters: 25,
+      observedAt: new Date().toISOString(),
+    };
+    const getCurrentLocation = vi
+      .fn()
+      .mockResolvedValueOnce(initialLocation)
+      .mockResolvedValueOnce({ kind: "denied" as const });
+    const listNearbyRouteCandidates = vi.fn().mockResolvedValue([liveRoute]);
+    const listRouteDirections = vi.fn().mockRejectedValue(
+      new LiveRiderFlowClientError({
+        kind: "routeVersionStale",
+        message: "stale",
+      })
+    );
+
+    render(
+      <HomePageApp
+        locationProvider={{ getCurrentLocation }}
+        riderFlowClient={createLiveFlowClient({
+          listNearbyRouteCandidates,
+          listRouteDirections,
+        })}
+      />
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+    await user.click(
+      await screen.findByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    await waitFor(() => expect(getCurrentLocation).toHaveBeenCalledTimes(2));
+    expect(listNearbyRouteCandidates.mock.calls[1]?.[0]).toMatchObject({
+      lat: initialLocation.lat,
+      lng: initialLocation.lng,
+    });
+    expect(
+      screen.getByText(
+        "As opções desta linha foram atualizadas. Escolha a linha e o sentido novamente."
+      )
+    ).toBeInTheDocument();
+  });
+
+  test("lands in location recovery when neither fresh nor recent nearby location is usable", async () => {
+    const user = userEvent.setup();
+    const staleObservedAt = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const getCurrentLocation = vi
+      .fn()
+      .mockResolvedValueOnce({
+        kind: "granted" as const,
+        lat: -27.5969,
+        lng: -48.5488,
+        accuracyMeters: 25,
+        observedAt: staleObservedAt,
+      })
+      .mockResolvedValueOnce({ kind: "denied" as const });
+    const listNearbyRouteCandidates = vi.fn().mockResolvedValue([liveRoute]);
+    const listRouteDirections = vi.fn().mockRejectedValue(
+      new LiveRiderFlowClientError({
+        kind: "routeVersionStale",
+        message: "stale",
+      })
+    );
+
+    render(
+      <HomePageApp
+        locationProvider={{ getCurrentLocation }}
+        riderFlowClient={createLiveFlowClient({
+          listNearbyRouteCandidates,
+          listRouteDirections,
+        })}
+      />
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+    await user.click(
+      await screen.findByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    await screen.findByRole("heading", { name: "Localização desativada" });
+    expect(
+      screen.getByRole("button", { name: "Procurar linha manualmente" })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        "As opções desta linha foram atualizadas. Escolha a linha e o sentido novamente."
+      )
+    ).not.toBeInTheDocument();
+  });
+
   test("aborts live geometry when the flow unmounts", async () => {
     const user = userEvent.setup();
     let geometrySignal: AbortSignal | undefined;
@@ -714,6 +881,69 @@ describe("home screen flow", () => {
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: "Confirme sua linha" })
+    ).not.toBeInTheDocument();
+  });
+
+  test("refreshes manual candidates after stale advice refresh without keeping advice", async () => {
+    const user = userEvent.setup();
+    const searchRouteCandidates = vi.fn().mockResolvedValue([liveRoute]);
+    const requestAdvice = vi
+      .fn()
+      .mockResolvedValueOnce({
+        status: "advice",
+        mode: "onboard",
+        horizon: "upcoming",
+        routeId: "route-124",
+        routeVersionId: "version-124",
+        routeDirectionId: "direction-124",
+        directSunExposure: "right",
+        recommendedSeatArea: "left",
+        sunCondition: "daylight",
+        computedAt: "2026-06-23T12:00:00.000Z",
+      })
+      .mockRejectedValueOnce(
+        new LiveRiderFlowClientError({
+          kind: "routeVersionStale",
+          message: "stale",
+        })
+      );
+
+    render(
+      <HomePageApp
+        locationProvider={{
+          getCurrentLocation: vi.fn().mockResolvedValue({
+            kind: "granted",
+            lat: -27.5969,
+            lng: -48.5488,
+            accuracyMeters: 30,
+            observedAt: new Date().toISOString(),
+          }),
+        }}
+        riderFlowClient={createLiveFlowClient({
+          requestAdvice,
+          searchRouteCandidates,
+        })}
+      />
+    );
+
+    await completeLiveManualSelection(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+    await screen.findByRole("heading", { name: "Sente à esquerda" });
+    await user.click(
+      screen.getByRole("button", { name: "Atualizar localização" })
+    );
+
+    await waitFor(() => expect(searchRouteCandidates).toHaveBeenCalledTimes(2));
+    expect(requestAdvice).toHaveBeenCalledTimes(2);
+    expect(
+      screen.getByText(
+        "As opções desta linha foram atualizadas. Escolha a linha e o sentido novamente."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Sente à esquerda" })
     ).not.toBeInTheDocument();
   });
 

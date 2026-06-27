@@ -124,6 +124,7 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
           screen: "locationDeniedRecovery",
           requestStatus: "error",
           locationIssue: event.result.kind,
+          routeRefreshNotice: undefined,
           pendingRequests: {
             ...state.pendingRequests,
             nearbyRoutes: undefined,

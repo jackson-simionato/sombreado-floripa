@@ -96,6 +96,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
   const directionsAbortRef = useRef<AbortController | undefined>(undefined);
   const geometryAbortRef = useRef<AbortController | undefined>(undefined);
   const advisoryAbortRef = useRef<AbortController | undefined>(undefined);
+  const nearbySlowTimeoutRef = useRef<number | undefined>(undefined);
 
   const scenarioId =
     options.mockScenarioId ??
@@ -172,6 +173,110 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
     []
   );
 
+  const requestNearbyCandidates = useCallback(
+    async (location: LocationFix) => {
+      const requestId = nextRequestId("nearby");
+      if (nearbySlowTimeoutRef.current !== undefined) {
+        window.clearTimeout(nearbySlowTimeoutRef.current);
+        nearbySlowTimeoutRef.current = undefined;
+      }
+      dispatch({
+        type: "locationResolved",
+        requestId,
+        result: { kind: "granted", ...location },
+        radiusMeters: 1200,
+        limit: 5,
+      });
+
+      nearbySlowTimeoutRef.current = window.setTimeout(() => {
+        dispatch({ type: "nearbySlowThresholdReached", requestId });
+      }, 500);
+
+      try {
+        const candidates = await riderFlowClient.listNearbyRouteCandidates({
+          lat: location.lat,
+          lng: location.lng,
+          radiusMeters: 1200,
+          limit: 5,
+        });
+        dispatch({
+          type: "nearbyRoutesSucceeded",
+          requestId,
+          candidates,
+        });
+      } catch (error) {
+        failOperation(requestId, error, {
+          kind: "nearbyRoutes",
+          lat: location.lat,
+          lng: location.lng,
+          radiusMeters: 1200,
+          limit: 5,
+        });
+      } finally {
+        if (nearbySlowTimeoutRef.current !== undefined) {
+          window.clearTimeout(nearbySlowTimeoutRef.current);
+          nearbySlowTimeoutRef.current = undefined;
+        }
+      }
+    },
+    [failOperation, nextRequestId, riderFlowClient]
+  );
+
+  const requestLocation = useCallback(async () => {
+    dispatch({ type: "locationRequested" });
+
+    const location = await locationProvider.getCurrentLocation();
+    if (location.kind !== "granted") {
+      dispatch({
+        type: "locationResolved",
+        requestId: nextRequestId("nearby"),
+        result: location,
+      });
+      return;
+    }
+
+    await requestNearbyCandidates(location);
+  }, [locationProvider, nextRequestId, requestNearbyCandidates]);
+
+  const recoverStaleRouteVersion = useCallback(
+    async (source: "nearby" | "manual") => {
+      dispatch({ type: "routeVersionStaleDetected" });
+
+      if (source === "manual") {
+        setManualQueryDraft(state.manualQuery);
+        setManualSearchEnabled(true);
+        setManualSearchRequestNonce((nonce) => nonce + 1);
+        return;
+      }
+
+      const freshLocation = await locationProvider.getCurrentLocation();
+      const recoveryLocation = chooseNearbyRecoveryLocation(freshLocation, {
+        fallbackLocation: state.latestLocation,
+      });
+
+      if (recoveryLocation !== undefined) {
+        await requestNearbyCandidates(recoveryLocation);
+        return;
+      }
+
+      dispatch({
+        type: "locationResolved",
+        requestId: nextRequestId("nearby"),
+        result:
+          freshLocation.kind === "granted"
+            ? { kind: "unavailable" }
+            : freshLocation,
+      });
+    },
+    [
+      locationProvider,
+      nextRequestId,
+      requestNearbyCandidates,
+      state.latestLocation,
+      state.manualQuery,
+    ]
+  );
+
   const requestAdvisory = useCallback(
     async (input: {
       fallbackLocation?: LocationFix;
@@ -238,11 +343,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
           error instanceof LiveRiderFlowClientError &&
           error.flowError.kind === "routeVersionStale"
         ) {
-          dispatch({ type: "routeVersionStaleDetected" });
-          if (input.routeSource === "manual") {
-            setManualSearchEnabled(true);
-            setManualSearchRequestNonce((nonce) => nonce + 1);
-          }
+          void recoverStaleRouteVersion(input.routeSource);
           return;
         }
 
@@ -252,85 +353,18 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
         });
       }
     },
-    [failOperation, locationProvider, nextRequestId, riderFlowClient]
+    [
+      failOperation,
+      locationProvider,
+      nextRequestId,
+      recoverStaleRouteVersion,
+      riderFlowClient,
+    ]
   );
 
   const openManualSearch = useCallback(() => {
     dispatch({ type: "manualSearchOpened" });
   }, []);
-
-  const requestNearbyCandidates = useCallback(
-    async (location: LocationFix) => {
-      const requestId = nextRequestId("nearby");
-      dispatch({
-        type: "locationResolved",
-        requestId,
-        result: { kind: "granted", ...location },
-        radiusMeters: 1200,
-        limit: 5,
-      });
-
-      window.setTimeout(() => {
-        dispatch({ type: "nearbySlowThresholdReached", requestId });
-      }, 500);
-
-      try {
-        const candidates = await riderFlowClient.listNearbyRouteCandidates({
-          lat: location.lat,
-          lng: location.lng,
-          radiusMeters: 1200,
-          limit: 5,
-        });
-        dispatch({
-          type: "nearbyRoutesSucceeded",
-          requestId,
-          candidates,
-        });
-      } catch (error) {
-        failOperation(requestId, error, {
-          kind: "nearbyRoutes",
-          lat: location.lat,
-          lng: location.lng,
-          radiusMeters: 1200,
-          limit: 5,
-        });
-      }
-    },
-    [failOperation, nextRequestId, riderFlowClient]
-  );
-
-  const requestLocation = useCallback(async () => {
-    dispatch({ type: "locationRequested" });
-
-    const location = await locationProvider.getCurrentLocation();
-    if (location.kind !== "granted") {
-      dispatch({
-        type: "locationResolved",
-        requestId: nextRequestId("nearby"),
-        result: location,
-      });
-      return;
-    }
-
-    await requestNearbyCandidates(location);
-  }, [locationProvider, nextRequestId, requestNearbyCandidates]);
-
-  const recoverStaleRouteVersion = useCallback(
-    (source: "nearby" | "manual") => {
-      dispatch({ type: "routeVersionStaleDetected" });
-      if (source === "manual") {
-        setManualSearchEnabled(true);
-        setManualSearchRequestNonce((nonce) => nonce + 1);
-        return;
-      }
-      if (state.latestLocation !== undefined) {
-        void requestNearbyCandidates(state.latestLocation);
-      } else {
-        void requestLocation();
-      }
-    },
-    [requestLocation, requestNearbyCandidates, state.latestLocation]
-  );
 
   const selectRoute = useCallback(
     async (route: RouteCandidate, source: "nearby" | "manual") => {
@@ -359,7 +393,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
           error instanceof LiveRiderFlowClientError &&
           error.flowError.kind === "routeVersionStale"
         ) {
-          recoverStaleRouteVersion(source);
+          void recoverStaleRouteVersion(source);
           return;
         }
 
@@ -410,7 +444,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
           error instanceof LiveRiderFlowClientError &&
           error.flowError.kind === "routeVersionStale"
         ) {
-          recoverStaleRouteVersion(route.source);
+          void recoverStaleRouteVersion(route.source);
           return;
         }
 
@@ -614,6 +648,10 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions = {}) {
       directionsAbortRef.current?.abort();
       geometryAbortRef.current?.abort();
       advisoryAbortRef.current?.abort();
+      if (nearbySlowTimeoutRef.current !== undefined) {
+        window.clearTimeout(nearbySlowTimeoutRef.current);
+        nearbySlowTimeoutRef.current = undefined;
+      }
     },
     []
   );
@@ -705,6 +743,35 @@ function chooseAdviceLocation(
   }
 
   return {};
+}
+
+function chooseNearbyRecoveryLocation(
+  result: MockLocationResult,
+  options: { fallbackLocation?: LocationFix; now?: () => Date }
+): LocationFix | undefined {
+  const now = options.now?.() ?? new Date();
+  const freshLocation =
+    result.kind === "granted" ? normalizeLocationFix(result) : undefined;
+
+  if (
+    freshLocation !== undefined &&
+    isUsableLocation(freshLocation, now, FRESH_LOCATION_MAX_AGE_MS)
+  ) {
+    return freshLocation;
+  }
+
+  if (
+    options.fallbackLocation !== undefined &&
+    isUsableLocation(
+      options.fallbackLocation,
+      now,
+      RECENT_FALLBACK_LOCATION_MAX_AGE_MS
+    )
+  ) {
+    return normalizeLocationFix(options.fallbackLocation);
+  }
+
+  return undefined;
 }
 
 function normalizeLocationFix(
