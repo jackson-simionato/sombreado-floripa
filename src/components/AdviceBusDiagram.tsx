@@ -7,27 +7,22 @@ type AdviceBusDiagramProps = {
   summary: string;
 };
 
+type CabinZone = {
+  label: string;
+  tone: "recommended" | "sunny" | "neutral";
+};
+
 export function AdviceBusDiagram({ advice, summary }: AdviceBusDiagramProps) {
   if (advice.mode === "neutralComputed") {
     return (
       <figure className={styles.figure} aria-label={summary}>
-        <div className={styles.frontArrow} aria-hidden="true">
-          ↑ <span>frente</span>
-        </div>
-        <div
-          className={`${styles.bus} ${styles.busNeutral}`}
-          aria-hidden="true"
-        >
-          <div className={`${styles.zone} ${styles.zoneNeutral}`}>
-            <span>lado esquerdo</span>
-            <strong>sem destaque</strong>
-          </div>
-          <div className={styles.aisle} />
-          <div className={`${styles.zone} ${styles.zoneNeutral}`}>
-            <span>lado direito</span>
-            <strong>sem destaque</strong>
-          </div>
-        </div>
+        <CabinInterior
+          zones={[
+            { label: "esquerda", tone: "neutral" },
+            { label: "direita", tone: "neutral" },
+          ]}
+          variant="side"
+        />
         <figcaption className={styles.caption}>{summary}</figcaption>
       </figure>
     );
@@ -41,29 +36,13 @@ export function AdviceBusDiagram({ advice, summary }: AdviceBusDiagramProps) {
 
     return (
       <figure className={styles.figure} aria-label={summary}>
-        <div className={styles.frontArrow} aria-hidden="true">
-          ↑ <span>frente</span>
-        </div>
-        <div
-          className={`${styles.bus} ${styles.busFrontBack}`}
-          aria-hidden="true"
-        >
-          <div
-            className={`${styles.deckZone} ${recommendFront ? styles.deckRecommended : styles.deckSunny}`}
-          >
-            <span>parte da frente</span>
-            <strong>{recommendFront ? "melhor área" : "sol direto"}</strong>
-          </div>
-          <div className={styles.deckAisle}>
-            <span>corredor</span>
-          </div>
-          <div
-            className={`${styles.deckZone} ${recommendFront ? styles.deckSunny : styles.deckRecommended}`}
-          >
-            <span>parte de trás</span>
-            <strong>{recommendFront ? "sol direto" : "melhor área"}</strong>
-          </div>
-        </div>
+        <CabinInterior
+          zones={[
+            { label: "frente", tone: recommendFront ? "recommended" : "sunny" },
+            { label: "trás", tone: recommendFront ? "sunny" : "recommended" },
+          ]}
+          variant="deck"
+        />
         <figcaption className={styles.caption}>{summary}</figcaption>
       </figure>
     );
@@ -73,25 +52,109 @@ export function AdviceBusDiagram({ advice, summary }: AdviceBusDiagramProps) {
 
   return (
     <figure className={styles.figure} aria-label={summary}>
-      <div className={styles.frontArrow} aria-hidden="true">
-        ↑ <span>frente</span>
-      </div>
-      <div className={styles.bus} aria-hidden="true">
-        <div
-          className={`${styles.zone} ${recommendLeft ? styles.zoneRecommended : styles.zoneSunny}`}
-        >
-          <span>lado esquerdo</span>
-          <strong>{recommendLeft ? "melhor área" : "sol direto"}</strong>
-        </div>
-        <div className={styles.aisle} />
-        <div
-          className={`${styles.zone} ${recommendLeft ? styles.zoneSunny : styles.zoneRecommended}`}
-        >
-          <span>lado direito</span>
-          <strong>{recommendLeft ? "sol direto" : "melhor área"}</strong>
-        </div>
-      </div>
+      <CabinInterior
+        zones={[
+          { label: "esquerda", tone: recommendLeft ? "recommended" : "sunny" },
+          { label: "direita", tone: recommendLeft ? "sunny" : "recommended" },
+        ]}
+        variant="side"
+      />
       <figcaption className={styles.caption}>{summary}</figcaption>
     </figure>
   );
+}
+
+function CabinInterior({
+  zones,
+  variant,
+}: {
+  zones: [CabinZone, CabinZone];
+  variant: "side" | "deck";
+}) {
+  return (
+    <div
+      className={styles.bus}
+      data-diagram-layout="long-bus"
+      data-diagram-size="result-focus"
+      aria-hidden="true"
+    >
+      <span className={styles.wheelCue} data-diagram-cue="wheels" />
+      <div className={styles.frontCue} data-diagram-cue="front">
+        <span className={styles.windshield} />
+        <span className={styles.driverCue} />
+      </div>
+      <div
+        className={`${styles.cabinBody} ${
+          variant === "deck" ? styles.cabinBodyDeck : ""
+        }`}
+        data-diagram-cue="seats"
+      >
+        {variant === "side" ? (
+          <>
+            <CabinZoneView side="left" zone={zones[0]} />
+            <div className={styles.aisle} />
+            <CabinZoneView side="right" zone={zones[1]} />
+          </>
+        ) : (
+          <>
+            <CabinDeckZoneView zone={zones[0]} />
+            <div className={styles.deckAisle}>
+              <span>corredor</span>
+            </div>
+            <CabinDeckZoneView zone={zones[1]} />
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CabinZoneView({
+  side,
+  zone,
+}: {
+  side: "left" | "right";
+  zone: CabinZone;
+}) {
+  return (
+    <div
+      className={`${styles.zone} ${side === "left" ? styles.zoneLeft : styles.zoneRight} ${toneClass(zone.tone)}`}
+    >
+      <span className={styles.sideLabel}>{zone.label}</span>
+      <SeatRows />
+      <strong>{calloutFor(zone.tone)}</strong>
+    </div>
+  );
+}
+
+function CabinDeckZoneView({ zone }: { zone: CabinZone }) {
+  return (
+    <div className={`${styles.deckZone} ${toneClass(zone.tone)}`}>
+      <span className={styles.sideLabel}>{zone.label}</span>
+      <SeatRows />
+      <strong>{calloutFor(zone.tone)}</strong>
+    </div>
+  );
+}
+
+function SeatRows() {
+  return (
+    <span className={styles.seatRows} data-diagram-cue="seat-rows">
+      {Array.from({ length: 6 }, (_, index) => (
+        <span key={index} />
+      ))}
+    </span>
+  );
+}
+
+function toneClass(tone: CabinZone["tone"]) {
+  if (tone === "recommended") return styles.zoneRecommended;
+  if (tone === "sunny") return styles.zoneSunny;
+  return styles.zoneNeutral;
+}
+
+function calloutFor(tone: CabinZone["tone"]) {
+  if (tone === "recommended") return "Sente aqui";
+  if (tone === "sunny") return "sol direto";
+  return "sem destaque";
 }

@@ -28,7 +28,7 @@
 
 .resultCard {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-3);
   padding: var(--space-5);
   border: 1px solid var(--color-line);
   border-radius: 24px;
@@ -45,6 +45,12 @@
     ),
     var(--color-paper);
   box-shadow: var(--shadow-soft);
+}
+
+.diagramFocus {
+  display: grid;
+  place-items: center;
+  margin-block: var(--space-1);
 }
 
 .resultHeader {
@@ -148,6 +154,29 @@
   border: 1px solid var(--color-line);
   border-radius: 16px;
   background: var(--color-paper);
+}
+
+.summaryPanelCompact {
+  gap: var(--space-1);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.summaryPanelCompact strong {
+  color: var(--color-muted-ink);
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.summaryPanelCompact span {
+  font-size: 0.86rem;
+}
+
+.summaryPanelCompact .summaryLabel {
+  font-size: 0.78rem;
 }
 
 .noticePanel {

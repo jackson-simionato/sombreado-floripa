@@ -2,6 +2,8 @@
 
 Sombreado Floripa is a mobile-first companion for riders already on Florianopolis buses. The brand should feel sunny, useful, and personable, but the product promise stays practical: it recommends the side with less direct sun exposure. It does not promise guaranteed shade.
 
+Future identity exploration should preserve the product truths in this guide while challenging the surface execution. Onboard-first use, recommendation-first hierarchy, Brazilian Portuguese, honest limits, warm/cool sun semantics, and diagram-led advice are stable; the exact palette, type, illustration style, motion style, and composition can change. Exploration should be implementation-adjacent, with concrete roles, anatomy, hierarchy, and state rules, without prematurely prescribing code.
+
 ![Sombreado Floripa brand examples](brand-examples.svg)
 
 ## Brand Position
@@ -27,13 +29,16 @@ The reference mix is Airbnb warmth plus Anthropic/Claude Code restraint: polishe
 
 The core brand signature is the bus-side split motif. It should come from the product experience before it becomes a logo.
 
+- Treat the brand as diagram-led: visual identity explorations should start from making the advice diagram useful, beautiful, and ownable, then extend that language into other surfaces.
 - Use a rider-facing bus diagram with a clear front arrow.
 - Split the cabin lengthwise into left and right seating sides.
 - Use the cool side for the recommendation and the warm side for direct sun.
 - Pair color with labels, hatches, icons, or outlines so the motif works without color alone.
-- Let any future logo derive from this motif. Do not introduce a standalone mark that is disconnected from the left/right recommendation.
+- Let any future logo-like mark derive from a successful advice diagram. Do not introduce a standalone mark that leads the identity before the diagram works.
 
 ## Color Direction
+
+The palette may evolve, but the semantic relationship should remain stable: warm color represents direct sun, and cool color represents the recommended or calmer side. New brand explorations can shift the exact hues, neutral system, texture, and contrast, but should preserve that warm/cool mapping.
 
 | Token        | Hex       | Use                                                           |
 | ------------ | --------- | ------------------------------------------------------------- |
@@ -109,6 +114,8 @@ Rules:
 
 - Lead with the seat-area recommendation, not a raw exposure result.
 - Place the bus orientation diagram directly below the recommendation copy.
+- Let the diagram act as visual proof of the answer, so the screen remains a single calm recommendation rather than a tutorial.
+- Use the exact seat-area recommendation in the title, then let the diagram callout say "Sente aqui" on the recommended side.
 - Keep route confirmation separate from the recommendation card unless space or context requires a compact supporting cue.
 - Keep the limitation visible below the diagram, not hidden in settings.
 - If advice is withheld, explain why in one sentence and offer the next useful action.
@@ -142,6 +149,7 @@ Rules:
 
 The bus orientation diagram is a trust feature, not decoration.
 
+- Brand explorations should describe the diagram anatomy concretely: cabin shape, front or driver cue, seating representation, aisle, recommended side treatment, direct-sun treatment, side labels, small-size behavior, and state behavior.
 - Show the rider-facing bus direction with an arrow.
 - Prefer a vertical top-down cabin view: driver/front marker at the top, bus front pointing upward, aisle down the middle, and seats arranged in left/right columns.
 - Keep the diagram schematic for city buses: use simple seat squares or bench blocks, not numbered assigned seats.
@@ -149,6 +157,8 @@ The bus orientation diagram is a trust feature, not decoration.
 - Split the bus lengthwise, along its longest axis, so the graphic represents the left and right seating sides. Do not split the bus into front/back blocks.
 - Map sun position to rider-facing sides: if the bus is heading north and the sun is east, the right side is the direct-sun side and the recommendation is the left side.
 - Label both sides when space allows: "sente à esquerda" or "sente à direita" for the recommendation, and "sol direto" for the side to avoid.
+- Prefer a direct "Sente aqui" callout attached to the recommended side over repeating the full recommendation inside the bus shape.
+- Keep "esquerda" and "direita" as quiet confirmation labels, secondary to the recommendation callout and the direct-sun callout.
 - Use at least two cues per state: color plus label, icon, hatch, outline, or pattern.
 - Sun side uses warm fill, hatch, or ray marks.
 - Recommended area uses the strongest action cue: explicit recommendation text, a check mark, and cool fill.
@@ -158,6 +168,8 @@ The bus orientation diagram is a trust feature, not decoration.
 ## Copy Rules
 
 Default language is Brazilian Portuguese. Voice should be short, direct, friendly, and honest about limitations. Use local specificity when it is useful; avoid slang, stereotypes, or exaggerated regional voice.
+
+Copy should be defined together with diagram states. Left/right recommendations can use a direct "Sente aqui" diagram callout; neutral, preview, withheld, loading, and front/back states need their own copy posture instead of forcing the same label everywhere.
 
 Use:
 
@@ -188,6 +200,7 @@ Não consegui confirmar o sentido dessa linha. Tente escolher outra opção pert
 
 Motion can add companion-like warmth, but it should feel like simple 2D GIF-style illustration rather than a complex interface layer.
 
+- Use motion to give the onboard flow a coherent sense of progression from locating, to confirming, to receiving advice.
 - Use short 300-700ms transitions for state changes, such as the recommended side settling in or the sun hatch appearing.
 - Use tiny loops only in empty, loading, or help states.
 - Do not animate the recommendation text itself.
@@ -226,3 +239,15 @@ A wireframe is on-brand when:
 - Sun warmth appears as a focused accent rather than a full-page theme.
 - Local context is specific and useful, not stereotyped.
 - The app feels like a delightful companion with a calm, trustworthy recommendation moment.
+
+## Diagram Evaluation Checklist
+
+A bus orientation diagram is successful when:
+
+- It reads as a bus interior within one second.
+- The recommended side is more visually dominant than the direct-sun side.
+- A rider can understand left and right without reading a paragraph.
+- It avoids looking like an assigned-seat map.
+- It feels pleasant and ownable enough to become the product's signature visual object.
+- It remains calm and trustworthy for a rider using the app while the bus is moving.
+- Its weak points are explicit enough to critique before implementation.

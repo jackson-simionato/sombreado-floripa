@@ -15,12 +15,11 @@ export const copy = {
     secondaryAction: "Procurar linha manualmente",
   },
   busSplitDiagram: {
-    front: "frente",
-    left: "lado esquerdo",
-    right: "lado direito",
+    left: "esquerda",
+    right: "direita",
     sunnySide: "sol direto",
-    calmerSide: "menos sol",
+    calmerSide: "Sente aqui",
     accessibleSummary:
-      "Diagrama do ônibus visto de cima, com a frente apontando para cima e os lados esquerdo e direito marcados por texto e padrões.",
+      "Diagrama do ônibus visto de cima, com motorista, corredor, bancos e os lados esquerdo e direito marcados por texto e padrões.",
   },
 } as const;

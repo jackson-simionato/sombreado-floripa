@@ -587,11 +587,6 @@ function renderAdviceResult({
           {variant.title}
         </h1>
         <p className={styles.body}>{variant.body}</p>
-        <RouteSummary
-          directionLabel={directionLabel}
-          label="Linha confirmada"
-          routeLabel={routeLabel}
-        />
         {advice.mode !== "preview" &&
         advice.freshnessNotice === "recentFallback" ? (
           <div className={styles.noticePanel} role="status">
@@ -604,8 +599,19 @@ function renderAdviceResult({
         {variant.previewNote !== undefined ? (
           <p className={styles.metaText}>{variant.previewNote}</p>
         ) : null}
-        <AdviceBusDiagram advice={advice} summary={variant.accessibleSummary} />
+        <div className={styles.diagramFocus} data-result-focus="diagram">
+          <AdviceBusDiagram
+            advice={advice}
+            summary={variant.accessibleSummary}
+          />
+        </div>
         <p className={styles.estimateNotice}>{ESTIMATE_NOTICE}</p>
+        <RouteSummary
+          compact
+          directionLabel={directionLabel}
+          label="Linha"
+          routeLabel={routeLabel}
+        />
       </div>
     </section>
   );
@@ -656,10 +662,12 @@ function DirectionCard({
 }
 
 function RouteSummary({
+  compact = false,
   directionLabel,
   label,
   routeLabel,
 }: {
+  compact?: boolean;
   directionLabel?: string;
   label?: string;
   routeLabel?: string;
@@ -669,7 +677,12 @@ function RouteSummary({
   }
 
   return (
-    <div className={styles.summaryPanel}>
+    <div
+      className={`${styles.summaryPanel} ${
+        compact ? styles.summaryPanelCompact : ""
+      }`}
+      data-route-context={compact ? "compact" : undefined}
+    >
       {label !== undefined ? (
         <p className={styles.summaryLabel}>{label}</p>
       ) : null}

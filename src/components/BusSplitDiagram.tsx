@@ -8,23 +8,44 @@ export function BusSplitDiagram() {
       className={styles.figure}
       aria-label={copy.busSplitDiagram.accessibleSummary}
     >
-      <div className={styles.frontArrow} aria-hidden="true">
-        ↑ <span>{copy.busSplitDiagram.front}</span>
-      </div>
-      <div className={styles.bus} aria-hidden="true">
-        <div className={styles.sideShade}>
-          <span>{copy.busSplitDiagram.left}</span>
-          <strong>{copy.busSplitDiagram.calmerSide}</strong>
+      <div
+        className={styles.bus}
+        data-diagram-layout="long-bus"
+        data-diagram-size="entry"
+        aria-hidden="true"
+      >
+        <span className={styles.wheelCue} data-diagram-cue="wheels" />
+        <div className={styles.frontCue} data-diagram-cue="front">
+          <span className={styles.windshield} />
+          <span className={styles.driverCue} />
         </div>
-        <div className={styles.aisle} />
-        <div className={styles.sideSun}>
-          <span>{copy.busSplitDiagram.right}</span>
-          <strong>{copy.busSplitDiagram.sunnySide}</strong>
+        <div className={styles.cabinBody} data-diagram-cue="seats">
+          <div className={`${styles.sideShade} ${styles.zoneLeft}`}>
+            <span>{copy.busSplitDiagram.left}</span>
+            <SeatRows />
+            <strong>{copy.busSplitDiagram.calmerSide}</strong>
+          </div>
+          <div className={styles.aisle} />
+          <div className={`${styles.sideSun} ${styles.zoneRight}`}>
+            <span>{copy.busSplitDiagram.right}</span>
+            <SeatRows />
+            <strong>{copy.busSplitDiagram.sunnySide}</strong>
+          </div>
         </div>
       </div>
       <figcaption className={styles.caption}>
         {copy.busSplitDiagram.accessibleSummary}
       </figcaption>
     </figure>
+  );
+}
+
+function SeatRows() {
+  return (
+    <span className={styles.seatRows} data-diagram-cue="seat-rows">
+      {Array.from({ length: 6 }, (_, index) => (
+        <span key={index} />
+      ))}
+    </span>
   );
 }

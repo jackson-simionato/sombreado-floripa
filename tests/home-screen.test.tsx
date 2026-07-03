@@ -1112,7 +1112,7 @@ describe("home screen flow", () => {
   test("runs the nearby route flow through final onboard advice", async () => {
     const user = userEvent.setup();
 
-    render(<PrototypePage />);
+    const { container } = render(<PrototypePage />);
 
     await user.click(
       screen.getByRole("button", { name: "Usar minha localização" })
@@ -1171,6 +1171,13 @@ describe("home screen flow", () => {
     expect(
       screen.getByLabelText(/Recomendação: sente à esquerda/i)
     ).toBeInTheDocument();
+    expect(
+      container.querySelector("[data-result-focus='diagram']")
+    ).toBeTruthy();
+    expect(
+      container.querySelector("[data-route-context='compact']")
+    ).toBeTruthy();
+    expect(screen.queryByText("Linha confirmada")).not.toBeInTheDocument();
   });
 
   test("shows computing state before advice when advisory mock is delayed", async () => {

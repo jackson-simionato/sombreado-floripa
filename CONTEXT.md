@@ -25,8 +25,12 @@ The positive action shown to a rider, such as sitting on the left, right, front,
 _Avoid_: Raw exposure result, debug direction, guaranteed shade
 
 **Bus Orientation Diagram**:
-A simple visual that clarifies left, right, front, and back from the rider's perspective inside the bus.
-_Avoid_: Technical compass, map bearing
+A soft schematic top-down cabin visual that clarifies left, right, front, and back from the rider's perspective inside the bus while keeping the seat-area recommendation more prominent than the direct-sun explanation. It suggests city-bus seating through simplified bench blocks or seat cues, and anchors left/right with an embedded front or driver cue rather than an external technical arrow.
+_Avoid_: Technical compass, map bearing, abstract brand mark, transit operations diagram, assigned-seat map, standalone direction arrow
+
+**Bus-side Split Motif**:
+The signature visual idea derived from the left and right sides of a bus cabin, used to make sun-side advice feel recognizable and trustworthy.
+_Avoid_: Generic seating map, four-zone heatmap, standalone logo mark
 
 **Route Candidate**:
 A nearby route the rider can select before choosing direction and requesting sun-side advice.
@@ -60,6 +64,7 @@ _Avoid_: Legal disclaimer wall, hidden limitation
 - **Sun-side Advice** is presented as a **Seat-area Recommendation** when possible.
 - A **Route Preview** can show exploratory **Sun-side Advice** with a clear warning when live onboard context is not available.
 - A **Bus Orientation Diagram** helps explain the **Seat-area Recommendation** without relying only on text.
+- The **Bus-side Split Motif** gives the **Bus Orientation Diagram** its primary left/right identity, while front/back recommendations remain secondary states.
 - A **Route Confirmation Map** helps a **Rider** confirm a selected **Route Candidate** before trusting advice.
 - A **Geometric Estimate Notice** must stay visible enough to preserve trust without overwhelming the advice.
 - The **Playful Sunny Brand** should make the app feel joyful while keeping the advice clear and practical.
