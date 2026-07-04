@@ -78,3 +78,9 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
+
+@media (max-width: 640px) {
+  :root {
+    --sticky-action-height: 142px;
+  }
+}

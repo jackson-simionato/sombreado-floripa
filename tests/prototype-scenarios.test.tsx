@@ -1,9 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, test } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import PrototypePage from "../app/prototype/page";
 import { HomePageApp } from "../src/app/HomePageApp";
+import { copy } from "../src/content/copy";
 import { prototypeScenarios } from "../src/mocks/scenarioStates";
 
 const scenarioExpectations = [
@@ -34,6 +35,27 @@ const scenarioExpectations = [
   ["error-geometry", "Algo deu errado"],
   ["error-advice", "Algo deu errado"],
 ] as const;
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
+
+function mockMobileViewport(matches: boolean) {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn().mockImplementation((query: string) => ({
+      matches,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }))
+  );
+}
 
 describe("prototype scenarios", () => {
   test.each(scenarioExpectations)(
@@ -231,6 +253,93 @@ describe("prototype scenarios", () => {
         name: "Buscando linhas perto de você...",
       })
     ).toBeInTheDocument();
+  });
+
+  test("hides the prototype switcher on mobile while keeping the location diagram prominent", async () => {
+    mockMobileViewport(true);
+
+    render(<PrototypePage />);
+
+    expect(
+      await screen.findByRole("heading", { name: "De que lado sentar?" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(copy.busSplitDiagram.accessibleSummary)
+    ).toBeInTheDocument();
+    expect(screen.getByText("Sente aqui")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("combobox", { name: "Protótipo" })
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  test("onboard advice uses route receipt context before the recommendation surface", async () => {
+    render(
+      <HomePageApp
+        prototypeScenarioId="advice-onboard-left"
+        runtime="prototype"
+      />
+    );
+
+    expect(await screen.findByText("4 de 4")).toBeInTheDocument();
+    expect(screen.getByText("124")).toBeInTheDocument();
+    expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
+    expect(
+      screen.getByText("Agora no ônibus · sentido TICEN para Lagoa")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Sente à esquerda" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("Recomendação")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(
+        "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Estimativa pelo sol direto. Pode variar no caminho.")
+    ).toBeInTheDocument();
+  });
+
+  test("preview advice keeps preview status in the route receipt instead of the title", async () => {
+    render(
+      <HomePageApp prototypeScenarioId="advice-preview" runtime="prototype" />
+    );
+
+    expect(
+      await screen.findByRole("heading", {
+        name: "Melhor sentar à direita",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Prévia da linha · sentido TICEN para Lagoa/)
+    ).toBeInTheDocument();
+    expect(screen.getByText("Prévia")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /Prévia/i })
+    ).not.toBeInTheDocument();
+  });
+
+  test("neutral advice keeps route context without leaking a side recommendation", async () => {
+    render(
+      <HomePageApp
+        prototypeScenarioId="advice-neutral-overhead"
+        runtime="prototype"
+      />
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Sem lado melhor agora" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("124")).toBeInTheDocument();
+    expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
+    expect(screen.getByText("Recomendação")).toBeInTheDocument();
+    expect(screen.queryByText("Sente aqui")).not.toBeInTheDocument();
   });
 
   test("scenario switcher reaches every mocked prototype state from the home route", async () => {

@@ -35,3 +35,9 @@
   color: var(--color-ink);
   font: inherit;
 }
+
+@media (max-width: 640px) {
+  .tray {
+    display: none;
+  }
+}

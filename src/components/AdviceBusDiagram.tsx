@@ -75,12 +75,23 @@ function CabinInterior({
     <div
       className={styles.bus}
       data-diagram-layout="long-bus"
+      data-diagram-shape="transit-pictogram-bus"
       data-diagram-size="result-focus"
+      data-testid="bus-shell"
       aria-hidden="true"
     >
-      <span className={styles.wheelCue} data-diagram-cue="wheels" />
+      <span
+        className={styles.wheelCue}
+        data-diagram-cue="wheels"
+        data-testid="bus-wheels"
+      />
       <div className={styles.frontCue} data-diagram-cue="front">
-        <span className={styles.windshield} />
+        <span className={styles.routeSign} data-testid="bus-front-sign">
+          ônibus
+        </span>
+        <span className={styles.windshield} data-testid="bus-windshield">
+          frente
+        </span>
         <span className={styles.driverCue} />
       </div>
       <div
@@ -92,7 +103,9 @@ function CabinInterior({
         {variant === "side" ? (
           <>
             <CabinZoneView side="left" zone={zones[0]} />
-            <div className={styles.aisle} />
+            <div className={styles.aisle}>
+              <span>corredor</span>
+            </div>
             <CabinZoneView side="right" zone={zones[1]} />
           </>
         ) : (
@@ -105,6 +118,7 @@ function CabinInterior({
           </>
         )}
       </div>
+      <span className={styles.rearCue} data-diagram-cue="rear-bumper" />
     </div>
   );
 }

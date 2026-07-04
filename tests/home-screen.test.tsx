@@ -708,7 +708,9 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Prévia da linha · sentido TICEN para Lagoa/)
+    ).toBeInTheDocument();
     expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
       mode: "preview",
       horizon: "remainingRoute",
@@ -751,7 +753,9 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Agora no ônibus · sentido TICEN para Lagoa/)
+    ).toBeInTheDocument();
     expect(
       screen.getByText(/última localização conhecida/i)
     ).toBeInTheDocument();
@@ -816,7 +820,9 @@ describe("home screen flow", () => {
         screen.getByRole("button", { name: "Confirmar esta linha" })
       );
 
-      expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+      expect(
+        await screen.findByText(/Prévia da linha · sentido TICEN para Lagoa/)
+      ).toBeInTheDocument();
       expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
         mode: "preview",
         horizon: "remainingRoute",
@@ -1161,7 +1167,9 @@ describe("home screen flow", () => {
       await screen.findByRole("heading", { name: "Sente à esquerda" })
     ).toBeInTheDocument();
     expect(screen.getByText("4 de 4")).toBeInTheDocument();
-    expect(screen.getByText("Agora no ônibus")).toBeInTheDocument();
+    expect(
+      screen.getByText(/Agora no ônibus · sentido TICEN para Lagoa/)
+    ).toBeInTheDocument();
     expect(
       screen.getByText("Estimativa pelo sol direto. Pode variar no caminho.")
     ).toBeInTheDocument();
@@ -1174,9 +1182,8 @@ describe("home screen flow", () => {
     expect(
       container.querySelector("[data-result-focus='diagram']")
     ).toBeTruthy();
-    expect(
-      container.querySelector("[data-route-context='compact']")
-    ).toBeTruthy();
+    expect(screen.getByText("124")).toBeInTheDocument();
+    expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
     expect(screen.queryByText("Linha confirmada")).not.toBeInTheDocument();
   });
 
@@ -1369,7 +1376,9 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Prévia da linha · sentido TICEN para Lagoa/)
+    ).toBeInTheDocument();
     expect(screen.getByText("Prévia")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Melhor sentar à direita" })
@@ -1543,7 +1552,9 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Agora no ônibus · sentido TICEN para Lagoa/)
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Sente à esquerda" })
     ).toBeInTheDocument();
@@ -1563,7 +1574,9 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Prévia da linha · sentido TICEN para Lagoa/)
+    ).toBeInTheDocument();
     expect(screen.getByText("Prévia")).toBeInTheDocument();
     expect(
       screen.getByLabelText(/Recomendação: sente à direita/i)

@@ -12,3 +12,9 @@
     padding-top: var(--space-6);
   }
 }
+
+@media (max-width: 640px) {
+  .shell {
+    padding-top: var(--space-4);
+  }
+}

@@ -438,7 +438,7 @@ export function OnboardingFlowScreen({
         content = renderAdviceResult({
           advice: state.advice,
           directionLabel: state.selectedDirection?.name,
-          routeLabel: selectedRouteLabel,
+          route: state.selectedRoute,
         });
       } else {
         content = null;
@@ -565,25 +565,46 @@ function renderLoadingScreen(
 function renderAdviceResult({
   advice,
   directionLabel,
-  routeLabel,
+  route,
 }: {
   advice: Exclude<UiAdviceState, { mode: "withheld" }>;
   directionLabel?: string;
-  routeLabel?: string;
+  route?: { code: string; name: string };
 }) {
   const variant = adviceVariantCopy(advice);
 
   return (
-    <section className={styles.stack} aria-labelledby="screen-title">
+    <AdviceResultSurface
+      advice={advice}
+      directionLabel={directionLabel}
+      route={route}
+      variant={variant}
+    />
+  );
+}
+
+function AdviceResultSurface({
+  advice,
+  directionLabel,
+  route,
+  variant,
+}: {
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>;
+  directionLabel?: string;
+  route?: { code: string; name: string };
+  variant: ReturnType<typeof adviceVariantCopy>;
+}) {
+  return (
+    <section className={styles.resultStack} aria-labelledby="screen-title">
       <p className={styles.progress}>4 de 4</p>
-      <div className={styles.resultCard}>
-        <div className={styles.resultHeader}>
-          <p className={styles.resultEyebrow}>{variant.eyebrow}</p>
-          {variant.badge !== undefined ? (
-            <span className={styles.resultBadge}>{variant.badge}</span>
-          ) : null}
-        </div>
-        <h1 id="screen-title" className={styles.titleCompact}>
+      <ResultRouteReceipt
+        advice={advice}
+        directionLabel={directionLabel}
+        route={route}
+      />
+      <div className={styles.recommendationPanel}>
+        <p className={styles.resultEyebrow}>Recomendação</p>
+        <h1 id="screen-title" className={styles.resultTitle}>
           {variant.title}
         </h1>
         <p className={styles.body}>{variant.body}</p>
@@ -596,24 +617,52 @@ function renderAdviceResult({
             </p>
           </div>
         ) : null}
-        {variant.previewNote !== undefined ? (
-          <p className={styles.metaText}>{variant.previewNote}</p>
-        ) : null}
         <div className={styles.diagramFocus} data-result-focus="diagram">
           <AdviceBusDiagram
             advice={advice}
             summary={variant.accessibleSummary}
           />
         </div>
-        <p className={styles.estimateNotice}>{ESTIMATE_NOTICE}</p>
-        <RouteSummary
-          compact
-          directionLabel={directionLabel}
-          label="Linha"
-          routeLabel={routeLabel}
-        />
       </div>
+      {variant.previewNote !== undefined ? (
+        <p className={styles.previewNotice}>{variant.previewNote}</p>
+      ) : null}
+      <p className={styles.estimateNotice}>{ESTIMATE_NOTICE}</p>
     </section>
+  );
+}
+
+function ResultRouteReceipt({
+  advice,
+  directionLabel,
+  route,
+}: {
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>;
+  directionLabel?: string;
+  route?: { code: string; name: string };
+}) {
+  if (route === undefined) {
+    return null;
+  }
+
+  const statusLabel =
+    advice.mode === "preview" ? "Prévia da linha" : "Agora no ônibus";
+  const metadata =
+    directionLabel === undefined
+      ? statusLabel
+      : `${statusLabel} · sentido ${directionLabel}`;
+
+  return (
+    <div className={styles.routeReceipt}>
+      <span className={styles.routeCode}>{route.code}</span>
+      <div className={styles.routeReceiptText}>
+        <strong>{route.name}</strong>
+        <span>{metadata}</span>
+      </div>
+      {advice.mode === "preview" ? (
+        <span className={styles.routeReceiptBadge}>Prévia</span>
+      ) : null}
+    </div>
   );
 }
 
@@ -662,12 +711,10 @@ function DirectionCard({
 }
 
 function RouteSummary({
-  compact = false,
   directionLabel,
   label,
   routeLabel,
 }: {
-  compact?: boolean;
   directionLabel?: string;
   label?: string;
   routeLabel?: string;
@@ -677,12 +724,7 @@ function RouteSummary({
   }
 
   return (
-    <div
-      className={`${styles.summaryPanel} ${
-        compact ? styles.summaryPanelCompact : ""
-      }`}
-      data-route-context={compact ? "compact" : undefined}
-    >
+    <div className={styles.summaryPanel}>
       {label !== undefined ? (
         <p className={styles.summaryLabel}>{label}</p>
       ) : null}
@@ -790,18 +832,14 @@ const ESTIMATE_NOTICE = "Estimativa pelo sol direto. Pode variar no caminho.";
 function adviceVariantCopy(
   advice: Exclude<UiAdviceState, { mode: "withheld" }>
 ): {
-  eyebrow: string;
   title: string;
   body: string;
   accessibleSummary: string;
-  badge?: string;
   previewNote?: string;
 } {
   if (advice.mode === "preview") {
     return {
       ...directionalAdviceCopy(advice.recommendedSeatArea),
-      eyebrow: "Prévia da linha",
-      badge: "Prévia",
       previewNote: previewDistanceCopy(advice.distanceFromRouteMeters),
     };
   }
@@ -809,7 +847,6 @@ function adviceVariantCopy(
   if (advice.mode === "neutralComputed") {
     if (advice.directSunExposure === "overhead") {
       return {
-        eyebrow: "Resultado calculado",
         title: "Sem lado melhor agora",
         body: "Sol alto demais para uma lateral se destacar neste trecho.",
         accessibleSummary:
@@ -818,7 +855,6 @@ function adviceVariantCopy(
     }
 
     return {
-      eyebrow: "Resultado calculado",
       title: "Sem sol direto relevante agora",
       body: "Não há sol direto suficiente para recomendar uma lateral neste trecho.",
       accessibleSummary:
@@ -828,7 +864,6 @@ function adviceVariantCopy(
 
   return {
     ...directionalAdviceCopy(advice.recommendedSeatArea),
-    eyebrow: "Agora no ônibus",
   };
 }
 
