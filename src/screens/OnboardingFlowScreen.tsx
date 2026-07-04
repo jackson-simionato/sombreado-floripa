@@ -597,17 +597,13 @@ function AdviceResultSurface({
   return (
     <section className={styles.resultStack} aria-labelledby="screen-title">
       <p className={styles.progress}>4 de 4</p>
-      <ResultRouteReceipt
-        advice={advice}
-        directionLabel={directionLabel}
-        route={route}
-      />
       <div className={styles.recommendationPanel}>
-        <p className={styles.resultEyebrow}>Recomendação</p>
+        <p className={styles.resultEyebrow}>{resultModeLabel(advice)}</p>
         <h1 id="screen-title" className={styles.resultTitle}>
           {variant.title}
         </h1>
         <p className={styles.body}>{variant.body}</p>
+        <ResultRouteMetadata directionLabel={directionLabel} route={route} />
         {advice.mode !== "preview" &&
         advice.freshnessNotice === "recentFallback" ? (
           <div className={styles.noticePanel} role="status">
@@ -620,24 +616,20 @@ function AdviceResultSurface({
         <div className={styles.diagramFocus} data-result-focus="diagram">
           <AdviceBusDiagram
             advice={advice}
+            density="compact"
             summary={variant.accessibleSummary}
           />
         </div>
+        <p className={styles.estimateNotice}>{variant.trustNotice}</p>
       </div>
-      {variant.previewNote !== undefined ? (
-        <p className={styles.previewNotice}>{variant.previewNote}</p>
-      ) : null}
-      <p className={styles.estimateNotice}>{ESTIMATE_NOTICE}</p>
     </section>
   );
 }
 
-function ResultRouteReceipt({
-  advice,
+function ResultRouteMetadata({
   directionLabel,
   route,
 }: {
-  advice: Exclude<UiAdviceState, { mode: "withheld" }>;
   directionLabel?: string;
   route?: { code: string; name: string };
 }) {
@@ -645,23 +637,15 @@ function ResultRouteReceipt({
     return null;
   }
 
-  const statusLabel =
-    advice.mode === "preview" ? "Prévia da linha" : "Agora no ônibus";
-  const metadata =
-    directionLabel === undefined
-      ? statusLabel
-      : `${statusLabel} · sentido ${directionLabel}`;
-
   return (
-    <div className={styles.routeReceipt}>
+    <div className={styles.resultRouteMeta}>
       <span className={styles.routeCode}>{route.code}</span>
-      <div className={styles.routeReceiptText}>
+      <div className={styles.resultRouteText}>
         <strong>{route.name}</strong>
-        <span>{metadata}</span>
+        {directionLabel !== undefined ? (
+          <span>sentido {directionLabel}</span>
+        ) : null}
       </div>
-      {advice.mode === "preview" ? (
-        <span className={styles.routeReceiptBadge}>Prévia</span>
-      ) : null}
     </div>
   );
 }
@@ -835,12 +819,12 @@ function adviceVariantCopy(
   title: string;
   body: string;
   accessibleSummary: string;
-  previewNote?: string;
+  trustNotice: string;
 } {
   if (advice.mode === "preview") {
     return {
-      ...directionalAdviceCopy(advice.recommendedSeatArea),
-      previewNote: previewDistanceCopy(advice.distanceFromRouteMeters),
+      ...previewDirectionalAdviceCopy(advice.recommendedSeatArea),
+      trustNotice: previewTrustCopy(advice.distanceFromRouteMeters),
     };
   }
 
@@ -851,6 +835,7 @@ function adviceVariantCopy(
         body: "Sol alto demais para uma lateral se destacar neste trecho.",
         accessibleSummary:
           "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora.",
+        trustNotice: ESTIMATE_NOTICE,
       };
     }
 
@@ -859,12 +844,20 @@ function adviceVariantCopy(
       body: "Não há sol direto suficiente para recomendar uma lateral neste trecho.",
       accessibleSummary:
         "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora.",
+      trustNotice: ESTIMATE_NOTICE,
     };
   }
 
   return {
     ...directionalAdviceCopy(advice.recommendedSeatArea),
+    trustNotice: ESTIMATE_NOTICE,
   };
+}
+
+function resultModeLabel(
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>
+): string {
+  return advice.mode === "preview" ? "Prévia da linha" : "Agora no ônibus";
 }
 
 function directionalAdviceCopy(
@@ -902,12 +895,30 @@ function directionalAdviceCopy(
   }
 }
 
-function previewDistanceCopy(distanceFromRouteMeters?: number): string {
-  if (distanceFromRouteMeters === undefined) {
-    return "Prévia estimada para linha confirmada.";
+function previewDirectionalAdviceCopy(
+  recommendedSeatArea: "left" | "right" | "front" | "back"
+) {
+  const copy = directionalAdviceCopy(recommendedSeatArea);
+
+  if (recommendedSeatArea === "front" || recommendedSeatArea === "back") {
+    return {
+      ...copy,
+      body: "Essa parte tende a pegar menos sol direto no ponto estimado da linha.",
+    };
   }
 
-  return `Prévia estimada para linha confirmada, cerca de ${Math.round(distanceFromRouteMeters)} m fora da rota.`;
+  return {
+    ...copy,
+    body: "Esse lado tende a pegar menos sol direto no ponto estimado da linha.",
+  };
+}
+
+function previewTrustCopy(distanceFromRouteMeters?: number): string {
+  if (distanceFromRouteMeters === undefined) {
+    return "Prévia da linha confirmada. Estimativa pelo sol direto; pode variar no caminho.";
+  }
+
+  return `Prévia a cerca de ${Math.round(distanceFromRouteMeters)} m fora da rota. Estimativa pelo sol direto; pode variar no caminho.`;
 }
 
 function withheldReasonCopy(reasonCode?: AdvisoryReasonCode): string {

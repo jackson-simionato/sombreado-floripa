@@ -34,22 +34,22 @@
 .diagramFocus {
   display: grid;
   place-items: center;
-  margin-block: var(--space-2) 0;
+  margin-block: var(--space-1) 0;
 }
 
-.routeReceipt {
+.resultRouteMeta {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid rgba(231, 222, 210, 0.72);
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid rgba(231, 222, 210, 0.78);
   border-radius: 999px;
   background:
     linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.78),
-      rgba(255, 249, 238, 0.72)
+      rgba(255, 255, 255, 0.7),
+      rgba(255, 249, 238, 0.58)
     ),
     var(--color-surface-warm);
 }
@@ -66,42 +66,28 @@
   font-weight: 800;
 }
 
-.routeReceiptText {
+.resultRouteText {
   min-width: 0;
   display: grid;
-  gap: var(--space-1);
+  gap: 2px;
 }
 
-.routeReceiptText strong {
+.resultRouteText strong {
   overflow-wrap: anywhere;
   font-size: 0.96rem;
   line-height: 1.25;
 }
 
-.routeReceiptText span,
-.previewNotice {
+.resultRouteText span {
   color: var(--color-muted-ink);
   font-size: 0.86rem;
   line-height: 1.35;
 }
 
-.routeReceiptBadge {
-  min-height: 28px;
-  display: inline-flex;
-  align-items: center;
-  padding: 0 var(--space-2);
-  border: 1px solid rgba(78, 156, 181, 0.35);
-  border-radius: 999px;
-  background: var(--color-shade-100);
-  color: var(--color-ink);
-  font-size: 0.78rem;
-  font-weight: 750;
-}
-
 .recommendationPanel {
   display: grid;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-4) var(--space-3);
+  gap: var(--space-2);
+  padding: var(--space-4);
   border: 1px solid rgba(231, 222, 210, 0.86);
   border-radius: 28px;
   background:
@@ -161,9 +147,8 @@
 .estimateNotice {
   margin: 0;
   color: var(--color-muted-ink);
-  font-size: 0.9rem;
-  line-height: 1.45;
-  padding-inline: var(--space-2);
+  font-size: 0.86rem;
+  line-height: 1.38;
 }
 
 .list {
@@ -325,7 +310,7 @@
     gap: var(--space-2);
   }
 
-  .routeReceipt {
+  .resultRouteMeta {
     gap: var(--space-2);
     padding: var(--space-2);
   }
@@ -336,18 +321,12 @@
     font-size: 0.86rem;
   }
 
-  .routeReceiptText strong {
+  .resultRouteText strong {
     font-size: 0.92rem;
   }
 
-  .routeReceiptText span,
-  .previewNotice {
+  .resultRouteText span {
     font-size: 0.82rem;
-  }
-
-  .routeReceiptBadge {
-    min-height: 26px;
-    font-size: 0.74rem;
   }
 
   .list {
@@ -387,5 +366,6 @@
 
   .estimateNotice {
     font-size: 0.84rem;
+    line-height: 1.35;
   }
 }

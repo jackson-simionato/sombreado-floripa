@@ -708,9 +708,8 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(
-      await screen.findByText(/Prévia da linha · sentido TICEN para Lagoa/)
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
     expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
       mode: "preview",
       horizon: "remainingRoute",
@@ -753,9 +752,8 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(
-      await screen.findByText(/Agora no ônibus · sentido TICEN para Lagoa/)
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
     expect(
       screen.getByText(/última localização conhecida/i)
     ).toBeInTheDocument();
@@ -820,9 +818,8 @@ describe("home screen flow", () => {
         screen.getByRole("button", { name: "Confirmar esta linha" })
       );
 
-      expect(
-        await screen.findByText(/Prévia da linha · sentido TICEN para Lagoa/)
-      ).toBeInTheDocument();
+      expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+      expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
       expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
         mode: "preview",
         horizon: "remainingRoute",
@@ -1167,9 +1164,8 @@ describe("home screen flow", () => {
       await screen.findByRole("heading", { name: "Sente à esquerda" })
     ).toBeInTheDocument();
     expect(screen.getByText("4 de 4")).toBeInTheDocument();
-    expect(
-      screen.getByText(/Agora no ônibus · sentido TICEN para Lagoa/)
-    ).toBeInTheDocument();
+    expect(screen.getByText("Agora no ônibus")).toBeInTheDocument();
+    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
     expect(
       screen.getByText("Estimativa pelo sol direto. Pode variar no caminho.")
     ).toBeInTheDocument();
@@ -1376,15 +1372,15 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(
-      await screen.findByText(/Prévia da linha · sentido TICEN para Lagoa/)
-    ).toBeInTheDocument();
-    expect(screen.getByText("Prévia")).toBeInTheDocument();
+    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Melhor sentar à direita" })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Prévia estimada para linha confirmada/i)
+      screen.getByText(
+        "Prévia a cerca de 64 m fora da rota. Estimativa pelo sol direto; pode variar no caminho."
+      )
     ).toBeInTheDocument();
   });
 
@@ -1552,9 +1548,8 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(
-      await screen.findByText(/Agora no ônibus · sentido TICEN para Lagoa/)
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Sente à esquerda" })
     ).toBeInTheDocument();
@@ -1574,10 +1569,8 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(
-      await screen.findByText(/Prévia da linha · sentido TICEN para Lagoa/)
-    ).toBeInTheDocument();
-    expect(screen.getByText("Prévia")).toBeInTheDocument();
+    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
     expect(
       screen.getByLabelText(/Recomendação: sente à direita/i)
     ).toBeInTheDocument();

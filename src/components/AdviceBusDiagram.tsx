@@ -4,6 +4,7 @@ import styles from "./AdviceBusDiagram.module.css";
 
 type AdviceBusDiagramProps = {
   advice: Exclude<UiAdviceState, { mode: "withheld" }>;
+  density?: "default" | "compact";
   summary: string;
 };
 
@@ -12,11 +13,16 @@ type CabinZone = {
   tone: "recommended" | "sunny" | "neutral";
 };
 
-export function AdviceBusDiagram({ advice, summary }: AdviceBusDiagramProps) {
+export function AdviceBusDiagram({
+  advice,
+  density = "default",
+  summary,
+}: AdviceBusDiagramProps) {
   if (advice.mode === "neutralComputed") {
     return (
       <figure className={styles.figure} aria-label={summary}>
         <CabinInterior
+          density={density}
           zones={[
             { label: "esquerda", tone: "neutral" },
             { label: "direita", tone: "neutral" },
@@ -37,6 +43,7 @@ export function AdviceBusDiagram({ advice, summary }: AdviceBusDiagramProps) {
     return (
       <figure className={styles.figure} aria-label={summary}>
         <CabinInterior
+          density={density}
           zones={[
             { label: "frente", tone: recommendFront ? "recommended" : "sunny" },
             { label: "trás", tone: recommendFront ? "sunny" : "recommended" },
@@ -53,6 +60,7 @@ export function AdviceBusDiagram({ advice, summary }: AdviceBusDiagramProps) {
   return (
     <figure className={styles.figure} aria-label={summary}>
       <CabinInterior
+        density={density}
         zones={[
           { label: "esquerda", tone: recommendLeft ? "recommended" : "sunny" },
           { label: "direita", tone: recommendLeft ? "sunny" : "recommended" },
@@ -65,15 +73,18 @@ export function AdviceBusDiagram({ advice, summary }: AdviceBusDiagramProps) {
 }
 
 function CabinInterior({
+  density,
   zones,
   variant,
 }: {
+  density: "default" | "compact";
   zones: [CabinZone, CabinZone];
   variant: "side" | "deck";
 }) {
   return (
     <div
-      className={styles.bus}
+      className={`${styles.bus} ${density === "compact" ? styles.busCompact : ""}`}
+      data-diagram-density={density}
       data-diagram-layout="long-bus"
       data-diagram-shape="transit-pictogram-bus"
       data-diagram-size="result-focus"

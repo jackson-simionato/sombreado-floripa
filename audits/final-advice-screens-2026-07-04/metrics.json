@@ -1,0 +1,358 @@
+[
+  {
+    "label": "Mobile onboard advice",
+    "scenario": "advice-onboard-left",
+    "file": "01-mobile-onboard-advice.png",
+    "metrics": {
+      "titleText": "Sente à esquerda",
+      "modeText": "Agora no ônibus",
+      "routeText": "124 TICEN - Lagoa sentido TICEN para Lagoa",
+      "bodyText": "Esse lado deve pegar menos sol direto neste sentido.",
+      "trustText": "Estimativa pelo sol direto. Pode variar no caminho.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "documentHeight": 844,
+      "progress": {
+        "top": 16,
+        "bottom": 34,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 18
+      },
+      "mode": {
+        "top": 55,
+        "bottom": 74,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 18
+      },
+      "title": {
+        "top": 82,
+        "bottom": 116,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 34
+      },
+      "body": {
+        "top": 124,
+        "bottom": 170,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 46
+      },
+      "routeMeta": {
+        "top": 178,
+        "bottom": 234,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 56
+      },
+      "panel": {
+        "top": 42,
+        "bottom": 522,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 479
+      },
+      "diagram": {
+        "top": 242,
+        "bottom": 487,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 245
+      },
+      "trust": {
+        "top": 495,
+        "bottom": 513,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 18
+      },
+      "actions": {
+        "top": 716,
+        "bottom": 844,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 128
+      }
+    }
+  },
+  {
+    "label": "Mobile route preview advice",
+    "scenario": "advice-preview",
+    "file": "02-mobile-preview-advice.png",
+    "metrics": {
+      "titleText": "Melhor sentar à direita",
+      "modeText": "Prévia da linha",
+      "routeText": "124 TICEN - Lagoa sentido TICEN para Lagoa",
+      "bodyText": "Esse lado tende a pegar menos sol direto no ponto estimado da linha.",
+      "trustText": "Prévia a cerca de 64 m fora da rota. Estimativa pelo sol direto; pode variar no caminho.",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "documentHeight": 844,
+      "progress": {
+        "top": 16,
+        "bottom": 34,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 18
+      },
+      "mode": {
+        "top": 55,
+        "bottom": 74,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 18
+      },
+      "title": {
+        "top": 82,
+        "bottom": 150,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 69
+      },
+      "body": {
+        "top": 158,
+        "bottom": 204,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 46
+      },
+      "routeMeta": {
+        "top": 212,
+        "bottom": 268,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 56
+      },
+      "panel": {
+        "top": 42,
+        "bottom": 574,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 532
+      },
+      "diagram": {
+        "top": 276,
+        "bottom": 521,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 245
+      },
+      "trust": {
+        "top": 529,
+        "bottom": 565,
+        "left": 29,
+        "right": 361,
+        "width": 332,
+        "height": 36
+      },
+      "actions": {
+        "top": 716,
+        "bottom": 844,
+        "left": 16,
+        "right": 374,
+        "width": 358,
+        "height": 128
+      }
+    }
+  },
+  {
+    "label": "Desktop onboard advice",
+    "scenario": "advice-onboard-left",
+    "file": "03-desktop-onboard-advice.png",
+    "metrics": {
+      "titleText": "Sente à esquerda",
+      "modeText": "Agora no ônibus",
+      "routeText": "124 TICEN - Lagoa sentido TICEN para Lagoa",
+      "bodyText": "Esse lado deve pegar menos sol direto neste sentido.",
+      "trustText": "Estimativa pelo sol direto. Pode variar no caminho.",
+      "viewport": {
+        "width": 1024,
+        "height": 900
+      },
+      "documentHeight": 900,
+      "progress": {
+        "top": 32,
+        "bottom": 52,
+        "left": 313,
+        "right": 711,
+        "width": 398,
+        "height": 20
+      },
+      "mode": {
+        "top": 77,
+        "bottom": 96,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 20
+      },
+      "title": {
+        "top": 104,
+        "bottom": 142,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 38
+      },
+      "body": {
+        "top": 150,
+        "bottom": 198,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 48
+      },
+      "routeMeta": {
+        "top": 206,
+        "bottom": 264,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 58
+      },
+      "panel": {
+        "top": 60,
+        "bottom": 581,
+        "left": 313,
+        "right": 711,
+        "width": 398,
+        "height": 521
+      },
+      "diagram": {
+        "top": 276,
+        "bottom": 537,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 261
+      },
+      "trust": {
+        "top": 545,
+        "bottom": 564,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 19
+      },
+      "actions": {
+        "top": 760,
+        "bottom": 900,
+        "left": 313,
+        "right": 711,
+        "width": 398,
+        "height": 140
+      }
+    }
+  },
+  {
+    "label": "Desktop route preview advice",
+    "scenario": "advice-preview",
+    "file": "04-desktop-preview-advice.png",
+    "metrics": {
+      "titleText": "Melhor sentar à direita",
+      "modeText": "Prévia da linha",
+      "routeText": "124 TICEN - Lagoa sentido TICEN para Lagoa",
+      "bodyText": "Esse lado tende a pegar menos sol direto no ponto estimado da linha.",
+      "trustText": "Prévia a cerca de 64 m fora da rota. Estimativa pelo sol direto; pode variar no caminho.",
+      "viewport": {
+        "width": 1024,
+        "height": 900
+      },
+      "documentHeight": 900,
+      "progress": {
+        "top": 32,
+        "bottom": 52,
+        "left": 313,
+        "right": 711,
+        "width": 398,
+        "height": 20
+      },
+      "mode": {
+        "top": 77,
+        "bottom": 96,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 20
+      },
+      "title": {
+        "top": 104,
+        "bottom": 179,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 75
+      },
+      "body": {
+        "top": 187,
+        "bottom": 235,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 48
+      },
+      "routeMeta": {
+        "top": 243,
+        "bottom": 301,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 58
+      },
+      "panel": {
+        "top": 60,
+        "bottom": 637,
+        "left": 313,
+        "right": 711,
+        "width": 398,
+        "height": 577
+      },
+      "diagram": {
+        "top": 313,
+        "bottom": 574,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 261
+      },
+      "trust": {
+        "top": 582,
+        "bottom": 620,
+        "left": 330,
+        "right": 694,
+        "width": 364,
+        "height": 38
+      },
+      "actions": {
+        "top": 760,
+        "bottom": 900,
+        "left": 313,
+        "right": 711,
+        "width": 398,
+        "height": 140
+      }
+    }
+  }
+]

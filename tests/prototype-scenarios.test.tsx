@@ -278,7 +278,7 @@ describe("prototype scenarios", () => {
     });
   });
 
-  test("onboard advice uses route receipt context before the recommendation surface", async () => {
+  test("onboard advice leads with recommendation and keeps route context secondary", async () => {
     render(
       <HomePageApp
         prototypeScenarioId="advice-onboard-left"
@@ -286,40 +286,73 @@ describe("prototype scenarios", () => {
       />
     );
 
-    expect(await screen.findByText("4 de 4")).toBeInTheDocument();
-    expect(screen.getByText("124")).toBeInTheDocument();
+    const progress = await screen.findByText("4 de 4");
+    const modeLabel = screen.getByText("Agora no ônibus");
+    const heading = screen.getByRole("heading", { name: "Sente à esquerda" });
+    const body = screen.getByText(
+      "Esse lado deve pegar menos sol direto neste sentido."
+    );
+    const routeCode = screen.getByText("124");
+
+    expect(progress).toBeInTheDocument();
+    expect(modeLabel.compareDocumentPosition(heading)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
+    expect(heading.compareDocumentPosition(body)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
+    expect(body.compareDocumentPosition(routeCode)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
+    expect(routeCode).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
-    expect(
-      screen.getByText("Agora no ônibus · sentido TICEN para Lagoa")
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "Sente à esquerda" })
-    ).toBeInTheDocument();
-    expect(screen.getByText("Recomendação")).toBeInTheDocument();
+    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
+    expect(screen.queryByText("Recomendação")).not.toBeInTheDocument();
     expect(
       screen.getByLabelText(
         "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus."
       )
     ).toBeInTheDocument();
+    expect(screen.getByTestId("bus-shell")).toHaveAttribute(
+      "data-diagram-density",
+      "compact"
+    );
     expect(
       screen.getByText("Estimativa pelo sol direto. Pode variar no caminho.")
     ).toBeInTheDocument();
   });
 
-  test("preview advice keeps preview status in the route receipt instead of the title", async () => {
+  test("preview advice uses text distinction and one compact trust notice", async () => {
     render(
       <HomePageApp prototypeScenarioId="advice-preview" runtime="prototype" />
     );
 
+    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
     expect(
-      await screen.findByRole("heading", {
+      screen.getByRole("heading", {
         name: "Melhor sentar à direita",
       })
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/Prévia da linha · sentido TICEN para Lagoa/)
+      screen.getByText(
+        "Esse lado tende a pegar menos sol direto no ponto estimado da linha."
+      )
     ).toBeInTheDocument();
-    expect(screen.getByText("Prévia")).toBeInTheDocument();
+    expect(screen.getByText("124")).toBeInTheDocument();
+    expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
+    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Prévia a cerca de 64 m fora da rota. Estimativa pelo sol direto; pode variar no caminho."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Prévia estimada para linha confirmada/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Estimativa pelo sol direto. Pode variar no caminho.")
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Prévia")).not.toBeInTheDocument();
     expect(
       screen.queryByRole("heading", { name: /Prévia/i })
     ).not.toBeInTheDocument();
@@ -338,7 +371,7 @@ describe("prototype scenarios", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("124")).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
-    expect(screen.getByText("Recomendação")).toBeInTheDocument();
+    expect(screen.getByText("Agora no ônibus")).toBeInTheDocument();
     expect(screen.queryByText("Sente aqui")).not.toBeInTheDocument();
   });
 

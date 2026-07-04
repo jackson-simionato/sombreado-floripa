@@ -52,4 +52,19 @@ describe("AdviceBusDiagram", () => {
     expect(screen.queryByText("Sente aqui")).not.toBeInTheDocument();
     expect(screen.getAllByText("sem destaque")).toHaveLength(2);
   });
+
+  test("can render result screens with compact density", () => {
+    render(
+      <AdviceBusDiagram
+        advice={leftAdvice}
+        density="compact"
+        summary="Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus."
+      />
+    );
+
+    expect(screen.getByTestId("bus-shell")).toHaveAttribute(
+      "data-diagram-density",
+      "compact"
+    );
+  });
 });
