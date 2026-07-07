@@ -1090,8 +1090,12 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Procurar linha manualmente" })
     ).toBeInTheDocument();
     expect(
-      screen.getByLabelText(/Diagrama do ônibus visto de cima/i)
+      screen.getByLabelText(/Sinal visual abstrato de um ônibus visto de cima/i)
     ).toBeInTheDocument();
+    expect(screen.getByTestId("entry-bus-motif")).toHaveAttribute(
+      "data-diagram-abstraction",
+      "abstract-hint"
+    );
     expect(
       screen.getByRole("combobox", { name: "Protótipo" })
     ).toBeInTheDocument();

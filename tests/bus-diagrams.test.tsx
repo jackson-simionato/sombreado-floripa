@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 
 import { AdviceBusDiagram } from "../src/components/AdviceBusDiagram";
+import { BusSplitDiagram } from "../src/components/BusSplitDiagram";
 import type { UiAdviceState } from "../src/domain/types";
 
 const leftAdvice: Exclude<UiAdviceState, { mode: "withheld" }> = {
@@ -11,6 +12,24 @@ const leftAdvice: Exclude<UiAdviceState, { mode: "withheld" }> = {
 };
 
 describe("AdviceBusDiagram", () => {
+  test("keeps the entry motif abstract instead of showing a full recommendation diagram", () => {
+    render(<BusSplitDiagram />);
+
+    expect(screen.getByLabelText(/sinal visual abstrato/i)).toBeInTheDocument();
+    expect(screen.getByTestId("entry-bus-motif")).toHaveAttribute(
+      "data-diagram-abstraction",
+      "abstract-hint"
+    );
+    expect(screen.getByTestId("entry-bus-motif")).toHaveAttribute(
+      "data-diagram-layout",
+      "top-down-bus"
+    );
+    expect(screen.queryByText("Sente aqui")).not.toBeInTheDocument();
+    expect(screen.queryByText("sol direto")).not.toBeInTheDocument();
+    expect(screen.queryByText("esquerda")).not.toBeInTheDocument();
+    expect(screen.queryByText("direita")).not.toBeInTheDocument();
+  });
+
   test("renders a city-bus pictogram with front, wheel, aisle, and side split cues", () => {
     render(
       <AdviceBusDiagram
@@ -33,6 +52,10 @@ describe("AdviceBusDiagram", () => {
     expect(screen.getByTestId("bus-shell")).toHaveAttribute(
       "data-diagram-shape",
       "transit-pictogram-bus"
+    );
+    expect(screen.getByTestId("bus-shell")).toHaveAttribute(
+      "data-diagram-proportion",
+      "elongated-bus"
     );
     expect(screen.getByTestId("bus-wheels")).toBeInTheDocument();
     expect(screen.getByTestId("bus-windshield")).toBeInTheDocument();

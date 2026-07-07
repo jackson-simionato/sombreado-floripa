@@ -255,7 +255,7 @@ describe("prototype scenarios", () => {
     ).toBeInTheDocument();
   });
 
-  test("hides the prototype switcher on mobile while keeping the location diagram prominent", async () => {
+  test("hides the prototype switcher on mobile while keeping the location motif abstract", async () => {
     mockMobileViewport(true);
 
     render(<PrototypePage />);
@@ -269,7 +269,12 @@ describe("prototype scenarios", () => {
     expect(
       screen.getByLabelText(copy.busSplitDiagram.accessibleSummary)
     ).toBeInTheDocument();
-    expect(screen.getByText("Sente aqui")).toBeInTheDocument();
+    expect(screen.getByTestId("entry-bus-motif")).toHaveAttribute(
+      "data-diagram-abstraction",
+      "abstract-hint"
+    );
+    expect(screen.queryByText("Sente aqui")).not.toBeInTheDocument();
+    expect(screen.queryByText("sol direto")).not.toBeInTheDocument();
 
     await waitFor(() => {
       expect(
@@ -301,9 +306,20 @@ describe("prototype scenarios", () => {
     expect(heading.compareDocumentPosition(body)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING
     );
-    expect(body.compareDocumentPosition(routeCode)).toBe(
+    expect(body.compareDocumentPosition(screen.getByTestId("bus-shell"))).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING
     );
+    expect(screen.getByTestId("bus-shell")).toHaveAttribute(
+      "data-diagram-density",
+      "default"
+    );
+    expect(screen.getByTestId("bus-shell")).toHaveAttribute(
+      "data-diagram-proportion",
+      "elongated-bus"
+    );
+    expect(
+      screen.getByTestId("bus-shell").compareDocumentPosition(routeCode)
+    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(routeCode).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
     expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
@@ -313,10 +329,6 @@ describe("prototype scenarios", () => {
         "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus."
       )
     ).toBeInTheDocument();
-    expect(screen.getByTestId("bus-shell")).toHaveAttribute(
-      "data-diagram-density",
-      "compact"
-    );
     expect(
       screen.getByText("Estimativa pelo sol direto. Pode variar no caminho.")
     ).toBeInTheDocument();

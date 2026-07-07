@@ -86,6 +86,7 @@ function CabinInterior({
       className={`${styles.bus} ${density === "compact" ? styles.busCompact : ""}`}
       data-diagram-density={density}
       data-diagram-layout="long-bus"
+      data-diagram-proportion="elongated-bus"
       data-diagram-shape="transit-pictogram-bus"
       data-diagram-size="result-focus"
       data-testid="bus-shell"

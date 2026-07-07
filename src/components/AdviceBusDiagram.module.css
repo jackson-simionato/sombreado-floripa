@@ -5,8 +5,8 @@
 }
 
 .bus {
-  width: min(100%, 304px);
-  height: clamp(262px, 36vh, 334px);
+  width: min(100%, 292px);
+  height: clamp(372px, 50vh, 456px);
   justify-self: center;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) 14px;
@@ -85,7 +85,7 @@
 
 .wheelCue {
   position: absolute;
-  inset: 76px -8px 44px;
+  inset: 92px -8px 58px;
   pointer-events: none;
   background:
     radial-gradient(ellipse at center, #25211b 0 54%, transparent 56%) left top
@@ -200,7 +200,7 @@
 .cabinBody {
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 16px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 14px minmax(0, 1fr);
   gap: var(--space-2);
   z-index: 1;
 }
@@ -513,8 +513,8 @@
 @media (max-width: 380px) {
   .bus {
     padding: var(--space-2);
-    width: min(100%, 286px);
-    height: clamp(248px, 34vh, 314px);
+    width: min(100%, 276px);
+    height: clamp(348px, 48vh, 420px);
   }
 
   .busCompact {

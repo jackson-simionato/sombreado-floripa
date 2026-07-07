@@ -603,7 +603,6 @@ function AdviceResultSurface({
           {variant.title}
         </h1>
         <p className={styles.body}>{variant.body}</p>
-        <ResultRouteMetadata directionLabel={directionLabel} route={route} />
         {advice.mode !== "preview" &&
         advice.freshnessNotice === "recentFallback" ? (
           <div className={styles.noticePanel} role="status">
@@ -616,10 +615,10 @@ function AdviceResultSurface({
         <div className={styles.diagramFocus} data-result-focus="diagram">
           <AdviceBusDiagram
             advice={advice}
-            density="compact"
             summary={variant.accessibleSummary}
           />
         </div>
+        <ResultRouteMetadata directionLabel={directionLabel} route={route} />
         <p className={styles.estimateNotice}>{variant.trustNotice}</p>
       </div>
     </section>

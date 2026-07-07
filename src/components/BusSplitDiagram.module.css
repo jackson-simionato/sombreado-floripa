@@ -1,23 +1,22 @@
 .figure {
   margin: 0;
   display: grid;
-  gap: var(--space-3);
+  place-items: center;
 }
 
 .bus {
-  width: min(100%, 238px);
-  min-height: 318px;
-  justify-self: center;
+  width: min(100%, 184px);
+  min-height: 246px;
   display: grid;
-  grid-template-rows: auto 1fr;
-  gap: var(--space-3);
+  grid-template-rows: auto 1fr auto;
+  gap: var(--space-2);
   padding: var(--space-3);
-  border: 2px solid var(--color-line);
+  border: 2px solid rgba(37, 33, 27, 0.14);
   border-radius: 34px 34px 24px 24px;
   background:
-    linear-gradient(180deg, rgba(255, 249, 238, 0.9), rgba(255, 255, 255, 0)),
+    linear-gradient(180deg, rgba(255, 249, 238, 0.92), rgba(255, 255, 255, 0)),
     var(--color-paper);
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 18px 38px rgba(37, 33, 27, 0.08);
   position: relative;
   overflow: visible;
 }
@@ -26,23 +25,23 @@
   content: "";
   position: absolute;
   inset: var(--space-2);
-  border: 1px solid rgba(231, 222, 210, 0.82);
+  border: 1px solid rgba(231, 222, 210, 0.78);
   border-radius: 26px 26px 18px 18px;
   pointer-events: none;
 }
 
 .wheelCue {
   position: absolute;
-  inset: 70px -5px 38px;
+  inset: 66px -5px 34px;
   pointer-events: none;
   background:
-    linear-gradient(rgba(107, 98, 88, 0.28) 0 0) left top 14px / 7px 42px
+    linear-gradient(rgba(107, 98, 88, 0.22) 0 0) left top 12px / 7px 38px
       no-repeat,
-    linear-gradient(rgba(107, 98, 88, 0.22) 0 0) left bottom 16px / 7px 42px
+    linear-gradient(rgba(107, 98, 88, 0.18) 0 0) left bottom 14px / 7px 38px
       no-repeat,
-    linear-gradient(rgba(107, 98, 88, 0.28) 0 0) right top 14px / 7px 42px
+    linear-gradient(rgba(107, 98, 88, 0.22) 0 0) right top 12px / 7px 38px
       no-repeat,
-    linear-gradient(rgba(107, 98, 88, 0.22) 0 0) right bottom 16px / 7px 42px
+    linear-gradient(rgba(107, 98, 88, 0.18) 0 0) right bottom 14px / 7px 38px
       no-repeat;
   z-index: 0;
 }
@@ -52,25 +51,25 @@
   display: grid;
   grid-template-columns: 1fr 18px;
   align-items: center;
-  gap: var(--space-3);
-  padding-inline: var(--space-2);
+  gap: var(--space-2);
+  padding-inline: var(--space-1);
   z-index: 1;
 }
 
 .windshield {
   height: 22px;
-  border-radius: 999px 999px 14px 14px;
-  background:
-    linear-gradient(90deg, rgba(78, 156, 181, 0.18), rgba(78, 156, 181, 0.04)),
-    #f7fbfb;
   border: 1px solid rgba(78, 156, 181, 0.28);
+  border-radius: 999px 999px 13px 13px;
+  background:
+    linear-gradient(90deg, rgba(78, 156, 181, 0.2), rgba(78, 156, 181, 0.05)),
+    #f7fbfb;
 }
 
 .driverCue {
   width: 18px;
   height: 18px;
-  border: 1px solid rgba(107, 98, 88, 0.22);
-  border-radius: 7px;
+  border: 1px solid rgba(107, 98, 88, 0.2);
+  border-radius: 999px;
   background:
     radial-gradient(
       circle at 50% 50%,
@@ -80,186 +79,60 @@
     rgba(255, 249, 238, 0.92);
 }
 
-.cabinBody {
-  min-height: 240px;
+.splitBody {
+  min-height: 168px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 14px minmax(0, 1fr);
-  gap: var(--space-2);
+  grid-template-columns: minmax(0, 1fr) 8px minmax(0, 1fr);
+  gap: var(--space-1);
   z-index: 1;
 }
 
-.sideShade,
-.sideSun {
+.shadeField,
+.sunField {
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-2);
-  border-radius: 20px;
-  padding: var(--space-3);
-  color: var(--color-ink);
+  border-radius: 18px;
   position: relative;
   overflow: hidden;
 }
 
-.sideShade::before,
-.sideSun::before {
-  content: "";
-  position: absolute;
-  top: 48px;
-  bottom: 62px;
-  width: 4px;
-  border-radius: 999px;
-  background: currentColor;
-  opacity: 0.12;
-  pointer-events: none;
-}
-
-.zoneLeft::before {
-  left: 9px;
-}
-
-.zoneRight::before {
-  right: 9px;
-}
-
-.sideShade {
-  border: 1.5px solid rgba(78, 156, 181, 0.9);
+.shadeField {
+  border: 1.5px solid rgba(78, 156, 181, 0.62);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent 52%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.48), transparent 56%),
     var(--color-shade-100);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.72),
-    0 10px 18px rgba(78, 156, 181, 0.14);
 }
 
-.sideSun {
-  border: 1.5px solid rgba(248, 184, 78, 0.62);
+.sunField {
+  border: 1.5px solid rgba(248, 184, 78, 0.54);
   background:
     repeating-linear-gradient(
       45deg,
-      rgba(248, 184, 78, 0.2) 0 5px,
+      rgba(248, 184, 78, 0.18) 0 5px,
       transparent 5px 13px
     ),
     var(--color-sun-100);
 }
 
-.sideShade span,
-.sideSun span {
-  color: var(--color-muted-ink);
-  font-size: 0.82rem;
-  font-weight: 700;
-  z-index: 1;
-}
-
-.seatRows {
-  position: absolute;
-  top: 54px;
-  bottom: 62px;
-  width: 34px;
-  display: grid;
-  grid-template-rows: repeat(6, 1fr);
-  align-items: center;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.zoneLeft .seatRows {
-  left: 22px;
-}
-
-.zoneRight .seatRows {
-  right: 22px;
-}
-
-.seatRows span {
-  width: 26px;
-  height: 12px;
-  border-radius: 8px 8px 5px 5px;
-  background: rgba(37, 33, 27, 0.18);
-  box-shadow: inset 0 -3px 0 rgba(255, 255, 255, 0.28);
-}
-
-.sideShade strong,
-.sideSun strong {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  min-height: 32px;
-  max-width: 100%;
-  padding: 0.38rem 0.62rem;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 800;
-  line-height: 1.15;
-  position: relative;
-  z-index: 1;
-}
-
-.sideShade strong {
-  color: #f8ffff;
-  background: var(--color-shade-500);
-}
-
-.sideShade strong::before {
-  content: "";
-  width: 0.56rem;
-  height: 0.34rem;
-  margin-right: 0.34rem;
-  border-bottom: 2px solid currentColor;
-  border-left: 2px solid currentColor;
-  transform: rotate(-45deg) translateY(-1px);
-}
-
-.sideSun strong {
-  color: #5f3c08;
-  background: rgba(255, 249, 238, 0.78);
-  border: 1px solid rgba(248, 184, 78, 0.66);
-}
-
-.sideSun strong::before {
-  content: "";
-  width: 0.56rem;
-  height: 0.56rem;
-  margin-right: 0.32rem;
-  border-radius: 999px;
-  background: currentColor;
-  box-shadow: 0 0 0 3px rgba(248, 184, 78, 0.24);
-}
-
-.aisle {
+.centerLine {
   border-radius: 999px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.8), transparent),
     repeating-linear-gradient(
       to bottom,
       var(--color-line) 0,
-      var(--color-line) 10px,
-      transparent 10px,
-      transparent 20px
+      var(--color-line) 8px,
+      transparent 8px,
+      transparent 18px
     );
 }
 
-@media (max-width: 380px) {
-  .bus {
-    padding: var(--space-2);
-  }
-
-  .cabinBody {
-    min-height: 220px;
-    grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr);
-    gap: var(--space-1);
-  }
-
-  .sideShade,
-  .sideSun {
-    padding: var(--space-2);
-  }
-
-  .sideShade strong,
-  .sideSun strong {
-    font-size: 0.82rem;
-  }
+.rearCue {
+  justify-self: center;
+  width: 54%;
+  height: 7px;
+  border-radius: 0 0 999px 999px;
+  background: rgba(37, 33, 27, 0.14);
+  z-index: 1;
 }
 
 .caption {
@@ -275,85 +148,18 @@
 }
 
 @media (max-width: 640px) {
-  .figure {
-    gap: var(--space-2);
-  }
-
   .bus {
-    width: min(100%, 234px);
-    min-height: 360px;
-    gap: var(--space-2);
+    width: min(100%, 174px);
+    min-height: 244px;
     padding: var(--space-2);
-    border-radius: 38px 38px 28px 28px;
+    border-radius: 34px 34px 24px 24px;
   }
 
   .bus::before {
     inset: 9px;
-    border-radius: 30px 30px 20px 20px;
   }
 
-  .wheelCue {
-    inset: 84px -4px 42px;
-  }
-
-  .frontCue {
-    min-height: 40px;
-    gap: var(--space-2);
-    padding-inline: var(--space-1);
-  }
-
-  .windshield {
-    height: 24px;
-  }
-
-  .cabinBody {
-    min-height: 286px;
-    gap: var(--space-1);
-  }
-
-  .sideShade,
-  .sideSun {
-    padding: var(--space-2) var(--space-2) var(--space-3);
-    border-radius: 18px;
-  }
-
-  .sideShade::before,
-  .sideSun::before {
-    top: 52px;
-    bottom: 76px;
-  }
-
-  .zoneLeft::before {
-    left: 8px;
-  }
-
-  .zoneRight::before {
-    right: 8px;
-  }
-
-  .seatRows {
-    top: 60px;
-    bottom: 76px;
-    width: 32px;
-  }
-
-  .zoneLeft .seatRows {
-    left: 20px;
-  }
-
-  .zoneRight .seatRows {
-    right: 20px;
-  }
-
-  .seatRows span {
-    width: 24px;
-    height: 11px;
-  }
-
-  .sideShade strong,
-  .sideSun strong {
-    min-height: 30px;
-    padding: 0.34rem 0.56rem;
-    font-size: 0.84rem;
+  .splitBody {
+    min-height: 174px;
   }
 }

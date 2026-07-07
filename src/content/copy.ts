@@ -20,6 +20,6 @@ export const copy = {
     sunnySide: "sol direto",
     calmerSide: "Sente aqui",
     accessibleSummary:
-      "Diagrama do ônibus visto de cima, com motorista, corredor, bancos e os lados esquerdo e direito marcados por texto e padrões.",
+      "Sinal visual abstrato de um ônibus visto de cima, com um lado quente e outro calmo para indicar comparação de laterais.",
   },
 } as const;
