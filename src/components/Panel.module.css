@@ -1,0 +1,28 @@
+.panel {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+}
+
+.surface {
+  background: var(--color-surface-container-lowest);
+}
+
+.emphasis {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.82),
+      rgba(244, 244, 240, 0.94)
+    ),
+    var(--color-surface-container-low);
+}
+
+@media (max-width: 640px) {
+  .panel {
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+  }
+}

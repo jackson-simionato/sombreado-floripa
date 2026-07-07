@@ -1,0 +1,75 @@
+.header {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-muted-ink);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.titleHero,
+.titleCompact,
+.titleResult {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.titleHero {
+  max-width: 12ch;
+  font-size: clamp(2.25rem, 12vw, 3rem);
+  line-height: 1.06;
+}
+
+.titleCompact {
+  font-size: 2rem;
+  line-height: 1.12;
+}
+
+.titleResult {
+  font-size: clamp(2rem, 8vw, 2.5rem);
+  line-height: 1.08;
+}
+
+.body {
+  margin: 0;
+  color: var(--color-muted-ink);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .header {
+    gap: var(--space-2);
+  }
+
+  .eyebrow {
+    font-size: 0.82rem;
+  }
+
+  .titleHero {
+    max-width: 10.5ch;
+    font-size: clamp(2.08rem, 13vw, 2.55rem);
+  }
+
+  .titleCompact {
+    font-size: 1.82rem;
+    line-height: 1.08;
+  }
+
+  .titleResult {
+    font-size: clamp(1.86rem, 8.8vw, 2.24rem);
+  }
+
+  .body {
+    font-size: 0.98rem;
+    line-height: 1.46;
+  }
+}

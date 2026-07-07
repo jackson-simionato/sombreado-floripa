@@ -2,9 +2,9 @@
 
 Sombreado Floripa is a mobile-first companion for riders already on Florianopolis buses. The brand should feel sunny, useful, and personable, but the product promise stays practical: it recommends the side with less direct sun exposure. It does not promise guaranteed shade.
 
-Future identity exploration should preserve the product truths in this guide while challenging the surface execution. Onboard-first use, recommendation-first hierarchy, Brazilian Portuguese, honest limits, warm/cool sun semantics, and diagram-led advice are stable; the exact palette, type, illustration style, motion style, and composition can change. Exploration should be implementation-adjacent, with concrete roles, anatomy, hierarchy, and state rules, without prematurely prescribing code.
+The accepted visual system now follows [docs/design/DESIGN.md](design/DESIGN.md): Soft Tech Minimalism, Newsreader for display, Hanken Grotesk for interface text, warm alabaster surfaces, charcoal primary actions, sun-tan direct-sun accents, and soft-blue recommendation/calm accents. Onboard-first use, recommendation-first hierarchy, Brazilian Portuguese, honest limits, warm/cool sun semantics, and diagram-led advice remain stable.
 
-![Sombreado Floripa brand examples](brand-examples.svg)
+`docs/brand-examples.svg` is a historical exploration from the previous visual direction. Use `docs/design/DESIGN.md` and this guide for current visual decisions.
 
 ## Brand Position
 
@@ -38,40 +38,40 @@ The core brand signature is the bus-side split motif. It should come from the pr
 
 ## Color Direction
 
-The palette may evolve, but the semantic relationship should remain stable: warm color represents direct sun, and cool color represents the recommended or calmer side. New brand explorations can shift the exact hues, neutral system, texture, and contrast, but should preserve that warm/cool mapping.
+The palette is the Soft Tech token set from `docs/design/DESIGN.md`. Generic UI tokens should use the surface, primary, secondary, tertiary, outline, and error families. Domain components should keep semantic aliases for rider meaning: direct sun maps to the secondary/sun-tan family, and recommended or calmer areas map to the tertiary/soft-blue family.
 
-| Token        | Hex       | Use                                                           |
-| ------------ | --------- | ------------------------------------------------------------- |
-| Sun 500      | `#F8B84E` | Sun accents, direct-sun markers, optimistic highlights        |
-| Sun 100      | `#FCE6B8` | Soft sun backgrounds and non-critical emphasis                |
-| Shade 500    | `#4E9CB5` | Recommended-side accents, selected states, route confirmation |
-| Shade 100    | `#DDF1F5` | Recommendation panels and calm informational backgrounds      |
-| Surface Warm | `#FFF9EE` | App background                                                |
-| Paper        | `#FFFFFF` | Primary cards, sheets, modal surfaces                         |
-| Line         | `#E7DED2` | Dividers, quiet borders, diagram outlines                     |
-| Ink          | `#25211B` | Primary text                                                  |
-| Muted Ink    | `#6B6258` | Secondary text and notices                                    |
-| Success      | `#2F8F68` | Available/confirmed states unrelated to sun-vs-shade meaning  |
-| Warning      | `#D9822B` | Recoverable uncertainty and partial confidence                |
-| Error        | `#C84C3A` | Failed location, unavailable advice, and blocking errors      |
-| Focus        | `#2D6CDF` | Keyboard focus rings and accessibility-only focus emphasis    |
+| Token               | Hex       | Use                                                           |
+| ------------------- | --------- | ------------------------------------------------------------- |
+| Surface             | `#FAF9F5` | App background                                                |
+| Paper               | `#FFFFFF` | Primary cards, sheets, modal surfaces                         |
+| Primary             | `#171816` | Primary actions, high-contrast text, structural marks         |
+| Secondary           | `#695D44` | Direct-sun accents and warm supporting emphasis               |
+| Secondary Container | `#F1E1C0` | Soft direct-sun backgrounds and warning panels                |
+| Tertiary            | `#011928` | Recommended-side accents, selected states, route confirmation |
+| Tertiary Fixed      | `#CEE5FA` | Recommendation panels and calm informational backgrounds      |
+| Outline             | `#777871` | Strong dividers and quiet UI boundaries                       |
+| Outline Variant     | `#C7C7BF` | Low-contrast card and diagram outlines                        |
+| Ink                 | `#1B1C1A` | Primary text                                                  |
+| Muted Ink           | `#464742` | Secondary text and notices                                    |
+| Success             | `#2F8F68` | Available/confirmed states unrelated to sun-vs-shade meaning  |
+| Warning             | `#D9822B` | Recoverable uncertainty and partial confidence                |
+| Error               | `#BA1A1A` | Failed location, unavailable advice, and blocking errors      |
+| Focus               | `#2D6CDF` | Keyboard focus rings and accessibility-only focus emphasis    |
 
 ### Color Pairing Examples
 
-- Recommendation card: Paper surface, Ink title, Shade 100 panel, Shade 500 icon or arrow.
-- Direct-sun side: Sun 100 fill with Sun 500 hatch or ray marks. Never rely on yellow alone.
-- Primary action: Ink or Shade 500 button on a warm surface. Use Sun 500 sparingly for emphasis, not as the default call-to-action color.
+- Recommendation card: Paper surface, Ink title, Tertiary Fixed panel, Tertiary icon or arrow.
+- Direct-sun side: Secondary Container fill with Secondary hatch or ray marks. Never rely on tan/yellow alone.
+- Primary action: Primary button on a warm surface. Use the secondary/sun-tan family sparingly for emphasis, not as the default call-to-action color.
 - Notices: Muted Ink on Surface Warm or Paper, with a small Warning accent only when the limitation changes the current result.
 
 ## Typography
 
-Use a clean sans-serif with human warmth and strong mobile legibility. Preferred stack:
+Use the Soft Tech serif/sans pairing:
 
-```css
-font-family: Inter, Avenir, "Helvetica Neue", Arial, sans-serif;
-```
-
-If the implementation avoids a webfont in v1, system UI is acceptable. The brand does not depend on a custom typeface.
+- Newsreader for display, screen titles, and recommendation titles.
+- Hanken Grotesk for body copy, labels, buttons, fields, metadata, and utility UI.
+- System fallbacks are allowed only when the vendored webfonts fail to load.
 
 Recommended scale for mobile wireframes:
 
@@ -84,6 +84,19 @@ Recommended scale for mobile wireframes:
 | Caption      | 13-14px | 450-550 | Estimate notices and metadata               |
 
 Keep letter spacing at `0`. Do not use condensed, technical, or transit-control typography.
+
+## Component Foundation
+
+The app should compose screens from the shared component foundation before adding screen-local UI:
+
+- `Button`: primary solid charcoal for the main onboard action; secondary quiet text/ghost for fallback actions.
+- `ScreenHeader`: screen eyebrow/progress, title, and short body copy.
+- `Panel` and `Notice`: tonal surfaces for route context, warnings, and recoverable status messages.
+- `ChoiceCard`: route and direction selection rows; keep choices route-only before direction selection.
+- `TextField`: labeled manual search inputs.
+- `RouteSummaryCard`: compact route and direction context for confirmation, preview, and result states.
+
+Screen-local CSS should handle layout composition only when a shared component cannot express the pattern cleanly.
 
 ## Spacing And Shape
 

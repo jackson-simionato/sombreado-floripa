@@ -16,6 +16,7 @@ This document records current product and design decisions for Sombreado Floripa
 - Off-route or exploratory usage can show preview advice with a clear warning when the app can estimate a useful point near the selected route; true withheld states are reserved for cases where useful advice cannot be computed.
 - Mapbox GL JS is the preferred v1 map provider, lazy-loaded only when the confirmation map is shown.
 - Branding should combine Airbnb-like warmth with Anthropic/Claude Code-like restraint: clean, joyful, spacious, human, polished, and calm.
+- The accepted visual foundation is Soft Tech Minimalism from `docs/design/DESIGN.md`: Newsreader display type, Hanken Grotesk interface type, warm alabaster surfaces, charcoal primary actions, sun-tan direct-sun accents, and soft-blue recommendation accents.
 - The v1 scope is core-only: locate or search, choose route, choose direction, confirm, receive advice, and handle empty/error/preview/withheld states.
 - The frontend calls `sombreado-service` directly from the browser with `NEXT_PUBLIC_API_URL`.
 - `sombreado-floripa` should become frontend-only; the scraper and advisory backend remain separate projects.
@@ -28,7 +29,7 @@ This document records current product and design decisions for Sombreado Floripa
 
 ## Deferred Decisions
 
-- Exact color palette, typography, spacing scale, and icon/illustration style.
+- Final icon/illustration style beyond the current bus diagrams.
 - Exact wireframes for each rider state.
 - Final Mapbox style and interaction details.
 - Deployment target for the frontend.

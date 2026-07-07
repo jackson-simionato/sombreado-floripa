@@ -1,6 +1,8 @@
 import { AppShell } from "../components/AppShell";
 import { BusSplitDiagram } from "../components/BusSplitDiagram";
 import { Button } from "../components/Button";
+import { Notice } from "../components/Notice";
+import { ScreenHeader } from "../components/ScreenHeader";
 import { StickyActions } from "../components/StickyActions";
 import { copy } from "../content/copy";
 
@@ -31,12 +33,11 @@ export function LocationRequestScreen({
           <p className={styles.brand}>{copy.locationRequest.brand}</p>
         ) : null}
         <section className={styles.hero} aria-labelledby="screen-title">
-          <div className={styles.copyBlock}>
-            <h1 id="screen-title" className={styles.title}>
-              {screenCopy.heading}
-            </h1>
-            <p className={styles.body}>{screenCopy.body}</p>
-          </div>
+          <ScreenHeader
+            body={screenCopy.body}
+            title={screenCopy.heading}
+            variant="hero"
+          />
           <BusSplitDiagram />
         </section>
 
@@ -45,9 +46,9 @@ export function LocationRequestScreen({
         ) : null}
 
         {manualNoticeVisible ? (
-          <p className={styles.manualNotice} role="status">
+          <Notice tone="warning">
             {copy.locationRequest.manualUnavailable}
-          </p>
+          </Notice>
         ) : null}
       </div>
 

@@ -5,7 +5,13 @@ import { AdviceBusDiagram } from "../components/AdviceBusDiagram";
 import { AppShell } from "../components/AppShell";
 import { BusSplitDiagram } from "../components/BusSplitDiagram";
 import { Button } from "../components/Button";
+import { ChoiceCard } from "../components/ChoiceCard";
+import { Notice } from "../components/Notice";
+import { Panel } from "../components/Panel";
+import { RouteSummaryCard } from "../components/RouteSummaryCard";
+import { ScreenHeader } from "../components/ScreenHeader";
 import { StickyActions } from "../components/StickyActions";
+import { TextField } from "../components/TextField";
 import type {
   AdvisoryReasonCode,
   DirectionChoice,
@@ -43,14 +49,11 @@ export function OnboardingFlowScreen({
         <>
           <p className={styles.brand}>Sombreado Floripa</p>
           <section className={styles.hero} aria-labelledby="screen-title">
-            <div className={styles.copyBlock}>
-              <h1 id="screen-title" className={styles.title}>
-                De que lado sentar?
-              </h1>
-              <p className={styles.body}>
-                Encontre a melhor lateral do ônibus pelo sol direto.
-              </p>
-            </div>
+            <ScreenHeader
+              body="Encontre a melhor lateral do ônibus pelo sol direto."
+              title="De que lado sentar?"
+              variant="hero"
+            />
             <BusSplitDiagram />
           </section>
           <p className={styles.metaText}>
@@ -88,12 +91,11 @@ export function OnboardingFlowScreen({
     case "locationDeniedRecovery":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <h1 id="screen-title" className={styles.title}>
-            Localização desativada
-          </h1>
-          <p className={styles.body}>
-            Você ainda pode escolher sua linha manualmente.
-          </p>
+          <ScreenHeader
+            body="Você ainda pode escolher sua linha manualmente."
+            title="Localização desativada"
+            variant="hero"
+          />
           <p className={styles.metaText}>
             {locationIssueLabel(state.locationIssue)}
           </p>
@@ -114,20 +116,16 @@ export function OnboardingFlowScreen({
     case "routeCandidateSelection":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <p className={styles.progress}>1 de 4</p>
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Escolha sua linha
-          </h1>
-          <p className={styles.body}>
-            Mostramos linhas perto de você. O sentido vem no próximo passo.
-          </p>
+          <ScreenHeader
+            body="Mostramos linhas perto de você. O sentido vem no próximo passo."
+            eyebrow="1 de 4"
+            title="Escolha sua linha"
+          />
           {state.routeRefreshNotice === "routeVersionStale" ? (
-            <div className={styles.noticePanel} role="status">
-              <p>
-                As opções desta linha foram atualizadas. Escolha a linha e o
-                sentido novamente.
-              </p>
-            </div>
+            <Notice tone="warning">
+              As opções desta linha foram atualizadas. Escolha a linha e o
+              sentido novamente.
+            </Notice>
           ) : null}
           <div className={styles.list}>
             {state.nearbyCandidates.map((route) => (
@@ -151,12 +149,10 @@ export function OnboardingFlowScreen({
     case "noNearbyRoutes":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Não encontrei linhas perto de você
-          </h1>
-          <p className={styles.body}>
-            Use a seleção manual para escolher pelo número ou nome da linha.
-          </p>
+          <ScreenHeader
+            body="Use a seleção manual para escolher pelo número ou nome da linha."
+            title="Não encontrei linhas perto de você"
+          />
         </section>
       );
       stickyPrimary = (
@@ -175,35 +171,32 @@ export function OnboardingFlowScreen({
     case "noManualResults":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <h1 id="screen-title" className={styles.titleCompact}>
-            {state.screen === "noManualResults"
-              ? "Nenhuma linha encontrada"
-              : "Procurar linha"}
-          </h1>
-          <p className={styles.body}>
-            {state.screen === "noManualResults"
-              ? "Confira o número ou tente um destino."
-              : "Digite o número ou nome da linha."}
-          </p>
-          <label className={styles.searchField}>
-            <span className={styles.searchLabel}>Linha</span>
-            <input
-              ref={searchInputRef}
-              aria-label="Linha"
-              className={styles.searchInput}
-              onChange={(event) => actions.searchManually(event.target.value)}
-              placeholder="124 ou Lagoa"
-              type="search"
-              value={manualQueryDraft}
-            />
-          </label>
+          <ScreenHeader
+            body={
+              state.screen === "noManualResults"
+                ? "Confira o número ou tente um destino."
+                : "Digite o número ou nome da linha."
+            }
+            title={
+              state.screen === "noManualResults"
+                ? "Nenhuma linha encontrada"
+                : "Procurar linha"
+            }
+          />
+          <TextField
+            ref={searchInputRef}
+            aria-label="Linha"
+            label="Linha"
+            onChange={(event) => actions.searchManually(event.target.value)}
+            placeholder="124 ou Lagoa"
+            type="search"
+            value={manualQueryDraft}
+          />
           {state.routeRefreshNotice === "routeVersionStale" ? (
-            <div className={styles.noticePanel} role="status">
-              <p>
-                As opções desta linha foram atualizadas. Escolha a linha e o
-                sentido novamente.
-              </p>
-            </div>
+            <Notice tone="warning">
+              As opções desta linha foram atualizadas. Escolha a linha e o
+              sentido novamente.
+            </Notice>
           ) : null}
           {manualQueryDraft.trim().length === 0 ? (
             <p className={styles.metaText}>
@@ -252,10 +245,10 @@ export function OnboardingFlowScreen({
     case "loadingDirectionChoices":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <p className={styles.progress}>2 de 4</p>
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Carregando sentidos desta linha...
-          </h1>
+          <ScreenHeader
+            eyebrow="2 de 4"
+            title="Carregando sentidos desta linha..."
+          />
           <RouteSummary
             label="Linha escolhida"
             routeLabel={selectedRouteLabel}
@@ -267,13 +260,11 @@ export function OnboardingFlowScreen({
     case "directionChoice":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <p className={styles.progress}>2 de 4</p>
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Escolha o sentido
-          </h1>
-          <p className={styles.body}>
-            Use o destino ou bairro para confirmar para onde o ônibus vai.
-          </p>
+          <ScreenHeader
+            body="Use o destino ou bairro para confirmar para onde o ônibus vai."
+            eyebrow="2 de 4"
+            title="Escolha o sentido"
+          />
           <RouteSummary
             label="Linha escolhida"
             routeLabel={selectedRouteLabel}
@@ -299,12 +290,10 @@ export function OnboardingFlowScreen({
     case "liveRouteConfirmedUnsupported":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Linha confirmada
-          </h1>
-          <p className={styles.body}>
-            A linha e o sentido estão prontos para calcular a recomendação.
-          </p>
+          <ScreenHeader
+            body="A linha e o sentido estão prontos para calcular a recomendação."
+            title="Linha confirmada"
+          />
           <RouteSummary
             directionLabel={state.selectedDirection?.name}
             routeLabel={selectedRouteLabel}
@@ -324,12 +313,10 @@ export function OnboardingFlowScreen({
     case "routeWithoutDirections":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Não é possível confirmar o sentido
-          </h1>
-          <p className={styles.body}>
-            Essa linha ainda não tem sentidos disponíveis.
-          </p>
+          <ScreenHeader
+            body="Essa linha ainda não tem sentidos disponíveis."
+            title="Não é possível confirmar o sentido"
+          />
           <RouteSummary label="Linha" routeLabel={selectedRouteLabel} />
         </section>
       );
@@ -346,13 +333,11 @@ export function OnboardingFlowScreen({
     case "routeConfirmation":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <p className={styles.progress}>3 de 4</p>
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Confirme sua linha
-          </h1>
-          <p className={styles.body}>
-            Confira se a linha e o sentido combinam com o ônibus.
-          </p>
+          <ScreenHeader
+            body="Confira se a linha e o sentido combinam com o ônibus."
+            eyebrow="3 de 4"
+            title="Confirme sua linha"
+          />
           <RouteSummary
             directionLabel={state.selectedDirection?.name}
             routeLabel={selectedRouteLabel}
@@ -377,26 +362,22 @@ export function OnboardingFlowScreen({
     case "routeConfirmationFallback":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <p className={styles.progress}>3 de 4</p>
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Confirme sua linha
-          </h1>
-          <div className={styles.noticePanel}>
-            <strong>Mapa indisponível</strong>
-            <p>Ainda é possível confirmar pela linha e pelo sentido.</p>
-          </div>
+          <ScreenHeader eyebrow="3 de 4" title="Confirme sua linha" />
+          <Notice title="Mapa indisponível" tone="warning">
+            Ainda é possível confirmar pela linha e pelo sentido.
+          </Notice>
           <RouteSummary
             directionLabel={state.selectedDirection?.name}
             routeLabel={selectedRouteLabel}
           />
-          <div className={styles.summaryPanel}>
+          <Panel>
             <p className={styles.summaryLabel}>Confirmação compacta</p>
             <p className={styles.metaText}>
               {state.mapAvailability === "unavailable"
                 ? "O mapa foi desativado neste cenário de teste."
                 : "Essa linha não trouxe geometria suficiente para desenhar o trajeto."}
             </p>
-          </div>
+          </Panel>
         </section>
       );
       stickyPrimary = (
@@ -412,13 +393,11 @@ export function OnboardingFlowScreen({
     case "computingAdvice":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <p className={styles.progress}>4 de 4</p>
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Calculando pelo sol direto...
-          </h1>
-          <p className={styles.body}>
-            Vamos comparar esquerda e direita no sentido escolhido.
-          </p>
+          <ScreenHeader
+            body="Vamos comparar esquerda e direita no sentido escolhido."
+            eyebrow="4 de 4"
+            title="Calculando pelo sol direto..."
+          />
           <RouteSummary
             directionLabel={state.selectedDirection?.name}
             routeLabel={selectedRouteLabel}
@@ -456,17 +435,15 @@ export function OnboardingFlowScreen({
     case "trueWithheld":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <p className={styles.resultEyebrow}>Sem recomendação útil</p>
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Não é possível recomendar agora
-          </h1>
-          <p className={styles.body}>
-            {withheldReasonCopy(
+          <ScreenHeader
+            body={withheldReasonCopy(
               state.advice?.mode === "withheld"
                 ? state.advice.reasonCode
                 : undefined
             )}
-          </p>
+            eyebrow="Sem recomendação útil"
+            title="Não é possível recomendar agora"
+          />
           <RouteSummary
             directionLabel={state.selectedDirection?.name}
             routeLabel={selectedRouteLabel}
@@ -486,12 +463,10 @@ export function OnboardingFlowScreen({
     case "apiError":
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Algo deu errado
-          </h1>
-          <p className={styles.body}>
-            Não consegui carregar as informações agora.
-          </p>
+          <ScreenHeader
+            body="Não consegui carregar as informações agora."
+            title="Algo deu errado"
+          />
           {selectedRouteLabel !== undefined ? (
             <RouteSummary
               directionLabel={state.selectedDirection?.name}
@@ -507,9 +482,7 @@ export function OnboardingFlowScreen({
     default:
       content = (
         <section className={styles.stack} aria-labelledby="screen-title">
-          <h1 id="screen-title" className={styles.titleCompact}>
-            Tela reservada para o próximo passo
-          </h1>
+          <ScreenHeader title="Tela reservada para o próximo passo" />
         </section>
       );
   }
@@ -549,15 +522,10 @@ function renderLoadingScreen(
 
   return (
     <section className={styles.hero} aria-labelledby="screen-title">
-      <div className={styles.copyBlock}>
-        <h1 id="screen-title" className={styles.titleCompact}>
-          {heading}
-        </h1>
-        <p className={styles.body}>{body}</p>
-        {selectedRouteLabel !== undefined ? (
-          <RouteSummary routeLabel={selectedRouteLabel} />
-        ) : null}
-      </div>
+      <ScreenHeader body={body} title={heading} />
+      {selectedRouteLabel !== undefined ? (
+        <RouteSummary routeLabel={selectedRouteLabel} />
+      ) : null}
     </section>
   );
 }
@@ -598,19 +566,18 @@ function AdviceResultSurface({
     <section className={styles.resultStack} aria-labelledby="screen-title">
       <p className={styles.progress}>4 de 4</p>
       <div className={styles.recommendationPanel}>
-        <p className={styles.resultEyebrow}>{resultModeLabel(advice)}</p>
-        <h1 id="screen-title" className={styles.resultTitle}>
-          {variant.title}
-        </h1>
-        <p className={styles.body}>{variant.body}</p>
+        <ScreenHeader
+          body={variant.body}
+          eyebrow={resultModeLabel(advice)}
+          title={variant.title}
+          variant="result"
+        />
         {advice.mode !== "preview" &&
         advice.freshnessNotice === "recentFallback" ? (
-          <div className={styles.noticePanel} role="status">
-            <p>
-              Usando sua última localização conhecida. Atualize quando estiver
-              no ônibus.
-            </p>
-          </div>
+          <Notice>
+            Usando sua última localização conhecida. Atualize quando estiver no
+            ônibus.
+          </Notice>
         ) : null}
         <div className={styles.diagramFocus} data-result-focus="diagram">
           <AdviceBusDiagram
@@ -637,15 +604,13 @@ function ResultRouteMetadata({
   }
 
   return (
-    <div className={styles.resultRouteMeta}>
-      <span className={styles.routeCode}>{route.code}</span>
-      <div className={styles.resultRouteText}>
-        <strong>{route.name}</strong>
-        {directionLabel !== undefined ? (
-          <span>sentido {directionLabel}</span>
-        ) : null}
-      </div>
-    </div>
+    <RouteSummaryCard
+      directionLabel={
+        directionLabel !== undefined ? `sentido ${directionLabel}` : undefined
+      }
+      routeCode={route.code}
+      routeName={route.name}
+    />
   );
 }
 
@@ -659,17 +624,12 @@ function RouteCard({
   route: RouteCandidate;
 }) {
   return (
-    <button
-      aria-label={`Selecionar linha ${route.code} ${route.name}`}
-      className={styles.choiceCard}
-      onClick={onSelect}
-      type="button"
-    >
-      <strong>
-        {route.code} {route.name}
-      </strong>
-      <span>{meta}</span>
-    </button>
+    <ChoiceCard
+      ariaLabel={`Selecionar linha ${route.code} ${route.name}`}
+      label={`${route.code} ${route.name}`}
+      meta={meta}
+      onSelect={onSelect}
+    />
   );
 }
 
@@ -681,15 +641,12 @@ function DirectionCard({
   onSelect(): void;
 }) {
   return (
-    <button
-      aria-label={`Selecionar sentido ${direction.name}`}
-      className={styles.choiceCard}
-      onClick={onSelect}
-      type="button"
-    >
-      <strong>{direction.name}</strong>
-      <span>{direction.departureLabels.join(" · ")}</span>
-    </button>
+    <ChoiceCard
+      ariaLabel={`Selecionar sentido ${direction.name}`}
+      label={direction.name}
+      meta={direction.departureLabels.join(" · ")}
+      onSelect={onSelect}
+    />
   );
 }
 
@@ -706,15 +663,28 @@ function RouteSummary({
     return null;
   }
 
+  const routeParts = splitRouteLabel(routeLabel);
+
   return (
-    <div className={styles.summaryPanel}>
-      {label !== undefined ? (
-        <p className={styles.summaryLabel}>{label}</p>
-      ) : null}
-      <strong>{routeLabel}</strong>
-      {directionLabel !== undefined ? <span>{directionLabel}</span> : null}
-    </div>
+    <RouteSummaryCard
+      directionLabel={directionLabel}
+      label={label}
+      routeCode={routeParts.routeCode}
+      routeName={routeParts.routeName}
+    />
   );
+}
+
+function splitRouteLabel(routeLabel: string): {
+  routeCode?: string;
+  routeName: string;
+} {
+  const [routeCode, ...nameParts] = routeLabel.split(" ");
+
+  return {
+    routeCode,
+    routeName: nameParts.length > 0 ? nameParts.join(" ") : routeLabel,
+  };
 }
 
 function SchematicRouteMap({

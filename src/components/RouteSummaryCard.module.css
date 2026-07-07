@@ -1,0 +1,84 @@
+.card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-container-lowest);
+}
+
+.code {
+  min-width: 44px;
+  min-height: 36px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.text {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.text p,
+.text span {
+  margin: 0;
+  color: var(--color-muted-ink);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.text p {
+  font-weight: 650;
+}
+
+.text strong {
+  overflow-wrap: anywhere;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.fullLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 640px) {
+  .card {
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+  }
+
+  .code {
+    min-width: 38px;
+    min-height: 30px;
+    font-size: 0.94rem;
+  }
+
+  .text p,
+  .text span {
+    font-size: 0.82rem;
+  }
+
+  .text strong {
+    font-size: 0.94rem;
+  }
+}

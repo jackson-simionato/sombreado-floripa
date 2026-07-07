@@ -1,6 +1,41 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 
 import "./globals.css";
+
+const hankenGrotesk = localFont({
+  display: "swap",
+  src: [
+    {
+      path: "./fonts/hanken-grotesk-latin-variable.woff2",
+      style: "normal",
+      weight: "300 700",
+    },
+    {
+      path: "./fonts/hanken-grotesk-latin-ext-variable.woff2",
+      style: "normal",
+      weight: "300 700",
+    },
+  ],
+  variable: "--font-hanken-grotesk",
+});
+
+const newsreader = localFont({
+  display: "swap",
+  src: [
+    {
+      path: "./fonts/newsreader-latin-variable.woff2",
+      style: "normal",
+      weight: "400 800",
+    },
+    {
+      path: "./fonts/newsreader-latin-ext-variable.woff2",
+      style: "normal",
+      weight: "400 800",
+    },
+  ],
+  variable: "--font-newsreader",
+});
 
 export const metadata: Metadata = {
   title: "Sombreado Floripa",
@@ -11,7 +46,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#FFF9EE",
+  themeColor: "#faf9f5",
 };
 
 export default function RootLayout({
@@ -21,7 +56,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body className={`${hankenGrotesk.variable} ${newsreader.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }
