@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en" style="">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Confirme Sua Linha - Sombreado Floripa</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Satoshi:wght@400;500;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#E67E19", // Warmer primary (Sunset Orange/Gold tint)
+              "background-light": "#FDFCF8", // Warm cream background
+              "background-dark": "#111921",
+              "color-primary": "#2C2C2A",
+              "color-background": "#FDFCF8",
+              "color-surface": "#FEFAF2", // Warmer surface cream
+              "color-text": "#3D3D3A",
+              "color-muted": "#8D8D8A",
+              "color-shade": "#9BB2C5",
+              "color-sun": "#D4A373", // Warmer sun icon color
+              "border-color": "#EAE3D5", // Warmer border
+            },
+            fontFamily: {
+              display: ["Newsreader", "serif"],
+              body: ["Satoshi", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "1rem",
+              xl: "1.5rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Satoshi", sans-serif;
+        background-color: var(--color-background);
+        color: var(--color-text);
+        overflow: hidden; /* Prevent scrolling during morph */
+      }
+
+      h1,
+      h2,
+      h3,
+      .font-display {
+        font-family: "Newsreader", serif;
+        letter-spacing: -0.02em;
+      }
+
+      /* Map Pulse Animation */
+      @keyframes pulse-map {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      .map-loading {
+        animation: pulse-map 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      /* Morph Animation Classes (triggered via JS) */
+      .morph-container {
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .morph-map-shrink {
+        height: 300px !important;
+        width: 200px !important;
+        border-radius: 9999px !important;
+        margin: 40px auto !important;
+        transform: translateY(20%);
+      }
+
+      .morph-sheet-slide {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background-light text-color-text h-screen w-screen flex flex-col relative antialiased"
+    style="background-color: rgb(250, 249, 245)"
+  >
+    <!-- Header / Back Button -->
+    <header class="absolute top-0 left-0 w-full z-20 p-4">
+      <button
+        aria-label="Voltar"
+        class="w-12 h-12 bg-color-surface/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm border border-border-color"
+      >
+        <span
+          class="material-symbols-outlined text-color-text"
+          data-icon="arrow_back"
+          >arrow_back</span
+        >
+      </button>
+    </header>
+    <!-- Map Viewport (Top 50%) -->
+    <!-- Bottom Sheet (Bottom 50%) -->
+    <div
+      class="relative h-1/2 w-full bg-color-surface rounded-t-[24px] -mt-6 z-10 shadow-[0_-8px_30px_rgba(61,61,58,0.06)] flex flex-col pt-2 px-6 morph-container pb-20"
+      id="bottom-sheet"
+      style="
+        background-color: rgb(250, 249, 245);
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+      "
+    >
+      <!-- Drag Handle Indicator -->
+      <div class="w-full flex justify-center mb-6">
+        <div class="h-1.5 w-12 rounded-full bg-border-color"></div>
+      </div>
+      <div class="flex flex-col flex-grow justify-between">
+        <!-- Route Details -->
+        <div>
+          <div class="mb-2">
+            <span
+              class="block text-xs font-medium text-color-muted mb-1"
+              style="font-family: Satoshi, sans-serif"
+              >3 de 4</span
+            >
+            <h2
+              class="font-display text-3xl font-normal text-color-text leading-tight"
+            >
+              Confirme sua linha
+            </h2>
+          </div>
+          <p
+            class="text-color-muted text-sm leading-relaxed mb-6"
+            style="font-family: Satoshi, sans-serif"
+          >
+            Confira se a linha e o sentido combinam com o ônibus.
+          </p>
+        </div>
+        <!-- Direction Indicator Context -->
+        <div
+          class="bg-background-light border border-border-color rounded-xl p-4 flex items-center justify-between mt-8 rounded-lg"
+        >
+          <div>
+            <span
+              class="block text-base font-semibold text-color-text"
+              style="font-family: Satoshi, sans-serif"
+              >233 TICAN/TITRI | Linha | Consórcio Fênix</span
+            ><span
+              class="block text-sm text-color-muted"
+              style="font-family: Satoshi, sans-serif"
+              >Bairro - Centro</span
+            >
+          </div>
+        </div>
+        <div
+          class="mt-6 mb-6 bg-background-light border border-border-color rounded-xl p-4 flex items-center justify-center overflow-hidden rounded-lg"
+          style="height: 240px"
+        >
+          <div
+            class="w-full h-full opacity-80 grayscale contrast-75"
+            style="
+              background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuAp099ajdDQUg_zB2lVyrn7ZP_DpVbciIZV2MBj7ItunG38xnvE6f2gGNsWDRrFx56YS0hXg0ik0f36c69LYksn54fZL_GcAfUGLi-Io989zGY8VnELSMnhmE8wvA9UOnjBAwxhHZlN0SupdMvuYrAusK9RpNvtVWZ-cJc9w-0CG__d5-KRxnKZ7lm0fTD1PIFd1HbxEpXal5ZhPSPook2SAFcwEit7B6mCSwbMZ8efqh8AOAcNhrYyVFg1Qb-K4tdX&quot;);
+              background-size: cover;
+              background-position: center;
+              border-radius: 12px;
+            "
+          ></div>
+        </div>
+        <!-- Primary CTA -->
+        <p
+          class="text-xs text-color-muted mb-6"
+          style="font-family: Satoshi, sans-serif"
+        >
+          Se você não estiver nessa linha agora, posso mostrar uma prévia com
+          aviso.
+        </p>
+        <button
+          class="w-full h-14 bg-black text-white font-medium text-lg tracking-wide hover:opacity-90 transition-all active:scale-[0.98] flex items-center justify-center gap-2 rounded-lg"
+          id="confirm-btn"
+        >
+          Confirmar esta linha
+        </button>
+        <div class="w-full flex justify-center mt-4">
+          <button
+            class="text-color-text font-medium text-sm underline underline-offset-4 flex items-center gap-2"
+            style="font-family: Satoshi, sans-serif"
+          >
+            <span class="material-symbols-outlined text-lg">swap_calls</span>
+            Trocar sentido
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const confirmBtn = document.getElementById("confirm-btn");
+        const mapContainer = document.getElementById("map-container");
+        const bottomSheet = document.getElementById("bottom-sheet");
+
+        // Remove loading pulse after a short delay to simulate map load
+        setTimeout(() => {
+          mapContainer.classList.remove("map-loading");
+        }, 1500);
+
+        // Morph Animation on Click
+        confirmBtn.addEventListener("click", () => {
+          // Shrink map into pill shape
+          mapContainer.classList.add("morph-map-shrink");
+
+          // Slide down bottom sheet
+          bottomSheet.classList.add("morph-sheet-slide");
+
+          // In a real app, this would route to the next screen after animation
+          setTimeout(() => {
+            // window.location.href = '/recomendacao';
+          }, 800);
+        });
+      });
+    </script>
+  </body>
+</html>

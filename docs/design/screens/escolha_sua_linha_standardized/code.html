@@ -1,0 +1,335 @@
+<!doctype html>
+
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sombreado Floripa - Escolha Sua Linha</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,700;1,400&amp;family=Satoshi:wght@400;500;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#171816",
+              "on-surface": "#1b1c1a",
+              "surface-container-highest": "#e3e2df",
+              "muted-text": "#8D8D8A",
+              "surface-dim": "#dbdad6",
+              "on-secondary-fixed": "#221b07",
+              "inverse-primary": "#c8c6c3",
+              "surface-tint": "#5f5e5c",
+              "tertiary-fixed-dim": "#b2c9dd",
+              "secondary-fixed-dim": "#d4c5a6",
+              "inverse-surface": "#2f312e",
+              "on-tertiary-fixed": "#051e2c",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-fixed": "#cee5fa",
+              "primary-fixed-dim": "#c8c6c3",
+              error: "#ba1a1a",
+              "on-secondary-container": "#6f6349",
+              "surface-container": "#efeeea",
+              "secondary-fixed": "#f1e1c0",
+              "primary-fixed": "#e5e2df",
+              background: "#faf9f5",
+              tertiary: "#011928",
+              "surface-container-high": "#e9e8e4",
+              "on-secondary-fixed-variant": "#50462e",
+              "on-primary": "#ffffff",
+              "outline-variant": "#c7c7bf",
+              "tertiary-container": "#172e3d",
+              "on-error-container": "#93000a",
+              "on-error": "#ffffff",
+              outline: "#777871",
+              "on-tertiary": "#ffffff",
+              "surface-container-low": "#f4f4f0",
+              "inverse-on-surface": "#f2f1ed",
+              "secondary-container": "#f1e1c0",
+              "on-surface-variant": "#464742",
+              "on-primary-fixed-variant": "#474744",
+              "on-primary-container": "#949390",
+              "error-container": "#ffdad6",
+              "on-background": "#1b1c1a",
+              secondary: "#695d44",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed": "#1b1c1a",
+              "surface-bright": "#faf9f5",
+              "on-tertiary-container": "#7f96a8",
+              "primary-container": "#2c2c2a",
+              "accent-yellow": "#FFF1B5",
+              "on-tertiary-fixed-variant": "#334959",
+              "surface-variant": "#e3e2df",
+              surface: "#faf9f5",
+            },
+            fontFamily: {
+              newsreader: ["Newsreader", "serif"],
+              satoshi: ["Satoshi", "sans-serif"],
+            },
+            borderRadius: {
+              "2xl": "16px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Satoshi", sans-serif;
+        background-color: #faf9f5;
+        color: #1b1c1a;
+        -webkit-tap-highlight-color: transparent;
+      }
+      h1,
+      .font-newsreader {
+        font-family: "Newsreader", serif;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-background">
+    <main class="max-w-md mx-auto px-6 py-12">
+      <!-- Header -->
+      <header class="mb-8">
+        <h1
+          class="text-display-lg text-primary font-newsreader font-medium leading-tight"
+        >
+          Escolha Sua Linha
+        </h1>
+      </header>
+      <!-- Search (Minimal styled for Soft Tech) -->
+      <div class="mb-8">
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 left-4 flex items-center pointer-events-none"
+          >
+            <span
+              class="material-symbols-outlined text-muted-text"
+              style="font-size: 20px"
+              >search</span
+            >
+          </div>
+          <input
+            autocomplete="off"
+            class="block w-full h-[56px] pl-12 pr-4 bg-surface-container-low border-none text-on-surface placeholder:text-muted-text focus:ring-1 focus:ring-primary/20 transition-all duration-200 outline-none rounded-2xl"
+            id="searchInput"
+            placeholder="Ex: 233, TITRI..."
+            type="text"
+          />
+        </div>
+      </div>
+      <!-- Route List -->
+      <ul class="space-y-3" id="routeList">
+        <!-- Route Item 1 -->
+        <li class="route-item" tabindex="0">
+          <div
+            class="bg-surface-container-lowest p-4 flex items-center gap-4 cursor-pointer rounded-2xl border border-surface-container hover:bg-surface-container transition-colors active:scale-[0.98] duration-150"
+          >
+            <div
+              class="w-12 h-12 bg-primary flex items-center justify-center shrink-0 rounded-full"
+            >
+              <span class="font-newsreader font-bold text-white text-lg"
+                >233</span
+              >
+            </div>
+            <div class="flex-1 min-w-0">
+              <p
+                class="text-primary font-newsreader font-semibold text-lg truncate leading-tight"
+              >
+                TICAN/TITRI via UFSC
+              </p>
+              <p class="text-muted-text font-satoshi text-sm">
+                450m de distância
+              </p>
+            </div>
+            <span
+              class="material-symbols-outlined text-outline"
+              style="font-size: 20px"
+              >chevron_right</span
+            >
+          </div>
+        </li>
+        <!-- Route Item 2 -->
+        <li class="route-item" tabindex="0">
+          <div
+            class="bg-surface-container-lowest p-4 flex items-center gap-4 cursor-pointer rounded-2xl border border-surface-container hover:bg-surface-container transition-colors active:scale-[0.98] duration-150"
+          >
+            <div
+              class="w-12 h-12 bg-primary flex items-center justify-center shrink-0 rounded-full"
+            >
+              <span class="font-newsreader font-bold text-white text-lg"
+                >185</span
+              >
+            </div>
+            <div class="flex-1 min-w-0">
+              <p
+                class="text-primary font-newsreader font-semibold text-lg truncate leading-tight"
+              >
+                UFSC Semidireto
+              </p>
+              <p class="text-muted-text font-satoshi text-sm">
+                620m de distância
+              </p>
+            </div>
+            <span
+              class="material-symbols-outlined text-outline"
+              style="font-size: 20px"
+              >chevron_right</span
+            >
+          </div>
+        </li>
+        <!-- Route Item 3 -->
+        <li class="route-item" tabindex="0">
+          <div
+            class="bg-surface-container-lowest p-4 flex items-center gap-4 cursor-pointer rounded-2xl border border-surface-container hover:bg-surface-container transition-colors active:scale-[0.98] duration-150"
+          >
+            <div
+              class="w-12 h-12 bg-primary flex items-center justify-center shrink-0 rounded-full"
+            >
+              <span class="font-newsreader font-bold text-white text-lg"
+                >135</span
+              >
+            </div>
+            <div class="flex-1 min-w-0">
+              <p
+                class="text-primary font-newsreader font-semibold text-lg truncate leading-tight"
+              >
+                Volta ao Morro Norte via TITRI
+              </p>
+              <p class="text-muted-text font-satoshi text-sm">
+                890m de distância
+              </p>
+            </div>
+            <span
+              class="material-symbols-outlined text-outline"
+              style="font-size: 20px"
+              >chevron_right</span
+            >
+          </div>
+        </li>
+        <!-- Route Item 4 -->
+        <li class="route-item" tabindex="0">
+          <div
+            class="bg-surface-container-lowest p-4 flex items-center gap-4 cursor-pointer rounded-2xl border border-surface-container hover:bg-surface-container transition-colors active:scale-[0.98] duration-150"
+          >
+            <div
+              class="w-12 h-12 bg-primary flex items-center justify-center shrink-0 rounded-full"
+            >
+              <span class="font-newsreader font-bold text-white text-lg"
+                >136</span
+              >
+            </div>
+            <div class="flex-1 min-w-0">
+              <p
+                class="text-primary font-newsreader font-semibold text-lg truncate leading-tight"
+              >
+                Volta ao Morro Sul via TITRI
+              </p>
+              <p class="text-muted-text font-satoshi text-sm">
+                910m de distância
+              </p>
+            </div>
+            <span
+              class="material-symbols-outlined text-outline"
+              style="font-size: 20px"
+              >chevron_right</span
+            >
+          </div>
+        </li>
+        <!-- Route Item 5 -->
+        <li class="route-item" tabindex="0">
+          <div
+            class="bg-surface-container-lowest p-4 flex items-center gap-4 cursor-pointer rounded-2xl border border-surface-container hover:bg-surface-container transition-colors active:scale-[0.98] duration-150"
+          >
+            <div
+              class="w-12 h-12 bg-primary flex items-center justify-center shrink-0 rounded-full"
+            >
+              <span class="font-newsreader font-bold text-white text-lg"
+                >330</span
+              >
+            </div>
+            <div class="flex-1 min-w-0">
+              <p
+                class="text-primary font-newsreader font-semibold text-lg truncate leading-tight"
+              >
+                TILAG/TICEN via Lagoa
+              </p>
+              <p class="text-muted-text font-satoshi text-sm">
+                1.2km de distância
+              </p>
+            </div>
+            <span
+              class="material-symbols-outlined text-outline"
+              style="font-size: 20px"
+              >chevron_right</span
+            >
+          </div>
+        </li>
+      </ul>
+      <!-- Empty State -->
+      <div class="hidden pt-16 px-6 text-center" id="emptyState">
+        <span
+          class="material-symbols-outlined text-surface-container-highest mb-4"
+          style="font-size: 48px"
+          >directions_bus</span
+        >
+        <p class="text-muted-text font-satoshi text-base">
+          Nenhuma linha encontrada
+        </p>
+      </div>
+    </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById("searchInput");
+        const routeList = document.getElementById("routeList");
+        const routeItems = routeList.querySelectorAll(".route-item");
+        const emptyState = document.getElementById("emptyState");
+
+        searchInput.addEventListener("input", (e) => {
+          const query = e.target.value.toLowerCase().trim();
+          let hasVisibleItems = false;
+
+          routeItems.forEach((item) => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(query)) {
+              item.style.display = "block";
+              hasVisibleItems = true;
+            } else {
+              item.style.display = "none";
+            }
+          });
+
+          if (hasVisibleItems) {
+            emptyState.classList.add("hidden");
+            routeList.classList.remove("hidden");
+          } else {
+            emptyState.classList.remove("hidden");
+            routeList.classList.add("hidden");
+          }
+        });
+
+        routeItems.forEach((item) => {
+          item.addEventListener("click", () => {
+            console.log("Navigating...");
+          });
+
+          item.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              item.click();
+            }
+          });
+        });
+
+        setTimeout(() => searchInput.focus(), 100);
+      });
+    </script>
+  </body>
+</html>
