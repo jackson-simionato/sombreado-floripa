@@ -1,8 +1,23 @@
+@font-face {
+  font-family: "Hanken Grotesk";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("./fonts/hanken-grotesk-latin-ext-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Newsreader";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("./fonts/newsreader-latin-ext-variable.woff2") format("woff2");
+}
+
 :root {
   color-scheme: light;
-  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
-  --font-body:
-    var(--font-hanken-grotesk), Avenir, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-body: "Hanken Grotesk", Avenir, "Helvetica Neue", Arial, sans-serif;
   --color-surface: #faf9f5;
   --color-surface-dim: #dbdad6;
   --color-surface-bright: #faf9f5;
@@ -85,9 +100,8 @@ html {
 }
 
 body {
-  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
-  --font-body:
-    var(--font-hanken-grotesk), Avenir, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-body: "Hanken Grotesk", Avenir, "Helvetica Neue", Arial, sans-serif;
   min-height: 100vh;
   margin: 0;
   background: var(--color-surface);
