@@ -1,3 +1,5 @@
+import { RouteCodeBadge } from "./RouteCodeBadge";
+
 import styles from "./RouteSummaryCard.module.css";
 
 type RouteSummaryCardProps = {
@@ -19,9 +21,7 @@ export function RouteSummaryCard({
 
   return (
     <div className={styles.card}>
-      {routeCode !== undefined ? (
-        <span className={styles.code}>{routeCode}</span>
-      ) : null}
+      {routeCode !== undefined ? <RouteCodeBadge code={routeCode} /> : null}
       <div className={styles.text}>
         {label !== undefined ? <p>{label}</p> : null}
         {routeCode !== undefined && routeName !== undefined ? (

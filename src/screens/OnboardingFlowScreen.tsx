@@ -10,6 +10,7 @@ import { ChoiceCard } from "../components/ChoiceCard";
 import { Notice } from "../components/Notice";
 import { Panel } from "../components/Panel";
 import { RouteSummaryCard } from "../components/RouteSummaryCard";
+import { RouteCodeBadge } from "../components/RouteCodeBadge";
 import { ScreenHeader } from "../components/ScreenHeader";
 import { StickyActions } from "../components/StickyActions";
 import { TextField } from "../components/TextField";
@@ -573,6 +574,7 @@ function AdviceResultSurface({
   return (
     <section className={styles.resultStack} aria-labelledby="screen-title">
       <p className={styles.progress}>4 de 4</p>
+      <ResultRouteMetadata directionLabel={directionLabel} route={route} />
       <div className={styles.recommendationPanel}>
         <ScreenHeader
           body={variant.body}
@@ -593,7 +595,6 @@ function AdviceResultSurface({
             summary={variant.accessibleSummary}
           />
         </div>
-        <ResultRouteMetadata directionLabel={directionLabel} route={route} />
         <p className={styles.estimateNotice}>{variant.trustNotice}</p>
       </div>
     </section>
@@ -634,7 +635,7 @@ function RouteCard({
   return (
     <ChoiceCard
       ariaLabel={`Selecionar linha ${route.code} ${route.name}`}
-      badge={route.code}
+      badge={<RouteCodeBadge code={route.code} />}
       label={route.name}
       meta={meta}
       onSelect={onSelect}

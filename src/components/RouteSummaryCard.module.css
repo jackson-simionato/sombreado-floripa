@@ -13,20 +13,6 @@
   );
 }
 
-.code {
-  min-width: 52px;
-  min-height: 44px;
-  display: inline-grid;
-  place-items: center;
-  border-radius: var(--radius-full);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 650;
-  line-height: 1;
-}
-
 .text {
   min-width: 0;
   display: grid;
@@ -70,12 +56,6 @@
     gap: var(--space-3);
     padding: var(--space-3) var(--space-4);
     border-radius: var(--radius-lg);
-  }
-
-  .code {
-    min-width: 46px;
-    min-height: 38px;
-    font-size: 1rem;
   }
 
   .text p,

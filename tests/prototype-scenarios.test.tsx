@@ -283,7 +283,7 @@ describe("prototype scenarios", () => {
     });
   });
 
-  test("onboard advice leads with recommendation and keeps route context secondary", async () => {
+  test("onboard advice puts route context before the recommendation", async () => {
     render(
       <HomePageApp
         prototypeScenarioId="advice-onboard-left"
@@ -300,6 +300,12 @@ describe("prototype scenarios", () => {
     const routeCode = screen.getByText("124");
 
     expect(progress).toBeInTheDocument();
+    expect(progress.compareDocumentPosition(routeCode)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
+    expect(routeCode.compareDocumentPosition(modeLabel)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING
+    );
     expect(modeLabel.compareDocumentPosition(heading)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING
     );
@@ -317,9 +323,6 @@ describe("prototype scenarios", () => {
       "data-diagram-proportion",
       "elongated-bus"
     );
-    expect(
-      screen.getByTestId("bus-shell").compareDocumentPosition(routeCode)
-    ).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     expect(routeCode).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
     expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();

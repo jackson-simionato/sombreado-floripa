@@ -6,6 +6,7 @@ import { Button } from "../src/components/Button";
 import { ChoiceCard } from "../src/components/ChoiceCard";
 import { Notice } from "../src/components/Notice";
 import { RouteSummaryCard } from "../src/components/RouteSummaryCard";
+import { RouteCodeBadge } from "../src/components/RouteCodeBadge";
 import { TextField } from "../src/components/TextField";
 
 describe("design-system primitives", () => {
@@ -55,6 +56,26 @@ describe("design-system primitives", () => {
     expect(onSelect).toHaveBeenCalledOnce();
     expect(screen.getByText("perto de você")).toBeInTheDocument();
     expect(screen.getByText("450 m de você")).toBeInTheDocument();
+  });
+
+  test("route-code badges compact long alphanumeric codes", () => {
+    render(
+      <ChoiceCard
+        ariaLabel="Selecionar linha V-173 Via Expressa"
+        badge={<RouteCodeBadge code="V-173" />}
+        label="Via Expressa"
+        onSelect={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText("V-173")).toHaveAttribute(
+      "data-route-code-length",
+      "5"
+    );
+    expect(screen.getByText("V-173")).toHaveAttribute(
+      "data-route-code-variant",
+      "circle"
+    );
   });
 
   test("notice supports status messaging without hiding its title", () => {
@@ -108,5 +129,9 @@ describe("Sombreado route components", () => {
     expect(screen.getByText("124")).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
     expect(screen.getByText("Lagoa para TICEN")).toBeInTheDocument();
+    expect(screen.getByText("124")).toHaveAttribute(
+      "data-route-code-variant",
+      "circle"
+    );
   });
 });

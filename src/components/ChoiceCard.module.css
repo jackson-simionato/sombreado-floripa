@@ -29,18 +29,7 @@
 }
 
 .badge {
-  width: 56px;
-  aspect-ratio: 1;
   flex: none;
-  display: grid;
-  place-items: center;
-  border-radius: var(--radius-full);
-  background: var(--color-primary);
-  color: var(--color-on-primary);
-  font-family: var(--font-display);
-  font-size: 1.16rem;
-  font-weight: 650;
-  line-height: 1;
 }
 
 .content {
@@ -84,11 +73,6 @@
     gap: var(--space-3);
     padding: var(--space-3) var(--space-4);
     border-radius: var(--radius-lg);
-  }
-
-  .badge {
-    width: 48px;
-    font-size: 1.02rem;
   }
 
   .eyebrow,

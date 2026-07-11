@@ -32,7 +32,7 @@ export function ChoiceCard({
     >
       {badge !== undefined ? (
         <span aria-hidden="true" className={styles.badge}>
-          {badge}{" "}
+          {badge}
         </span>
       ) : null}
       <span className={styles.content}>
