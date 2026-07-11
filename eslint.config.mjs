@@ -7,7 +7,13 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: [".next/**", "coverage/**", "node_modules/**", "next-env.d.ts"],
+    ignores: [
+      ".next/**",
+      "coverage/**",
+      "dist/**",
+      "node_modules/**",
+      "next-env.d.ts",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
