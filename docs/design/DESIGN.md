@@ -136,6 +136,12 @@ This design system employs a serif-on-sans pairing to evoke an editorial, high-e
 
 Maintain generous line heights to ensure a "breathing" layout. Use optical sizing for Newsreader when possible to preserve the elegance of the serifs at larger scales.
 
+## Brand Signature
+
+The canonical Sombreado lockup is defined by `docs/design/screens/in_cio_dual_flow_minimal/code.html`. It pairs a 32px circular sun-and-shadow mark (`#1E1E1C` and `#FDFCF8`) with the `#2C2C2A` Newsreader wordmark “Sombreado” at 18px and weight 700. Preserve these literal colors, geometry, spacing, and tight tracking; do not convert it into the bus-side split diagram motif or recolor it through generic UI tokens.
+
+The bus-side split motif remains the signature diagram language for recommendations and direct-sun explanation. It is a product visual, not the logo.
+
 ## Layout & Spacing
 
 The layout philosophy follows a **Fixed Grid** approach for desktop to preserve the editorial integrity of the content, while transitioning to a fluid model for mobile.

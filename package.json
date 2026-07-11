@@ -13,6 +13,7 @@
     "lint": "eslint . --max-warnings=0",
     "prepare": "husky",
     "test": "vitest run",
+    "test:visual": "playwright test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

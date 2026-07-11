@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi } from "vitest";
 
 import { Button } from "../src/components/Button";
+import { BrandHeader } from "../src/components/BrandHeader";
 import { ChoiceCard } from "../src/components/ChoiceCard";
 import { Notice } from "../src/components/Notice";
 import { RouteSummaryCard } from "../src/components/RouteSummaryCard";
@@ -10,6 +11,20 @@ import { RouteCodeBadge } from "../src/components/RouteCodeBadge";
 import { TextField } from "../src/components/TextField";
 
 describe("design-system primitives", () => {
+  test("brand header exposes the canonical name and keeps its mark decorative", () => {
+    const { container } = render(<BrandHeader />);
+
+    expect(screen.getByLabelText("Sombreado")).toHaveTextContent("Sombreado");
+    expect(container.querySelector("svg")).toHaveAttribute(
+      "aria-hidden",
+      "true"
+    );
+    expect(container.querySelector("svg")).toHaveAttribute(
+      "viewBox",
+      "0 -960 960 960"
+    );
+  });
+
   test("button preserves the existing primary and secondary API", async () => {
     const user = userEvent.setup();
     const onPrimary = vi.fn();

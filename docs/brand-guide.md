@@ -27,14 +27,16 @@ The reference mix is Airbnb warmth plus Anthropic/Claude Code restraint: polishe
 
 ## Identity Motif
 
-The core brand signature is the bus-side split motif. It should come from the product experience before it becomes a logo.
+The canonical brand signature is the lockup from `docs/design/screens/in_cio_dual_flow_minimal/code.html`: a 32px circular mark containing a rotated `#1E1E1C` half-disc and a small `#FDFCF8` outlined sun, followed by the `#2C2C2A` Newsreader wordmark “Sombreado”. This lockup is the primary identity and should be reproduced literally rather than recolored from the general product token palette.
+
+The bus-side split motif remains the signature visual language of the advice experience. It belongs in diagrams and supporting product surfaces; it is not the logo.
 
 - Treat the brand as diagram-led: visual identity explorations should start from making the advice diagram useful, beautiful, and ownable, then extend that language into other surfaces.
 - Use a rider-facing bus diagram with a clear front arrow.
 - Split the cabin lengthwise into left and right seating sides.
 - Use the cool side for the recommendation and the warm side for direct sun.
 - Pair color with labels, hatches, icons, or outlines so the motif works without color alone.
-- Let any future logo-like mark derive from a successful advice diagram. Do not introduce a standalone mark that leads the identity before the diagram works.
+- Do not reinterpret the canonical lockup as a miniature bus diagram or replace its sun-and-shadow geometry with the bus-side split motif.
 
 ## Color Direction
 
