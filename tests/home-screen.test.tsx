@@ -292,8 +292,8 @@ describe("home screen flow", () => {
       name: /Selecionar linha/i,
     });
     expect(routeButtons.map((button) => button.textContent)).toEqual([
-      "330 TILAG - Centro900 m de você",
-      "124 TICEN - Lagoa100 m de você",
+      "330 TILAG - Centroa cerca de 900 m",
+      "124 TICEN - Lagoaa cerca de 100 m",
     ]);
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/v1/route-candidates/nearby?lat=-27.5969&lng=-48.5488&radiusMeters=1200&limit=5",

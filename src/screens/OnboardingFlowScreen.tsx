@@ -23,6 +23,11 @@ import type {
 import type { OnboardingFlowController } from "../hooks/useOnboardingFlow";
 import { copy } from "../content/copy";
 
+import {
+  formatNearbyRouteDistance,
+  formatNearbyRouteMeta,
+} from "./nearbyRouteMeta";
+
 import styles from "./OnboardingFlowScreen.module.css";
 
 type OnboardingFlowScreenProps = {
@@ -141,7 +146,7 @@ export function OnboardingFlowScreen({
               <RouteCard
                 key={route.routeId}
                 route={route}
-                meta={nearbyRouteMeta(route)}
+                meta={formatNearbyRouteMeta(route.distanceMeters)}
                 onSelect={() => actions.selectRoute(route, "nearby")}
               />
             ))}
@@ -225,7 +230,11 @@ export function OnboardingFlowScreen({
                 <RouteCard
                   key={route.routeId}
                   route={route}
-                  meta="linha"
+                  meta={
+                    route.distanceMeters === undefined
+                      ? "linha"
+                      : formatNearbyRouteDistance(route.distanceMeters)
+                  }
                   onSelect={() => actions.selectRoute(route, "manual")}
                 />
               ))}
@@ -762,18 +771,6 @@ function normalizeMapPoints(
     const y = 88 - ((point.lat - minLat) / latSpan) * 76;
     return `${x.toFixed(2)},${y.toFixed(2)}`;
   });
-}
-
-function nearbyRouteMeta(route: RouteCandidate): string {
-  if (route.distanceMeters === undefined) {
-    return "perto de você";
-  }
-
-  if (route.distanceMeters < 1000) {
-    return `${route.distanceMeters} m de você`;
-  }
-
-  return `${(route.distanceMeters / 1000).toFixed(1)} km de você`;
 }
 
 function locationIssueLabel(
