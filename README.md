@@ -32,6 +32,8 @@ The frontend app should be implemented at the repository root, not inside a nest
 
 The app calls `sombreado-service` directly from the browser using `NEXT_PUBLIC_API_URL` as the public API base URL convention.
 
+Use Node.js 22 or later. With nvm, run `nvm use` from the repository root; `.nvmrc` selects the supported major version.
+
 Install dependencies:
 
 ```bash

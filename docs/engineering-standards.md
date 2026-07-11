@@ -68,6 +68,8 @@ UI behavior, tests, docs, and tooling.
 
 ## Local Workflow
 
+Use Node.js 22 or later. With nvm, run `nvm use` from the repository root before installing dependencies or running checks.
+
 Install dependencies:
 
 ```bash
