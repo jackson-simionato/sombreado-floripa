@@ -1,40 +1,18 @@
 .screen {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-6);
 }
 
-.brand {
-  margin: 0;
-  color: var(--color-muted-ink);
-  font-size: 0.875rem;
-  font-weight: 750;
+.heroAccent {
+  display: inline;
+  font-style: italic;
+  font-weight: 450;
 }
 
 .hero {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-6);
   align-content: start;
-}
-
-.copyBlock {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.title {
-  margin: 0;
-  max-width: 12ch;
-  font-size: clamp(2rem, 12vw, 2.55rem);
-  line-height: 1.02;
-  font-weight: 780;
-}
-
-.body {
-  margin: 0;
-  max-width: 25ch;
-  color: var(--color-muted-ink);
-  font-size: 1.0625rem;
-  line-height: 1.45;
 }
 
 .notice,
@@ -46,6 +24,7 @@
 
 .notice {
   color: var(--color-muted-ink);
+  text-align: center;
 }
 
 .manualNotice {
@@ -58,30 +37,15 @@
 
 @media (max-width: 640px) {
   .screen {
-    gap: var(--space-4);
+    gap: var(--space-5);
   }
 
   .hero {
-    gap: var(--space-4);
+    gap: var(--space-5);
   }
 
-  .copyBlock {
-    gap: var(--space-2);
-  }
-
-  .brand {
-    font-size: 0.82rem;
-  }
-
-  .title {
-    max-width: 10.5ch;
-    font-size: clamp(1.92rem, 13vw, 2.28rem);
-  }
-
-  .body {
-    font-size: 0.98rem;
-    line-height: 1.46;
-    max-width: 22ch;
+  .heroAccent {
+    line-height: 1;
   }
 
   .notice,

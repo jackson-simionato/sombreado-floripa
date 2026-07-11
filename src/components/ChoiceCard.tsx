@@ -4,6 +4,7 @@ import styles from "./ChoiceCard.module.css";
 
 type ChoiceCardProps = {
   ariaLabel?: string;
+  badge?: ReactNode;
   eyebrow?: ReactNode;
   label: ReactNode;
   meta?: ReactNode;
@@ -12,6 +13,7 @@ type ChoiceCardProps = {
 
 export function ChoiceCard({
   ariaLabel,
+  badge,
   eyebrow,
   label,
   meta,
@@ -28,11 +30,21 @@ export function ChoiceCard({
       onClick={onSelect}
       type="button"
     >
-      {eyebrow !== undefined ? (
-        <span className={styles.eyebrow}>{eyebrow}</span>
+      {badge !== undefined ? (
+        <span aria-hidden="true" className={styles.badge}>
+          {badge}{" "}
+        </span>
       ) : null}
-      <strong>{label}</strong>
-      {meta !== undefined ? <span className={styles.meta}>{meta}</span> : null}
+      <span className={styles.content}>
+        {eyebrow !== undefined ? (
+          <span className={styles.eyebrow}>{eyebrow}</span>
+        ) : null}
+        <strong>{label}</strong>
+        {meta !== undefined ? (
+          <span className={styles.meta}>{meta}</span>
+        ) : null}
+      </span>
+      <span aria-hidden="true" className={styles.chevron} />
     </button>
   );
 }

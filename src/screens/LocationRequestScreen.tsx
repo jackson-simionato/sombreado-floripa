@@ -1,4 +1,5 @@
 import { AppShell } from "../components/AppShell";
+import { BrandHeader } from "../components/BrandHeader";
 import { BusSplitDiagram } from "../components/BusSplitDiagram";
 import { Button } from "../components/Button";
 import { Notice } from "../components/Notice";
@@ -29,13 +30,21 @@ export function LocationRequestScreen({
   return (
     <AppShell>
       <div className={styles.screen}>
-        {!isLoading ? (
-          <p className={styles.brand}>{copy.locationRequest.brand}</p>
-        ) : null}
+        {!isLoading ? <BrandHeader /> : null}
         <section className={styles.hero} aria-labelledby="screen-title">
           <ScreenHeader
             body={screenCopy.body}
-            title={screenCopy.heading}
+            title={
+              isLoading ? (
+                screenCopy.heading
+              ) : (
+                <>
+                  Viaje na
+                  <br />
+                  <span className={styles.heroAccent}>sombra.</span>
+                </>
+              )
+            }
             variant="hero"
           />
           <BusSplitDiagram />

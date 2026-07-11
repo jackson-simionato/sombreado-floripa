@@ -8,7 +8,7 @@ import { copy } from "../src/content/copy";
 import { prototypeScenarios } from "../src/mocks/scenarioStates";
 
 const scenarioExpectations = [
-  ["location-request", "De que lado sentar?"],
+  ["location-request", "Viaje na sombra."],
   ["location-finding-nearby", "Buscando linhas perto de você..."],
   ["location-slow-loading", "Ainda buscando..."],
   ["location-denied", "Localização desativada"],
@@ -77,7 +77,7 @@ describe("prototype scenarios", () => {
   test.each([
     [
       "location-request",
-      "De que lado sentar?",
+      "Viaje na sombra.",
       "Usar minha localização",
       "Procurar linha manualmente",
     ],
@@ -261,7 +261,7 @@ describe("prototype scenarios", () => {
     render(<PrototypePage />);
 
     expect(
-      await screen.findByRole("heading", { name: "De que lado sentar?" })
+      await screen.findByRole("heading", { name: "Viaje na sombra." })
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Usar minha localização" })

@@ -12,11 +12,17 @@
   display: grid;
   gap: var(--space-3);
   padding: var(--space-4) 0 calc(var(--space-4) + env(safe-area-inset-bottom));
-  background: linear-gradient(
-    180deg,
-    rgba(255, 249, 238, 0),
-    var(--color-surface-warm) 18%
-  );
+  border-top: 1px solid rgba(199, 199, 191, 0.68);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(250, 249, 245, 0),
+      rgba(250, 249, 245, 0.92) 28%,
+      var(--color-surface-warm) 72%
+    ),
+    var(--color-surface-warm);
+  backdrop-filter: blur(14px);
+  z-index: 2;
 }
 
 @media (max-width: 640px) {

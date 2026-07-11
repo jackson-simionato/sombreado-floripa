@@ -1,12 +1,12 @@
 export const copy = {
   locationRequest: {
-    brand: "Sombreado Floripa",
-    heading: "De que lado sentar?",
+    brand: "Sombreado",
+    heading: "Viaje na sombra.",
     body: "Encontre a melhor lateral do ônibus pelo sol direto.",
     primaryAction: "Usar minha localização",
     secondaryAction: "Procurar linha manualmente",
     locationNotice:
-      "A localização só é usada para encontrar linhas perto de você.",
+      "Sua localização é usada apenas para identificar as linhas próximas de você.",
     manualUnavailable: "A busca manual entra no próximo passo do protótipo.",
   },
   findingNearbyRoutes: {

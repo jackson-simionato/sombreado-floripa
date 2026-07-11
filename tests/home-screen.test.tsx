@@ -46,7 +46,7 @@ describe("home screen flow", () => {
     render(<HomePage />);
 
     expect(
-      screen.getByRole("heading", { name: "De que lado sentar?" })
+      screen.getByRole("heading", { name: "Viaje na sombra." })
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("combobox", { name: "Protótipo" })
@@ -1081,7 +1081,13 @@ describe("home screen flow", () => {
     render(<PrototypePage />);
 
     expect(
-      screen.getByRole("heading", { name: "De que lado sentar?" })
+      screen.getByRole("heading", { name: "Viaje na sombra." })
+    ).toBeInTheDocument();
+    expect(screen.getByText("Sombreado")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Sua localização é usada apenas para identificar as linhas próximas de você."
+      )
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Usar minha localização" })

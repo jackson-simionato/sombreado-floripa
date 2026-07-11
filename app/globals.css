@@ -67,7 +67,12 @@
   --shadow-soft: 0 28px 56px rgba(27, 28, 26, 0.06);
   --shadow-action: 0 14px 28px rgba(23, 24, 22, 0.14);
   --app-max-width: 430px;
-  --sticky-action-height: 176px;
+  --content-gutter: 24px;
+  --sticky-action-height: 168px;
+  --type-display: clamp(2.5rem, 12vw, 3.5rem);
+  --type-title: clamp(2rem, 8vw, 2.5rem);
+  --type-result: clamp(2.25rem, 9vw, 2.75rem);
+  --type-body: 1rem;
 }
 
 * {
@@ -80,12 +85,17 @@ html {
 }
 
 body {
+  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-body:
+    var(--font-hanken-grotesk), Avenir, "Helvetica Neue", Arial, sans-serif;
   min-height: 100vh;
   margin: 0;
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
   letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 button,
@@ -117,6 +127,7 @@ button {
 
 @media (max-width: 640px) {
   :root {
-    --sticky-action-height: 142px;
+    --content-gutter: 20px;
+    --sticky-action-height: 148px;
   }
 }

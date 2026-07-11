@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { AdviceBusDiagram } from "../components/AdviceBusDiagram";
 import { AppShell } from "../components/AppShell";
+import { BrandHeader } from "../components/BrandHeader";
 import { BusSplitDiagram } from "../components/BusSplitDiagram";
 import { Button } from "../components/Button";
 import { ChoiceCard } from "../components/ChoiceCard";
@@ -19,6 +20,7 @@ import type {
   UiAdviceState,
 } from "../domain/types";
 import type { OnboardingFlowController } from "../hooks/useOnboardingFlow";
+import { copy } from "../content/copy";
 
 import styles from "./OnboardingFlowScreen.module.css";
 
@@ -47,17 +49,23 @@ export function OnboardingFlowScreen({
     case "locationRequest":
       content = (
         <>
-          <p className={styles.brand}>Sombreado Floripa</p>
+          <BrandHeader />
           <section className={styles.hero} aria-labelledby="screen-title">
             <ScreenHeader
-              body="Encontre a melhor lateral do ônibus pelo sol direto."
-              title="De que lado sentar?"
+              body={copy.locationRequest.body}
+              title={
+                <>
+                  Viaje na
+                  <br />
+                  <span className={styles.heroAccent}>sombra.</span>
+                </>
+              }
               variant="hero"
             />
             <BusSplitDiagram />
           </section>
           <p className={styles.metaText}>
-            A localização só é usada para encontrar linhas perto de você.
+            {copy.locationRequest.locationNotice}
           </p>
         </>
       );
@@ -626,7 +634,8 @@ function RouteCard({
   return (
     <ChoiceCard
       ariaLabel={`Selecionar linha ${route.code} ${route.name}`}
-      label={`${route.code} ${route.name}`}
+      badge={route.code}
+      label={route.name}
       meta={meta}
       onSelect={onSelect}
     />
