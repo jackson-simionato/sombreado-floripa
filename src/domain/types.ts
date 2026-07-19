@@ -44,10 +44,13 @@ export type AdvisoryReasonCode =
   | "noAdviceForSelectedHorizon"
   | "locationOffRoute";
 
+export type RouteDirectionKind = "ida" | "volta";
+
 export type LightweightRouteDirection = {
   route_direction_id: string;
   sequence: number;
   name: string;
+  direction_kind: RouteDirectionKind | null;
   departure_labels: string[];
 };
 
@@ -135,6 +138,7 @@ export type DirectionChoice = {
   routeDirectionId: string;
   sequence: number;
   name: string;
+  directionKind: RouteDirectionKind | null;
   departureLabels: string[];
 };
 
@@ -294,6 +298,7 @@ export type SelectedDirection = {
   routeDirectionId: string;
   sequence: number;
   name: string;
+  directionKind: RouteDirectionKind | null;
   departureLabels: string[];
 };
 

@@ -20,12 +20,14 @@ describe("route directions browser API client", () => {
             routeDirectionId: "direction-second",
             sequence: 2,
             name: "Lagoa para TICEN",
+            directionKind: "volta",
             departureLabels: ["Lagoa", "TICEN"],
           },
           {
             routeDirectionId: "direction-first",
             sequence: 1,
             name: "TICEN para Lagoa",
+            directionKind: "ida",
             departureLabels: ["TICEN", "Lagoa"],
           },
         ],
@@ -50,7 +52,70 @@ describe("route directions browser API client", () => {
       "direction-second",
       "direction-first",
     ]);
+    expect(response.directions.map((item) => item.directionKind)).toEqual([
+      "volta",
+      "ida",
+    ]);
   });
+
+  test("accepts a null Route Direction Kind", async () => {
+    const client = createRouteDirectionsClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: vi.fn().mockResolvedValue(
+        jsonResponse({
+          directions: [
+            {
+              routeDirectionId: "direction-unclassified",
+              sequence: 1,
+              name: "Circular Centro",
+              directionKind: null,
+              departureLabels: ["Centro"],
+            },
+          ],
+        })
+      ),
+    });
+
+    await expect(
+      client.listRouteDirections({
+        routeId: "route-circular",
+        routeVersionId: "version-current",
+      })
+    ).resolves.toMatchObject({
+      directions: [{ directionKind: null }],
+    });
+  });
+
+  test.each([
+    ["omitted", undefined],
+    ["unknown", "circular"],
+  ])(
+    "rejects %s Route Direction Kind values",
+    async (_label, directionKind) => {
+      const direction = {
+        routeDirectionId: "direction-invalid",
+        sequence: 1,
+        name: "Circular Centro",
+        departureLabels: ["Centro"],
+        ...(directionKind === undefined ? {} : { directionKind }),
+      };
+      const client = createRouteDirectionsClient({
+        baseUrl: "http://localhost:8000/v1",
+        fetchImpl: vi
+          .fn()
+          .mockResolvedValue(jsonResponse({ directions: [direction] })),
+      });
+
+      await expect(
+        client.listRouteDirections({
+          routeId: "route-circular",
+          routeVersionId: "version-current",
+        })
+      ).rejects.toMatchObject({
+        kind: "malformedResponse",
+      } satisfies Partial<LiveApiError>);
+    }
+  );
 
   test("rejects malformed direction responses", async () => {
     const client = createRouteDirectionsClient({

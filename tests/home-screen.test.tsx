@@ -92,12 +92,14 @@ describe("home screen flow", () => {
                     routeDirectionId: "direction-124-inbound",
                     sequence: 2,
                     name: "Lagoa para TICEN",
+                    directionKind: "volta",
                     departureLabels: ["Lagoa", "TICEN"],
                   },
                   {
                     routeDirectionId: "direction-124-outbound",
                     sequence: 1,
                     name: "TICEN para Lagoa",
+                    directionKind: "ida",
                     departureLabels: ["TICEN", "Lagoa"],
                   },
                 ],
@@ -179,8 +181,8 @@ describe("home screen flow", () => {
         .getAllByRole("button", { name: /Selecionar sentido/i })
         .map((button) => button.textContent)
     ).toEqual([
-      "Lagoa para TICENLagoa · TICEN",
-      "TICEN para LagoaTICEN · Lagoa",
+      "VoltaLagoa para TICENLagoa · TICEN",
+      "IdaTICEN para LagoaTICEN · Lagoa",
     ]);
     expect(
       fetchMock.mock.calls.some(
@@ -192,7 +194,7 @@ describe("home screen flow", () => {
 
     await user.click(
       screen.getByRole("button", {
-        name: "Selecionar sentido Lagoa para TICEN",
+        name: "Selecionar sentido Lagoa para TICEN, Volta",
       })
     );
 
@@ -1151,7 +1153,7 @@ describe("home screen flow", () => {
 
     await user.click(
       screen.getByRole("button", {
-        name: "Selecionar sentido TICEN para Lagoa",
+        name: "Selecionar sentido TICEN para Lagoa, Ida",
       })
     );
 
@@ -1330,7 +1332,7 @@ describe("home screen flow", () => {
     );
     await user.click(
       await screen.findByRole("button", {
-        name: "Selecionar sentido TICEN para Lagoa",
+        name: "Selecionar sentido TICEN para Lagoa, Ida",
       })
     );
 
@@ -1362,7 +1364,7 @@ describe("home screen flow", () => {
     );
     await user.click(
       await screen.findByRole("button", {
-        name: "Selecionar sentido TICEN para Lagoa",
+        name: "Selecionar sentido TICEN para Lagoa, Ida",
       })
     );
 
@@ -1523,7 +1525,7 @@ describe("home screen flow", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("exposes route cards and direction rows as accessible buttons before confirmation", async () => {
+  test("shows classified Route Direction Kinds on accessible direction choices", async () => {
     const user = userEvent.setup();
 
     render(<PrototypePage />);
@@ -1540,10 +1542,69 @@ describe("home screen flow", () => {
     await user.click(routeButton);
 
     const directionButton = await screen.findByRole("button", {
-      name: "Selecionar sentido TICEN para Lagoa",
+      name: "Selecionar sentido TICEN para Lagoa, Ida",
     });
     expect(directionButton).toBeInTheDocument();
+    expect(within(directionButton).getByText("Ida")).toBeInTheDocument();
+    expect(
+      within(directionButton).getByText("TICEN para Lagoa")
+    ).toBeInTheDocument();
+    expect(
+      within(directionButton).getByText("TICEN · UFSC · Trindade")
+    ).toBeInTheDocument();
+
+    const returnDirectionButton = screen.getByRole("button", {
+      name: "Selecionar sentido Lagoa para TICEN, Volta",
+    });
+    expect(
+      within(returnDirectionButton).getByText("Volta")
+    ).toBeInTheDocument();
     expect(screen.queryByText(/sentido escolhido/i)).not.toBeInTheDocument();
+  });
+
+  test("keeps an unclassified direction selectable without a kind warning", async () => {
+    const user = userEvent.setup();
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        listRouteDirections: vi.fn().mockResolvedValue([
+          {
+            routeDirectionId: "direction-circular",
+            sequence: 1,
+            name: "Circular Centro",
+            directionKind: null,
+            departureLabels: ["Centro"],
+          },
+        ]),
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+    await user.click(
+      await screen.findByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    const directionButton = await screen.findByRole("button", {
+      name: "Selecionar sentido Circular Centro",
+    });
+    expect(
+      within(directionButton).getByText("Circular Centro")
+    ).toBeInTheDocument();
+    expect(within(directionButton).getByText("Centro")).toBeInTheDocument();
+    expect(
+      within(directionButton).queryByText(/ida|volta/i)
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/desconhecid/i)).not.toBeInTheDocument();
+
+    await user.click(directionButton);
+
+    expect(
+      await screen.findByRole("heading", { name: "Confirme sua linha" })
+    ).toBeInTheDocument();
   });
 
   test("keeps onboard advice text-distinct with an accessible diagram summary", async () => {
@@ -1598,7 +1659,7 @@ async function completeNearbyFlow(user: ReturnType<typeof userEvent.setup>) {
   );
   await user.click(
     await screen.findByRole("button", {
-      name: "Selecionar sentido TICEN para Lagoa",
+      name: /^Selecionar sentido TICEN para Lagoa(?:, Ida)?$/,
     })
   );
   await screen.findByRole("heading", { name: "Confirme sua linha" });
@@ -1659,6 +1720,7 @@ function createLiveFlowClient(
         routeDirectionId: "direction-124",
         sequence: 1,
         name: "TICEN para Lagoa",
+        directionKind: null,
         departureLabels: ["TICEN", "Lagoa"],
       },
     ]),

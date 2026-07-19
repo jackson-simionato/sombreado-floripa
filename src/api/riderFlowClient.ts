@@ -204,6 +204,7 @@ function toLiveDirectionChoices(
     routeDirectionId: direction.routeDirectionId,
     sequence: direction.sequence,
     name: direction.name,
+    directionKind: direction.directionKind,
     departureLabels: [...direction.departureLabels],
   }));
 }

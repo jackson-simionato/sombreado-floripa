@@ -18,6 +18,7 @@ import type {
   AdvisoryReasonCode,
   DirectionChoice,
   RouteCandidate,
+  RouteDirectionKind,
   UiAdviceState,
 } from "../domain/types";
 import type { OnboardingFlowController } from "../hooks/useOnboardingFlow";
@@ -659,14 +660,29 @@ function DirectionCard({
   direction: DirectionChoice;
   onSelect(): void;
 }) {
+  const directionKindLabel = formatRouteDirectionKind(direction.directionKind);
+
   return (
     <ChoiceCard
-      ariaLabel={`Selecionar sentido ${direction.name}`}
+      ariaLabel={`Selecionar sentido ${direction.name}${
+        directionKindLabel === undefined ? "" : `, ${directionKindLabel}`
+      }`}
+      eyebrow={directionKindLabel}
       label={direction.name}
       meta={direction.departureLabels.join(" · ")}
       onSelect={onSelect}
     />
   );
+}
+
+function formatRouteDirectionKind(
+  directionKind: RouteDirectionKind | null
+): string | undefined {
+  if (directionKind === null) {
+    return undefined;
+  }
+
+  return directionKind === "ida" ? "Ida" : "Volta";
 }
 
 function RouteSummary({

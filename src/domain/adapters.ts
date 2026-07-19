@@ -45,6 +45,7 @@ export function toDirectionChoices(
     routeDirectionId: direction.route_direction_id,
     sequence: direction.sequence,
     name: direction.name,
+    directionKind: direction.direction_kind,
     departureLabels: [...direction.departure_labels],
   }));
 }

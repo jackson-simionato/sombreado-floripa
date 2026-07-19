@@ -173,12 +173,14 @@ describe("rider-flow route candidate client", () => {
               routeDirectionId: "direction-second",
               sequence: 2,
               name: "Lagoa para TICEN",
+              directionKind: "volta",
               departureLabels: ["Lagoa", "TICEN"],
             },
             {
               routeDirectionId: "direction-first",
               sequence: 1,
               name: "TICEN para Lagoa",
+              directionKind: null,
               departureLabels: ["TICEN", "Lagoa"],
             },
           ],
@@ -200,6 +202,7 @@ describe("rider-flow route candidate client", () => {
       "direction-second",
       "direction-first",
     ]);
+    expect(result.map((item) => item.directionKind)).toEqual(["volta", null]);
     expect(fetchMock.mock.calls[0]?.[0]).toContain(
       "routeVersionId=version-124"
     );
@@ -303,7 +306,7 @@ describe("rider-flow route candidate client", () => {
     const getRouteDirections = vi.spyOn(api, "getRouteDirections");
     const client = createMockRiderFlowClient(api);
 
-    await client.listRouteDirections({
+    const directions = await client.listRouteDirections({
       routeId: "00000000-0000-0000-0000-000000000124",
       routeVersionId: "00000000-0000-0000-0000-000000001124",
     });
@@ -312,6 +315,10 @@ describe("rider-flow route candidate client", () => {
       "00000000-0000-0000-0000-000000000124",
       "00000000-0000-0000-0000-000000001124"
     );
+    expect(directions.map((direction) => direction.directionKind)).toEqual([
+      "ida",
+      "volta",
+    ]);
   });
 
   test("keeps mock geometry behind the same route context operation", async () => {

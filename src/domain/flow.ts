@@ -542,6 +542,7 @@ function toSelectedDirection(direction: DirectionChoice): SelectedDirection {
     routeDirectionId: direction.routeDirectionId,
     sequence: direction.sequence,
     name: direction.name,
+    directionKind: direction.directionKind,
     departureLabels: [...direction.departureLabels],
   };
 }

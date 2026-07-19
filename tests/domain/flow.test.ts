@@ -29,6 +29,7 @@ const direction: DirectionChoice = {
   routeDirectionId: "direction-a",
   sequence: 1,
   name: "TICEN para Lagoa",
+  directionKind: "ida",
   departureLabels: ["TICEN", "UFSC"],
 };
 
@@ -99,12 +100,14 @@ describe("flow reducer", () => {
       directions: [direction],
     });
     expect(state.screen).toBe("directionChoice");
+    expect(state.directionChoices[0]?.directionKind).toBe("ida");
 
     state = flowReducer(state, {
       type: "directionSelected",
       direction,
       requestId: geometryRequestId,
     });
+    expect(state.selectedDirection?.directionKind).toBe("ida");
     state = flowReducer(state, {
       type: "geometrySucceeded",
       requestId: geometryRequestId,

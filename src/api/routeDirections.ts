@@ -10,6 +10,7 @@ const directionChoiceSchema = z.object({
   routeDirectionId: z.string(),
   sequence: z.number(),
   name: z.string(),
+  directionKind: z.enum(["ida", "volta"]).nullable(),
   departureLabels: z.array(z.string()),
 });
 
