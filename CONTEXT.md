@@ -40,6 +40,10 @@ _Avoid_: Automatically confirmed route direction, timetable row
 The rider-facing step where a selected route is narrowed to a direction using destination or neighborhood labels.
 _Avoid_: Debug headsign, raw shape id, automatic direction confirmation
 
+**Route Direction Kind**:
+An optional `ida` or `volta` cue attached to a Direction Choice when the source route contains an unambiguous pair.
+_Avoid_: Frontend name parsing, inferred complementary direction, replacement direction name
+
 **Route Confirmation Map**:
 A compact map used to help the rider confirm the selected route direction.
 _Avoid_: Map-first navigation, route editor
@@ -61,6 +65,8 @@ _Avoid_: Legal disclaimer wall, hidden limitation
 - **Sombreado Floripa** is designed for **Riders**.
 - The first version of **Sombreado Floripa** prioritizes the **Onboard Flow**.
 - The **Onboard Flow** starts with rider location or manual route search, presents **Route Candidates**, asks for a **Direction Choice**, and ends with **Sun-side Advice**.
+- A **Direction Choice** may show a **Route Direction Kind** as supporting context.
+- A missing **Route Direction Kind** does not prevent a **Rider** from selecting the **Direction Choice**.
 - **Sun-side Advice** is presented as a **Seat-area Recommendation** when possible.
 - A **Route Preview** can show exploratory **Sun-side Advice** with a clear warning when live onboard context is not available.
 - A **Bus Orientation Diagram** helps explain the **Seat-area Recommendation** without relying only on text.

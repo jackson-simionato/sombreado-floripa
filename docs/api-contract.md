@@ -110,6 +110,7 @@ type DirectionChoice = {
   routeDirectionId: string;
   sequence: number;
   name: string;
+  directionKind: "ida" | "volta" | null;
   departureLabels: string[];
 };
 
@@ -127,17 +128,23 @@ Example:
       "routeDirectionId": "direction-124-outbound",
       "sequence": 1,
       "name": "TICEN para Lagoa",
+      "directionKind": "ida",
       "departureLabels": ["TICEN", "UFSC", "Trindade"]
     },
     {
       "routeDirectionId": "direction-124-inbound",
       "sequence": 2,
       "name": "Lagoa para TICEN",
+      "directionKind": "volta",
       "departureLabels": ["Lagoa", "TICEN"]
     }
   ]
 }
 ```
+
+`directionKind` is required in the response but nullable. The backend maps it directly from the scraper-owned current Route Direction and must not infer it from `name` or `departureLabels`. The frontend may render `Ida` or `Volta` as concise supporting context on the Direction Choice card, but it must not replace the authoritative `name` or change response order.
+
+When `directionKind` is `null`, the Direction Choice remains selectable and uses the existing `name` plus `departureLabels` presentation. Null is expected for conservative exclusions such as singleton, ambiguous, or unlabeled directions and for unchanged Route Versions created before classification existed. The frontend must not reconstruct the value by scanning `name`.
 
 ### Route Geometry
 

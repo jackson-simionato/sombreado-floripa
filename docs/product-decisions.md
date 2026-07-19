@@ -12,6 +12,7 @@ This document records current product and design decisions for Sombreado Floripa
 - The app asks riders to tap a location action before triggering browser geolocation permission.
 - Nearby route candidates are the default selection flow; manual route search is also available as a secondary path.
 - Route selection happens before direction selection. Direction must be chosen explicitly before confirmation.
+- Direction selection may show the backend-provided Route Direction Kind as a concise `Ida` or `Volta` cue. The frontend does not infer it from the raw direction name, and a missing kind preserves the existing name-and-label presentation.
 - The app includes a compact route confirmation map after route selection and direction choice, not a map-led home screen.
 - Off-route or exploratory usage can show preview advice with a clear warning when the app can estimate a useful point near the selected route; true withheld states are reserved for cases where useful advice cannot be computed.
 - Mapbox GL JS is the preferred v1 map provider, lazy-loaded only when the confirmation map is shown.
