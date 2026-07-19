@@ -1,17 +1,8 @@
 # Triage Labels
 
-The skills speak in terms of canonical triage roles. This file maps those roles to the actual label strings used in this repo's issue tracker.
+The skills use five canonical triage roles. This file maps those roles to the labels in this repo's issue tracker.
 
-## Categories
-
-| Role          | Label in our tracker | Meaning                    |
-| ------------- | -------------------- | -------------------------- |
-| `bug`         | `bug`                | Something is broken        |
-| `enhancement` | `enhancement`        | New feature or improvement |
-
-## States
-
-| Role              | Label in our tracker | Meaning                                    |
+| Canonical role    | Label in our tracker | Meaning                                    |
 | ----------------- | -------------------- | ------------------------------------------ |
 | `needs-triage`    | `needs-triage`       | Maintainer needs to evaluate this issue    |
 | `needs-info`      | `needs-info`         | Waiting on reporter for more information   |
@@ -19,4 +10,4 @@ The skills speak in terms of canonical triage roles. This file maps those roles 
 | `ready-for-human` | `ready-for-human`    | Requires human implementation              |
 | `wontfix`         | `wontfix`            | Will not be actioned                       |
 
-Every triaged issue should carry exactly one category label and one state label. If state labels conflict, stop and ask the maintainer before changing the issue.
+When a skill mentions a canonical role, use the corresponding tracker label. Edit the right-hand column if the repository's label vocabulary changes.

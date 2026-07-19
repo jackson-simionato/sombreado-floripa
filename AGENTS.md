@@ -33,11 +33,11 @@ Issues and PRDs for this repo live in GitHub Issues for `jackson-simionato/sombr
 
 ### Triage labels
 
-Triage labels use the canonical skill vocabulary: `bug`, `enhancement`, `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. See `docs/agents/triage-labels.md`.
+Triage labels use the five canonical skill roles: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`. See `docs/agents/triage-labels.md`.
 
 ### Domain docs
 
-This is a single-context frontend repo: use root `CONTEXT.md` and future `docs/adr/` records when present. See `docs/agents/domain.md`.
+This is a single-context frontend repo using root `CONTEXT.md` and `docs/adr/`. See `docs/agents/domain.md`.
 
 ## Engineering standards for coding agents
 
