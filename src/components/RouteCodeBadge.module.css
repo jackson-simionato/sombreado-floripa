@@ -1,0 +1,31 @@
+.badge {
+  width: 56px;
+  aspect-ratio: 1;
+  display: inline-grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-sans);
+  font-size: 0.94rem;
+  font-weight: 720;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.badgeLong {
+  font-size: 0.78rem;
+  letter-spacing: -0.045em;
+}
+
+@media (max-width: 640px) {
+  .badge {
+    width: 48px;
+    font-size: 0.86rem;
+  }
+
+  .badgeLong {
+    font-size: 0.72rem;
+  }
+}

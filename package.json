@@ -1,0 +1,55 @@
+{
+  "name": "sombreado-floripa",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "vite build && node scripts/copy-hosting-manifest.mjs",
+    "dev:vinext": "vite dev --port 3001",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --max-warnings=0",
+    "prepare": "husky",
+    "test": "vitest run",
+    "start": "vinext start",
+    "test:visual": "playwright test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^15.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.44.0",
+    "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.61.1",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-rsc": "^0.5.27",
+    "eslint": "^9.0.0",
+    "eslint-plugin-jsx-a11y": "^6.0.0",
+    "eslint-plugin-react": "^7.0.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "jsdom": "^26.0.0",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.4",
+    "react-server-dom-webpack": "^19.2.7",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.0.0",
+    "vinext": "^0.0.7",
+    "vite": "^7.3.6",
+    "vitest": "^3.0.0"
+  }
+}

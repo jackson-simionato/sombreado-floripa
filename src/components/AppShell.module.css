@@ -1,0 +1,20 @@
+.shell {
+  width: min(100%, var(--app-max-width));
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4)
+    calc(var(--sticky-action-height) + env(safe-area-inset-bottom));
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .shell {
+    padding-top: var(--space-6);
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    padding-top: var(--space-4);
+  }
+}

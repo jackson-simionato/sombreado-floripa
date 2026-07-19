@@ -1,0 +1,138 @@
+<!doctype html>
+<html class="antialiased" lang="pt-BR" style="">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sombreado - Início</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,700;1,6..72,400&amp;family=Satoshi:wght@400;500;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "brand-bg": "#FDFCF8",
+              "brand-text": "#2C2C2A",
+              "brand-muted": "#7A766B",
+              "brand-primary": "#1E1E1C",
+              "brand-surface": "#FEFDFC",
+              "brand-shade": "#2B6CB0",
+              "brand-sun": "#F6AD55",
+              "brand-border": "#E8E2D2",
+            },
+            fontFamily: {
+              display: ["Newsreader", "serif"],
+              body: ["Satoshi", "sans-serif"],
+            },
+            animation: {
+              "fade-up": "fadeUp 800ms cubic-bezier(0.16, 1, 0.3, 1) forwards",
+            },
+            keyframes: {
+              fadeUp: {
+                "0%": { opacity: "0", transform: "translateY(20px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .delay-100 {
+        animation-delay: 100ms;
+      }
+      .delay-200 {
+        animation-delay: 200ms;
+      }
+      .delay-300 {
+        animation-delay: 300ms;
+      }
+      .animate-fade-up {
+        opacity: 0;
+      }
+      body {
+        min-height: 100dvh;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-brand-bg text-brand-text font-body selection:bg-brand-primary/5"
+    style="background-color: rgb(250, 249, 245)"
+  >
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto min-h-screen flex flex-col p-6 pt-12">
+      <!-- Branding Header -->
+      <header class="animate-fade-up">
+        <div class="flex items-center gap-2 mb-8">
+          <div
+            class="w-8 h-8 rounded-full border border-brand-primary/20 flex items-center justify-center overflow-hidden relative"
+          >
+            <div
+              class="absolute inset-0 bg-brand-primary w-full h-1/2 rounded-t-full origin-bottom transform rotate-45"
+            ></div>
+            <span
+              class="material-symbols-outlined text-brand-bg z-10 text-[14px]"
+              >wb_sunny</span
+            >
+          </div>
+          <span class="font-display font-bold text-[18px] tracking-tight"
+            >Sombreado</span
+          >
+        </div>
+      </header>
+      <!-- Headline Content -->
+      <section class="mb-12 animate-fade-up delay-100">
+        <h1
+          class="font-display font-bold text-[40px] leading-[1.1] tracking-[-0.03em] mb-4"
+        >
+          Viaje na<br /><span class="italic font-normal">sombra.</span>
+        </h1>
+        <p
+          class="text-[17px] text-brand-muted leading-relaxed max-w-[280px] font-body"
+        >
+          Encontre a melhor lateral do ônibus pelo sol direto.
+        </p>
+      </section>
+      <!-- Abstract Visual Component -->
+      <!-- Actions -->
+      <footer class="space-y-6 pb-8 animate-fade-up delay-300">
+        <p class="text-center text-[12px] text-brand-muted/70 px-8">
+          Sua localização é usada apenas para identificar as linhas próximas de
+          você.
+        </p>
+        <div class="space-y-4">
+          <button
+            class="w-full h-16 bg-brand-primary text-white font-bold text-[16px] rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-200 shadow-xl shadow-brand-primary/10 font-body"
+          >
+            <span class="">Usar minha localização</span>
+            <span class="material-symbols-outlined text-[18px]">near_me</span>
+          </button>
+          <button
+            class="w-full h-14 bg-transparent text-brand-primary font-bold text-[15px] flex items-center justify-center gap-1 hover:bg-brand-border/20 transition-colors font-body rounded-2xl"
+          >
+            <span class="border-b border-brand-primary pb-0.5"
+              >Procurar linha manualmente</span
+            >
+          </button>
+        </div>
+      </footer>
+    </main>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Simple entry interaction
+        const primaryCta = document.querySelector("button");
+        primaryCta.addEventListener("click", () => {
+          // Placeholder for navigation
+        });
+      });
+    </script>
+  </body>
+</html>

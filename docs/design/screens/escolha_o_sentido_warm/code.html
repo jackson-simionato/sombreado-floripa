@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR" style="">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      try {
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                primary: "#2c2c2a",
+                surface: "#faf9f5",
+                "surface-container": "#f4f4f0",
+                "border-light": "#dbdad6",
+                "text-primary": "#2C2C2A",
+                "text-muted": "#8D8D8A",
+              },
+              fontFamily: {
+                display: ["Newsreader", "serif"],
+                body: ["Satoshi", "sans-serif"],
+              },
+              borderRadius: {
+                DEFAULT: "0.5rem",
+                lg: "1rem",
+                xl: "1.5rem",
+                "2xl": "16px",
+              },
+            },
+          },
+        };
+      } catch (_e) {}
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col selection:bg-primary/10 bg-surface">
+    <!-- TopAppBar (from COMPONENTS_26 logic) -->
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col px-6 pt-8 max-w-md mx-auto w-full">
+      <div class="mb-10">
+        <h1
+          class="font-newsreader text-4xl font-medium leading-tight tracking-tight text-text-primary"
+        >
+          Em qual sentido?
+        </h1>
+        <p class="text-text-muted text-sm mt-2 font-body">
+          Escolha a direção da sua viagem agora.
+        </p>
+      </div>
+
+      <!-- Direction Cards -->
+      <div class="space-y-4">
+        <button
+          class="direction-card w-full h-[100px] bg-white border border-border-light rounded-2xl flex items-center justify-between px-8 shadow-[0_2px_8px_rgba(0,0,0,0.02)] tap-highlight-transparent group font-body"
+        >
+          <div class="flex items-center gap-4">
+            <span
+              class="font-body text-lg font-medium tracking-tight text-text-primary text-xl"
+            >
+              Bairro
+              <span
+                class="material-symbols-outlined align-middle mx-1 text-xl text-text-muted"
+                >arrow_forward</span
+              >
+              Centro
+            </span>
+          </div>
+          <span
+            class="material-symbols-outlined text-text-muted opacity-0 group-hover:opacity-100 transition-opacity"
+            >chevron_right</span
+          >
+        </button>
+
+        <button
+          class="direction-card w-full h-[100px] bg-white border border-border-light rounded-2xl flex items-center justify-between px-8 shadow-[0_2px_8px_rgba(0,0,0,0.02)] tap-highlight-transparent group font-body"
+        >
+          <div class="flex items-center gap-4">
+            <span
+              class="font-body text-lg font-medium tracking-tight text-text-primary text-xl"
+            >
+              Centro
+              <span
+                class="material-symbols-outlined align-middle mx-1 text-xl text-text-muted"
+                >arrow_forward</span
+              >
+              Bairro
+            </span>
+          </div>
+          <span
+            class="material-symbols-outlined text-text-muted opacity-0 group-hover:opacity-100 transition-opacity"
+            >chevron_right</span
+          >
+        </button>
+      </div>
+
+      <!-- High Negative Space Footer context -->
+      <div class="mt-auto pt-12 text-center">
+        <span class="material-symbols-outlined text-border-light text-4xl"
+          >sailing</span
+        >
+      </div>
+    </main>
+
+    <!-- BottomNavBar (from COMPONENTS_26) -->
+  </body>
+</html>

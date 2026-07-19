@@ -1,0 +1,56 @@
+.screen {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.heroAccent {
+  display: inline;
+  font-style: italic;
+  font-weight: 450;
+}
+
+.hero {
+  display: grid;
+  gap: var(--space-6);
+  align-content: start;
+}
+
+.notice,
+.manualNotice {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.notice {
+  color: var(--color-muted-ink);
+  text-align: center;
+}
+
+.manualNotice {
+  border-left: 4px solid var(--color-warning);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+@media (max-width: 640px) {
+  .screen {
+    gap: var(--space-5);
+  }
+
+  .hero {
+    gap: var(--space-5);
+  }
+
+  .heroAccent {
+    line-height: 1;
+  }
+
+  .notice,
+  .manualNotice {
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+}

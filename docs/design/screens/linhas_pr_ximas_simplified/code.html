@@ -1,0 +1,342 @@
+<!doctype html>
+<html class="light" lang="pt-BR" style="">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;500;600;700&amp;family=Hanken+Grotesk:wght@300;400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-variant": "#e3e2df",
+              "on-error": "#ffffff",
+              "secondary-fixed-dim": "#d4c5a6",
+              "tertiary-container": "#172e3d",
+              "on-tertiary-fixed-variant": "#334959",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-low": "#f4f4f0",
+              "on-primary-container": "#949390",
+              "surface-bright": "#faf9f5",
+              "error-container": "#ffdad6",
+              "surface-container": "#efeeea",
+              outline: "#777871",
+              "secondary-container": "#f1e1c0",
+              "on-error-container": "#93000a",
+              "outline-variant": "#c7c7bf",
+              "on-background": "#1b1c1a",
+              "on-surface-variant": "#464742",
+              "primary-fixed-dim": "#c8c6c3",
+              "tertiary-fixed-dim": "#b2c9dd",
+              surface: "#faf9f5",
+              "on-secondary": "#ffffff",
+              "surface-dim": "#dbdad6",
+              "inverse-on-surface": "#f2f1ed",
+              "primary-container": "#2c2c2a",
+              "inverse-primary": "#c8c6c3",
+              "on-tertiary-fixed": "#051e2c",
+              tertiary: "#011928",
+              "on-primary-fixed": "#1b1c1a",
+              "on-secondary-fixed": "#221b07",
+              "on-primary-fixed-variant": "#474744",
+              "on-tertiary-container": "#7f96a8",
+              "on-secondary-container": "#6f6349",
+              "surface-container-high": "#e9e8e4",
+              "on-surface": "#1b1c1a",
+              "on-primary": "#ffffff",
+              "accent-yellow": "#FFF1B5",
+              "on-secondary-fixed-variant": "#50462e",
+              "secondary-fixed": "#f1e1c0",
+              error: "#ba1a1a",
+              "surface-tint": "#5f5e5c",
+              "muted-text": "#8D8D8A",
+              primary: "#171816",
+              background: "#faf9f5",
+              "inverse-surface": "#2f312e",
+              "tertiary-fixed": "#cee5fa",
+              "on-tertiary": "#ffffff",
+              "surface-container-highest": "#e3e2df",
+              secondary: "#695d44",
+              "primary-fixed": "#e5e2df",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "16px",
+              full: "9999px",
+            },
+            spacing: {
+              "margin-desktop": "64px",
+              gutter: "24px",
+              unit: "8px",
+              "container-max": "1200px",
+              "margin-mobile": "20px",
+            },
+            fontFamily: {
+              "display-lg": ["Newsreader", "serif"],
+              "label-md": ["Hanken Grotesk", "sans-serif"],
+              "body-lg": ["Hanken Grotesk", "sans-serif"],
+              "label-sm": ["Hanken Grotesk", "sans-serif"],
+              "headline-md": ["Newsreader", "serif"],
+              "headline-sm": ["Newsreader", "serif"],
+              "display-lg-mobile": ["Newsreader", "serif"],
+              "body-md": ["Hanken Grotesk", "sans-serif"],
+            },
+            fontSize: {
+              "display-lg": [
+                "48px",
+                {
+                  lineHeight: "56px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "500",
+                },
+              ],
+              "label-md": [
+                "14px",
+                {
+                  lineHeight: "20px",
+                  letterSpacing: "0.01em",
+                  fontWeight: "600",
+                },
+              ],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "label-sm": [
+                "12px",
+                {
+                  lineHeight: "16px",
+                  letterSpacing: "0.04em",
+                  fontWeight: "500",
+                },
+              ],
+              "headline-md": [
+                "32px",
+                { lineHeight: "40px", fontWeight: "500" },
+              ],
+              "headline-sm": [
+                "24px",
+                { lineHeight: "32px", fontWeight: "600" },
+              ],
+              "display-lg-mobile": [
+                "36px",
+                { lineHeight: "44px", fontWeight: "500" },
+              ],
+              "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #faf9f5; /* Warm Alabaster */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+        display: inline-block;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        direction: ltr;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+      .editorial-shadow {
+        box-shadow: 0 32px 64px -12px rgba(27, 28, 26, 0.04);
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #e3e2df;
+        border-radius: 10px;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="font-body-md text-on-surface selection:bg-secondary-container bg-background"
+    style="background-color: rgb(250, 249, 245)"
+  >
+    <!-- TopAppBar -->
+
+    <main
+      class="pb-32 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto pt-12"
+    >
+      <!-- Hero Section -->
+      <section class="mb-12">
+        <h2
+          class="font-display-lg-mobile text-display-lg-mobile text-on-surface mb-2 animate-in fade-in slide-in-from-bottom-4 duration-700"
+        >
+          Linhas Próximas
+        </h2>
+        <p class="font-body-md text-muted-text flex items-center gap-2">
+          <span class="material-symbols-outlined text-[16px]">location_on</span>
+          Baseado na sua localização atual.
+        </p>
+      </section>
+      <!-- Route List -->
+      <div class="space-y-4 bg-background">
+        <!-- Route 1 -->
+        <div
+          class="group relative flex items-center justify-between p-6 rounded-xl border border-outline/10 bg-white/50 hover:bg-white transition-all duration-300 editorial-shadow hover:scale-[1.01] cursor-pointer"
+        >
+          <div class="flex items-center gap-6">
+            <div
+              class="w-14 h-14 flex items-center justify-center bg-primary text-white rounded-full font-label-md"
+            >
+              233
+            </div>
+            <div>
+              <h3
+                class="font-headline-sm text-lg text-primary mb-1 font-body-md"
+              >
+                TICAN / TITRI via UFSC
+              </h3>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="font-label-md text-secondary block">120m</span
+            ><span
+              class="material-symbols-outlined text-outline/30 group-hover:text-primary transition-colors"
+              >chevron_right</span
+            >
+          </div>
+        </div>
+        <!-- Route 2 -->
+        <div
+          class="group relative flex items-center justify-between p-6 rounded-xl border border-outline/10 bg-white/50 hover:bg-white transition-all duration-300 editorial-shadow hover:scale-[1.01] cursor-pointer"
+        >
+          <div class="flex items-center gap-6">
+            <div
+              class="w-14 h-14 flex items-center justify-center bg-primary text-white rounded-full font-label-md"
+            >
+              185
+            </div>
+            <div>
+              <h3
+                class="font-headline-sm text-lg text-primary mb-1 font-body-md"
+              >
+                UFSC Semidireto
+              </h3>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="font-label-md text-secondary block">350m</span
+            ><span
+              class="material-symbols-outlined text-outline/30 group-hover:text-primary transition-colors"
+              >chevron_right</span
+            >
+          </div>
+        </div>
+        <!-- Route 3 -->
+        <div
+          class="group relative flex items-center justify-between p-6 rounded-xl border border-outline/10 bg-white/50 hover:bg-white transition-all duration-300 editorial-shadow hover:scale-[1.01] cursor-pointer"
+        >
+          <div class="flex items-center gap-6">
+            <div
+              class="w-14 h-14 flex items-center justify-center bg-primary text-white rounded-full font-label-md"
+            >
+              135
+            </div>
+            <div>
+              <h3
+                class="font-headline-sm text-lg text-primary mb-1 font-body-md"
+              >
+                Volta ao Morro Norte
+              </h3>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="font-label-md text-secondary block">480m</span
+            ><span
+              class="material-symbols-outlined text-outline/30 group-hover:text-primary transition-colors"
+              >chevron_right</span
+            >
+          </div>
+        </div>
+        <!-- Route 4 -->
+        <div
+          class="group relative flex items-center justify-between p-6 rounded-xl border border-outline/10 bg-white/50 hover:bg-white transition-all duration-300 editorial-shadow hover:scale-[1.01] cursor-pointer"
+        >
+          <div class="flex items-center gap-6">
+            <div
+              class="w-14 h-14 flex items-center justify-center bg-primary text-white rounded-full font-label-md"
+            >
+              330
+            </div>
+            <div>
+              <h3
+                class="font-headline-sm text-lg text-primary mb-1 font-body-md"
+              >
+                TILAG / TICEN
+              </h3>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="font-label-md text-secondary block">600m</span
+            ><span
+              class="material-symbols-outlined text-outline/30 group-hover:text-primary transition-colors"
+              >chevron_right</span
+            >
+          </div>
+        </div>
+      </div>
+      <!-- Atmospheric Card -->
+    </main>
+    <!-- BottomNavBar -->
+
+    <script>
+      // Micro-interactions for list items
+      document.querySelectorAll(".group").forEach((item) => {
+        item.addEventListener("mouseenter", () => {
+          // Subtle feedback if needed
+        });
+
+        item.addEventListener("click", () => {
+          // Click animation
+          item.classList.add("scale-95");
+          setTimeout(() => item.classList.remove("scale-95"), 150);
+        });
+      });
+
+      // Sticky header opacity on scroll
+      window.addEventListener("scroll", () => {
+        const header = document.querySelector("header");
+        if (window.scrollY > 20) {
+          header.classList.add("bg-white/80", "backdrop-blur-md");
+          header.classList.remove("bg-background");
+        } else {
+          header.classList.remove("bg-white/80", "backdrop-blur-md");
+          header.classList.add("bg-background");
+        }
+      });
+    </script>
+  </body>
+</html>

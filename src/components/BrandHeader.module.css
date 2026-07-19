@@ -1,0 +1,47 @@
+.brand {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  color: #2c2c2a;
+}
+
+.mark {
+  width: 32px;
+  flex: 0 0 32px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgb(30 30 28 / 20%);
+  border-radius: 9999px;
+  position: relative;
+}
+
+.shadow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 50%;
+  border-radius: 9999px 9999px 0 0;
+  background: #1e1e1c;
+  transform: rotate(45deg);
+  transform-origin: center bottom;
+}
+
+.sun {
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  color: #fdfcf8;
+  fill: currentcolor;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: -0.025em;
+}

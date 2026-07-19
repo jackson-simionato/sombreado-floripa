@@ -1,0 +1,560 @@
+.figure {
+  margin: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.bus {
+  width: min(100%, 292px);
+  height: clamp(372px, 50vh, 456px);
+  justify-self: center;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) 14px;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) var(--space-2);
+  border: 2px solid rgba(37, 33, 27, 0.18);
+  border-radius: 34px 34px 24px 24px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0 8px,
+      rgba(37, 33, 27, 0.035) 8px 10px,
+      transparent 10px calc(100% - 10px),
+      rgba(37, 33, 27, 0.035) calc(100% - 10px) calc(100% - 8px),
+      transparent calc(100% - 8px)
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 249, 238, 0.96),
+      rgba(255, 255, 255, 0.98)
+    ),
+    var(--color-paper);
+  box-shadow: 0 16px 34px rgba(37, 33, 27, 0.1);
+  position: relative;
+  overflow: visible;
+}
+
+.busCompact {
+  width: min(100%, 292px);
+  height: clamp(214px, 29vh, 272px);
+  grid-template-rows: auto minmax(0, 1fr) 10px;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3) var(--space-1);
+  border-radius: 28px 28px 20px 20px;
+}
+
+.bus::before {
+  content: "";
+  position: absolute;
+  inset: 42px var(--space-3) 25px;
+  border: 1px solid rgba(107, 98, 88, 0.16);
+  border-radius: 20px 20px 16px 16px;
+  pointer-events: none;
+}
+
+.busCompact::before {
+  inset: 35px var(--space-2) 19px;
+  border-radius: 17px 17px 13px 13px;
+}
+
+.bus::after {
+  content: "";
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  width: 44px;
+  height: 8px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      var(--color-sun-500) 0 10px,
+      transparent 10px 34px,
+      var(--color-sun-500) 34px
+    ),
+    rgba(37, 33, 27, 0.76);
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.92);
+}
+
+.busCompact::after {
+  top: 8px;
+  width: 40px;
+  height: 7px;
+}
+
+.wheelCue {
+  position: absolute;
+  inset: 92px -8px 58px;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, #25211b 0 54%, transparent 56%) left top
+      8px / 15px 36px no-repeat,
+    radial-gradient(ellipse at center, #25211b 0 54%, transparent 56%) left
+      bottom 10px / 15px 36px no-repeat,
+    radial-gradient(ellipse at center, #25211b 0 54%, transparent 56%) right top
+      8px / 15px 36px no-repeat,
+    radial-gradient(ellipse at center, #25211b 0 54%, transparent 56%) right
+      bottom 10px / 15px 36px no-repeat;
+  z-index: 0;
+}
+
+.busCompact .wheelCue {
+  inset: 62px -7px 34px;
+  background:
+    radial-gradient(ellipse at center, #25211b 0 54%, transparent 56%) left top
+      6px / 13px 30px no-repeat,
+    radial-gradient(ellipse at center, #25211b 0 54%, transparent 56%) left
+      bottom 8px / 13px 30px no-repeat,
+    radial-gradient(ellipse at center, #25211b 0 54%, transparent 56%) right top
+      6px / 13px 30px no-repeat,
+    radial-gradient(ellipse at center, #25211b 0 54%, transparent 56%) right
+      bottom 8px / 13px 30px no-repeat;
+}
+
+.frontCue {
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) 22px;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 5px var(--space-2);
+  padding: 2px var(--space-2) var(--space-1);
+  border-radius: 24px 24px 14px 14px;
+  background:
+    linear-gradient(180deg, rgba(37, 33, 27, 0.07), transparent),
+    rgba(255, 255, 255, 0.55);
+  z-index: 1;
+}
+
+.busCompact .frontCue {
+  min-height: 43px;
+  grid-template-columns: 40px minmax(0, 1fr) 18px;
+  gap: 3px var(--space-1);
+  padding: 1px var(--space-2) 3px;
+  border-radius: 20px 20px 12px 12px;
+}
+
+.routeSign {
+  grid-column: 1 / -1;
+  justify-self: center;
+  min-height: 16px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-size: 0.58rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.busCompact .routeSign {
+  min-height: 14px;
+  font-size: 0.52rem;
+}
+
+.windshield {
+  grid-column: 2;
+  min-height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px 999px 13px 13px;
+  background:
+    linear-gradient(90deg, rgba(78, 156, 181, 0.26), rgba(78, 156, 181, 0.07)),
+    #f7fbfb;
+  border: 1px solid rgba(78, 156, 181, 0.34);
+  color: var(--color-muted-ink);
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.busCompact .windshield {
+  min-height: 20px;
+  font-size: 0.6rem;
+}
+
+.driverCue {
+  grid-column: 3;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(107, 98, 88, 0.22);
+  border-radius: 999px;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(37, 33, 27, 0.22) 0 2px,
+      transparent 3px
+    ),
+    rgba(255, 249, 238, 0.92);
+}
+
+.busCompact .driverCue {
+  width: 18px;
+  height: 18px;
+}
+
+.cabinBody {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 14px minmax(0, 1fr);
+  gap: var(--space-2);
+  z-index: 1;
+}
+
+.busCompact .cabinBody {
+  grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr);
+  gap: var(--space-1);
+}
+
+.rearCue {
+  justify-self: center;
+  width: 52%;
+  height: 8px;
+  border-radius: 0 0 999px 999px;
+  background:
+    linear-gradient(
+      90deg,
+      var(--color-error) 0 12px,
+      rgba(37, 33, 27, 0.18) 12px calc(100% - 12px),
+      var(--color-error) calc(100% - 12px)
+    ),
+    rgba(37, 33, 27, 0.1);
+  opacity: 0.72;
+  z-index: 1;
+}
+
+.busCompact .rearCue {
+  height: 7px;
+}
+
+.cabinBodyDeck {
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(0, 1.12fr) 22px minmax(0, 1fr);
+}
+
+.busCompact .cabinBodyDeck {
+  grid-template-rows: minmax(0, 1.08fr) 18px minmax(0, 1fr);
+}
+
+.zone,
+.deckZone {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-1);
+  border-radius: 16px;
+  padding: var(--space-3);
+  color: var(--color-ink);
+  position: relative;
+  overflow: hidden;
+}
+
+.busCompact .zone,
+.busCompact .deckZone {
+  padding: var(--space-2);
+  border-radius: 14px;
+}
+
+.zone::before,
+.deckZone::before {
+  content: "";
+  position: absolute;
+  top: 48px;
+  bottom: 62px;
+  width: 4px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.busCompact .zone::before {
+  top: 40px;
+  bottom: 48px;
+}
+
+.zoneLeft::before {
+  left: 9px;
+}
+
+.zoneRight::before {
+  right: 9px;
+}
+
+.deckZone::before {
+  inset: 14px 14px;
+  width: auto;
+  background:
+    linear-gradient(currentColor 0 0) left 0 top 0 / 28px 7px no-repeat,
+    linear-gradient(currentColor 0 0) right 0 top 0 / 28px 7px no-repeat,
+    linear-gradient(currentColor 0 0) left 0 bottom 0 / 28px 7px no-repeat,
+    linear-gradient(currentColor 0 0) right 0 bottom 0 / 28px 7px no-repeat;
+}
+
+.busCompact .deckZone::before {
+  inset: 12px;
+}
+
+.sideLabel {
+  align-self: flex-start;
+  color: var(--color-muted-ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+  z-index: 1;
+}
+
+.busCompact .sideLabel {
+  font-size: 0.72rem;
+}
+
+.seatRows {
+  position: absolute;
+  top: 48px;
+  bottom: 54px;
+  width: 42px;
+  display: grid;
+  grid-template-rows: repeat(6, 1fr);
+  align-items: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.busCompact .seatRows {
+  top: 39px;
+  bottom: 44px;
+  width: 34px;
+}
+
+.zoneLeft .seatRows {
+  left: 18px;
+}
+
+.busCompact .zoneLeft .seatRows {
+  left: 14px;
+}
+
+.zoneRight .seatRows {
+  right: 18px;
+}
+
+.busCompact .zoneRight .seatRows {
+  right: 14px;
+}
+
+.deckZone .seatRows {
+  inset: 42px var(--space-4) 52px;
+  width: auto;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: none;
+  gap: var(--space-1);
+}
+
+.busCompact .deckZone .seatRows {
+  inset: 34px var(--space-3) 42px;
+}
+
+.seatRows span {
+  width: 36px;
+  height: 11px;
+  border-radius: 8px;
+  background: rgba(37, 33, 27, 0.18);
+  box-shadow: inset 0 -3px 0 rgba(255, 255, 255, 0.28);
+}
+
+.busCompact .seatRows span {
+  width: 30px;
+  height: 9px;
+}
+
+.deckZone .seatRows span {
+  width: 100%;
+}
+
+.zone strong,
+.deckZone strong {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  max-width: 100%;
+  padding: 0.34rem 0.58rem;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.15;
+  position: relative;
+  z-index: 1;
+}
+
+.busCompact .zone strong,
+.busCompact .deckZone strong {
+  min-height: 26px;
+  padding: 0.28rem 0.5rem;
+  font-size: 0.76rem;
+}
+
+.zoneRecommended {
+  border: 2px solid rgba(78, 156, 181, 0.92);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent 52%),
+    var(--color-shade-100);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+    0 10px 18px rgba(78, 156, 181, 0.14);
+}
+
+.zoneRecommended strong {
+  color: #f8ffff;
+  background: var(--color-shade-500);
+}
+
+.zoneRecommended strong::before {
+  content: "";
+  width: 0.56rem;
+  height: 0.34rem;
+  margin-right: 0.34rem;
+  border-bottom: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+  transform: rotate(-45deg) translateY(-1px);
+}
+
+.zoneSunny {
+  border: 1.5px solid rgba(248, 184, 78, 0.72);
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(248, 184, 78, 0.2) 0 5px,
+      transparent 5px 13px
+    ),
+    var(--color-sun-100);
+}
+
+.zoneSunny strong {
+  color: #5f3c08;
+  background: rgba(255, 249, 238, 0.78);
+  border: 1px solid rgba(248, 184, 78, 0.66);
+}
+
+.zoneSunny strong::before {
+  content: "";
+  width: 0.56rem;
+  height: 0.56rem;
+  margin-right: 0.32rem;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 0 3px rgba(248, 184, 78, 0.24);
+}
+
+.zoneNeutral {
+  border: 2px solid var(--color-line);
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(107, 98, 88, 0.08) 0 6px,
+      transparent 6px 12px
+    ),
+    #fbf8f2;
+}
+
+.zoneNeutral strong {
+  color: var(--color-muted-ink);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--color-line);
+}
+
+.aisle {
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.8), transparent),
+    repeating-linear-gradient(
+      to bottom,
+      var(--color-line) 0,
+      var(--color-line) 10px,
+      transparent 10px,
+      transparent 20px
+    );
+}
+
+.aisle span {
+  color: var(--color-muted-ink);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  writing-mode: vertical-rl;
+}
+
+.deckAisle {
+  min-height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: repeating-linear-gradient(
+    to right,
+    var(--color-line) 0,
+    var(--color-line) 12px,
+    transparent 12px,
+    transparent 24px
+  );
+}
+
+.deckAisle span {
+  color: var(--color-muted-ink);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+@media (max-width: 380px) {
+  .bus {
+    padding: var(--space-2);
+    width: min(100%, 276px);
+    height: clamp(348px, 48vh, 420px);
+  }
+
+  .busCompact {
+    width: min(100%, 276px);
+    height: clamp(210px, 28vh, 258px);
+    padding: var(--space-2);
+  }
+
+  .frontCue {
+    min-height: 50px;
+  }
+
+  .busCompact .frontCue {
+    min-height: 42px;
+  }
+
+  .cabinBody {
+    grid-template-columns: minmax(0, 1fr) 12px minmax(0, 1fr);
+    gap: var(--space-1);
+  }
+
+  .zone,
+  .deckZone {
+    padding: var(--space-2);
+  }
+
+  .zone strong,
+  .deckZone strong {
+    font-size: 0.82rem;
+  }
+}
+
+.caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
