@@ -45,6 +45,10 @@ export function OnboardingFlowScreen({
     state.selectedRoute === undefined
       ? undefined
       : `${state.selectedRoute.code} ${state.selectedRoute.name}`;
+  const selectedDirectionContext =
+    state.selectedDirection === undefined
+      ? undefined
+      : formatDirectionContext(state.selectedDirection);
 
   const mapPoints = state.geometry?.polyline ?? [];
 
@@ -314,7 +318,7 @@ export function OnboardingFlowScreen({
             title="Linha confirmada"
           />
           <RouteSummary
-            directionLabel={state.selectedDirection?.name}
+            directionLabel={selectedDirectionContext}
             routeLabel={selectedRouteLabel}
           />
         </section>
@@ -358,7 +362,7 @@ export function OnboardingFlowScreen({
             title="Confirme sua linha"
           />
           <RouteSummary
-            directionLabel={state.selectedDirection?.name}
+            directionLabel={selectedDirectionContext}
             routeLabel={selectedRouteLabel}
           />
           <SchematicRouteMap points={mapPoints} />
@@ -386,7 +390,7 @@ export function OnboardingFlowScreen({
             Ainda é possível confirmar pela linha e pelo sentido.
           </Notice>
           <RouteSummary
-            directionLabel={state.selectedDirection?.name}
+            directionLabel={selectedDirectionContext}
             routeLabel={selectedRouteLabel}
           />
           <Panel>
@@ -418,7 +422,7 @@ export function OnboardingFlowScreen({
             title="Calculando pelo sol direto..."
           />
           <RouteSummary
-            directionLabel={state.selectedDirection?.name}
+            directionLabel={selectedDirectionContext}
             routeLabel={selectedRouteLabel}
           />
         </section>
@@ -435,7 +439,7 @@ export function OnboardingFlowScreen({
       if (state.advice !== undefined && state.advice.mode !== "withheld") {
         content = renderAdviceResult({
           advice: state.advice,
-          directionLabel: state.selectedDirection?.name,
+          directionLabel: selectedDirectionContext,
           route: state.selectedRoute,
         });
       } else {
@@ -464,7 +468,7 @@ export function OnboardingFlowScreen({
             title="Não é possível recomendar agora"
           />
           <RouteSummary
-            directionLabel={state.selectedDirection?.name}
+            directionLabel={selectedDirectionContext}
             routeLabel={selectedRouteLabel}
           />
         </section>
@@ -488,7 +492,7 @@ export function OnboardingFlowScreen({
           />
           {selectedRouteLabel !== undefined ? (
             <RouteSummary
-              directionLabel={state.selectedDirection?.name}
+              directionLabel={selectedDirectionContext}
               routeLabel={selectedRouteLabel}
             />
           ) : null}
@@ -660,19 +664,22 @@ function DirectionCard({
   direction: DirectionChoice;
   onSelect(): void;
 }) {
-  const directionKindLabel = formatRouteDirectionKind(direction.directionKind);
+  const directionContext = formatDirectionContext(direction);
 
   return (
     <ChoiceCard
-      ariaLabel={`Selecionar sentido ${direction.name}${
-        directionKindLabel === undefined ? "" : `, ${directionKindLabel}`
-      }`}
-      eyebrow={directionKindLabel}
-      label={direction.name}
+      ariaLabel={`Selecionar sentido ${directionContext}`}
+      label={directionContext}
       meta={direction.departureLabels.join(" · ")}
       onSelect={onSelect}
     />
   );
+}
+
+function formatDirectionContext(
+  direction: Pick<DirectionChoice, "directionKind" | "name">
+): string {
+  return formatRouteDirectionKind(direction.directionKind) ?? direction.name;
 }
 
 function formatRouteDirectionKind(

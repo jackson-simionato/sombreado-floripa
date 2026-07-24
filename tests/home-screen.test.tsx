@@ -180,10 +180,7 @@ describe("home screen flow", () => {
       screen
         .getAllByRole("button", { name: /Selecionar sentido/i })
         .map((button) => button.textContent)
-    ).toEqual([
-      "VoltaLagoa para TICENLagoa · TICEN",
-      "IdaTICEN para LagoaTICEN · Lagoa",
-    ]);
+    ).toEqual(["VoltaLagoa · TICEN", "IdaTICEN · Lagoa"]);
     expect(
       fetchMock.mock.calls.some(
         ([url]) =>
@@ -194,7 +191,7 @@ describe("home screen flow", () => {
 
     await user.click(
       screen.getByRole("button", {
-        name: "Selecionar sentido Lagoa para TICEN, Volta",
+        name: "Selecionar sentido Volta",
       })
     );
 
@@ -210,7 +207,7 @@ describe("home screen flow", () => {
       }
     );
     expect(screen.getByText("124 TICEN - Lagoa")).toBeInTheDocument();
-    expect(screen.getByText("Lagoa para TICEN")).toBeInTheDocument();
+    expect(screen.getByText("Volta")).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Trocar sentido" })
     ).toBeInTheDocument();
@@ -1153,7 +1150,7 @@ describe("home screen flow", () => {
 
     await user.click(
       screen.getByRole("button", {
-        name: "Selecionar sentido TICEN para Lagoa, Ida",
+        name: "Selecionar sentido Ida",
       })
     );
 
@@ -1177,7 +1174,7 @@ describe("home screen flow", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("4 de 4")).toBeInTheDocument();
     expect(screen.getByText("Agora no ônibus")).toBeInTheDocument();
-    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
+    expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(
       screen.getByText("Estimativa pelo sol direto. Pode variar no caminho.")
     ).toBeInTheDocument();
@@ -1332,7 +1329,7 @@ describe("home screen flow", () => {
     );
     await user.click(
       await screen.findByRole("button", {
-        name: "Selecionar sentido TICEN para Lagoa, Ida",
+        name: "Selecionar sentido Ida",
       })
     );
 
@@ -1364,7 +1361,7 @@ describe("home screen flow", () => {
     );
     await user.click(
       await screen.findByRole("button", {
-        name: "Selecionar sentido TICEN para Lagoa, Ida",
+        name: "Selecionar sentido Ida",
       })
     );
 
@@ -1385,7 +1382,7 @@ describe("home screen flow", () => {
     );
 
     expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
-    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
+    expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Melhor sentar à direita" })
     ).toBeInTheDocument();
@@ -1525,41 +1522,90 @@ describe("home screen flow", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("shows classified Route Direction Kinds on accessible direction choices", async () => {
+  test("uses classified Route Direction Kinds as the direction context", async () => {
     const user = userEvent.setup();
 
-    render(<PrototypePage />);
+    const classifiedRoute = {
+      ...liveRoute,
+      routeId: "route-165",
+      routeVersionId: "version-165",
+      code: "165",
+      name: "Monte Cristo",
+    };
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        listNearbyRouteCandidates: vi.fn().mockResolvedValue([classifiedRoute]),
+        listRouteDirections: vi.fn().mockResolvedValue([
+          {
+            routeDirectionId: "direction-165-return",
+            sequence: 2,
+            name: "165-Volta",
+            directionKind: "volta",
+            departureLabels: ["Monte Cristo", "Centro"],
+          },
+        ]),
+        getRouteGeometry: vi.fn().mockResolvedValue({
+          routeId: "route-165",
+          routeVersionId: "version-165",
+          routeDirectionId: "direction-165-return",
+          polyline: [
+            { lat: -27.5969, lng: -48.5488 },
+            { lat: -27.5961, lng: -48.5363 },
+          ],
+        }),
+        requestAdvice: vi.fn().mockResolvedValue({
+          status: "advice",
+          mode: "onboard",
+          horizon: "upcoming",
+          routeId: "route-165",
+          routeVersionId: "version-165",
+          routeDirectionId: "direction-165-return",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+          sunCondition: "daylight",
+          computedAt: "2026-06-23T12:00:00.000Z",
+        }),
+      }),
+    });
 
     await user.click(
       screen.getByRole("button", { name: "Usar minha localização" })
     );
 
     const routeButton = await screen.findByRole("button", {
-      name: "Selecionar linha 124 TICEN - Lagoa",
+      name: "Selecionar linha 165 Monte Cristo",
     });
     expect(routeButton).toBeInTheDocument();
+    expect(within(routeButton).getByText("165")).toBeInTheDocument();
 
     await user.click(routeButton);
 
     const directionButton = await screen.findByRole("button", {
-      name: "Selecionar sentido TICEN para Lagoa, Ida",
+      name: "Selecionar sentido Volta",
     });
     expect(directionButton).toBeInTheDocument();
-    expect(within(directionButton).getByText("Ida")).toBeInTheDocument();
+    expect(within(directionButton).getByText("Volta")).toBeInTheDocument();
     expect(
-      within(directionButton).getByText("TICEN para Lagoa")
+      within(directionButton).getByText("Monte Cristo · Centro")
     ).toBeInTheDocument();
-    expect(
-      within(directionButton).getByText("TICEN · UFSC · Trindade")
-    ).toBeInTheDocument();
+    expect(screen.queryByText("165-Volta")).not.toBeInTheDocument();
 
-    const returnDirectionButton = screen.getByRole("button", {
-      name: "Selecionar sentido Lagoa para TICEN, Volta",
-    });
+    await user.click(directionButton);
+
     expect(
-      within(returnDirectionButton).getByText("Volta")
+      await screen.findByRole("heading", { name: "Confirme sua linha" })
     ).toBeInTheDocument();
-    expect(screen.queryByText(/sentido escolhido/i)).not.toBeInTheDocument();
+    expect(screen.getByText("Volta")).toBeInTheDocument();
+    expect(screen.queryByText("165-Volta")).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(screen.getByText("sentido Volta")).toBeInTheDocument();
+    expect(screen.queryByText("165-Volta")).not.toBeInTheDocument();
   });
 
   test("keeps an unclassified direction selectable without a kind warning", async () => {
@@ -1605,6 +1651,7 @@ describe("home screen flow", () => {
     expect(
       await screen.findByRole("heading", { name: "Confirme sua linha" })
     ).toBeInTheDocument();
+    expect(screen.getByText("Circular Centro")).toBeInTheDocument();
   });
 
   test("keeps onboard advice text-distinct with an accessible diagram summary", async () => {
@@ -1620,7 +1667,7 @@ describe("home screen flow", () => {
     );
 
     expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
-    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
+    expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Sente à esquerda" })
     ).toBeInTheDocument();
@@ -1641,7 +1688,7 @@ describe("home screen flow", () => {
     );
 
     expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
-    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
+    expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(
       screen.getByLabelText(/Recomendação: sente à direita/i)
     ).toBeInTheDocument();
@@ -1659,7 +1706,7 @@ async function completeNearbyFlow(user: ReturnType<typeof userEvent.setup>) {
   );
   await user.click(
     await screen.findByRole("button", {
-      name: /^Selecionar sentido TICEN para Lagoa(?:, Ida)?$/,
+      name: /^Selecionar sentido (?:Ida|TICEN para Lagoa)$/,
     })
   );
   await screen.findByRole("heading", { name: "Confirme sua linha" });

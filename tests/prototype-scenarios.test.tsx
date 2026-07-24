@@ -215,8 +215,9 @@ describe("prototype scenarios", () => {
   });
 
   test.each([
-    ["error-geometry", "124 TICEN - Lagoa", "TICEN para Lagoa"],
-    ["error-advice", "124 TICEN - Lagoa", "TICEN para Lagoa"],
+    ["advice-computing", "124 TICEN - Lagoa", "Ida"],
+    ["error-geometry", "124 TICEN - Lagoa", "Ida"],
+    ["error-advice", "124 TICEN - Lagoa", "Ida"],
   ] as const)(
     "preserves post-selection context in %s",
     async (prototypeScenarioId, routeLabel, directionLabel) => {
@@ -325,7 +326,7 @@ describe("prototype scenarios", () => {
     );
     expect(routeCode).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
-    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
+    expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(screen.queryByText("Recomendação")).not.toBeInTheDocument();
     expect(
       screen.getByLabelText(
@@ -355,7 +356,7 @@ describe("prototype scenarios", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("124")).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
-    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
+    expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(
       screen.getByText(
         "Prévia a cerca de 64 m fora da rota. Estimativa pelo sol direto; pode variar no caminho."
