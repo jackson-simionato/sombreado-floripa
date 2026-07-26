@@ -1,0 +1,440 @@
+[
+  {
+    "adviceContent": {
+      "bottom": 690.9,
+      "height": 674.9,
+      "top": 16,
+      "width": 328
+    },
+    "availableAboveActions": 481,
+    "busGraphic": {
+      "bottom": 633.8,
+      "height": 348,
+      "top": 285.8,
+      "width": 276
+    },
+    "diagramFigure": {
+      "bottom": 633.8,
+      "height": 348,
+      "top": 285.8,
+      "width": 281.2
+    },
+    "diagramSlot": {
+      "bottom": 633.8,
+      "height": 348,
+      "top": 285.8,
+      "width": 294
+    },
+    "documentHeight": 839,
+    "estimateNotice": {
+      "bottom": 673.9,
+      "height": 28,
+      "top": 645.8,
+      "width": 294
+    },
+    "fixedActions": {
+      "bottom": 640,
+      "height": 143,
+      "top": 497,
+      "width": 328
+    },
+    "initialOverlapPastActions": 193.9,
+    "progress": {
+      "bottom": 35,
+      "height": 19,
+      "top": 16,
+      "width": 328
+    },
+    "recommendationPanel": {
+      "bottom": 690.9,
+      "height": 557.8,
+      "top": 133,
+      "width": 328
+    },
+    "resultCopy": {
+      "bottom": 273.8,
+      "height": 115.8,
+      "top": 158,
+      "width": 294
+    },
+    "routeMetadata": {
+      "bottom": 121,
+      "height": 74,
+      "top": 47,
+      "width": 328
+    },
+    "scenarioId": "advice-onboard-left",
+    "scenarioName": "onboard-left",
+    "scrollRange": 199,
+    "viewport": {
+      "height": 640,
+      "width": 360
+    },
+    "screenshot": "onboard-left-360x640.png"
+  },
+  {
+    "adviceContent": {
+      "bottom": 764.9,
+      "height": 748.9,
+      "top": 16,
+      "width": 358
+    },
+    "availableAboveActions": 685,
+    "busGraphic": {
+      "bottom": 707.8,
+      "height": 422,
+      "top": 285.8,
+      "width": 292
+    },
+    "diagramFigure": {
+      "bottom": 707.8,
+      "height": 422,
+      "top": 285.8,
+      "width": 324
+    },
+    "diagramSlot": {
+      "bottom": 707.8,
+      "height": 422,
+      "top": 285.8,
+      "width": 324
+    },
+    "documentHeight": 913,
+    "estimateNotice": {
+      "bottom": 747.9,
+      "height": 28,
+      "top": 719.8,
+      "width": 324
+    },
+    "fixedActions": {
+      "bottom": 844,
+      "height": 143,
+      "top": 701,
+      "width": 358
+    },
+    "initialOverlapPastActions": 63.9,
+    "progress": {
+      "bottom": 35,
+      "height": 19,
+      "top": 16,
+      "width": 358
+    },
+    "recommendationPanel": {
+      "bottom": 764.9,
+      "height": 631.8,
+      "top": 133,
+      "width": 358
+    },
+    "resultCopy": {
+      "bottom": 273.8,
+      "height": 115.8,
+      "top": 158,
+      "width": 324
+    },
+    "routeMetadata": {
+      "bottom": 121,
+      "height": 74,
+      "top": 47,
+      "width": 358
+    },
+    "scenarioId": "advice-onboard-left",
+    "scenarioName": "onboard-left",
+    "scrollRange": 69,
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "screenshot": "onboard-left-390x844.png"
+  },
+  {
+    "adviceContent": {
+      "bottom": 747.3,
+      "height": 731.3,
+      "top": 16,
+      "width": 328
+    },
+    "availableAboveActions": 481,
+    "busGraphic": {
+      "bottom": 671.3,
+      "height": 348,
+      "top": 323.3,
+      "width": 276
+    },
+    "diagramFigure": {
+      "bottom": 671.3,
+      "height": 348,
+      "top": 323.3,
+      "width": 281.2
+    },
+    "diagramSlot": {
+      "bottom": 671.3,
+      "height": 348,
+      "top": 323.3,
+      "width": 294
+    },
+    "documentHeight": 895,
+    "estimateNotice": {
+      "bottom": 730.3,
+      "height": 47.1,
+      "top": 683.3,
+      "width": 294
+    },
+    "fixedActions": {
+      "bottom": 640,
+      "height": 143,
+      "top": 497,
+      "width": 328
+    },
+    "initialOverlapPastActions": 250.3,
+    "progress": {
+      "bottom": 35,
+      "height": 19,
+      "top": 16,
+      "width": 328
+    },
+    "recommendationPanel": {
+      "bottom": 747.3,
+      "height": 614.3,
+      "top": 133,
+      "width": 328
+    },
+    "resultCopy": {
+      "bottom": 311.3,
+      "height": 153.2,
+      "top": 158,
+      "width": 294
+    },
+    "routeMetadata": {
+      "bottom": 121,
+      "height": 74,
+      "top": 47,
+      "width": 328
+    },
+    "scenarioId": "advice-preview",
+    "scenarioName": "preview",
+    "scrollRange": 255,
+    "viewport": {
+      "height": 640,
+      "width": 360
+    },
+    "screenshot": "preview-360x640.png"
+  },
+  {
+    "adviceContent": {
+      "bottom": 821.3,
+      "height": 805.3,
+      "top": 16,
+      "width": 358
+    },
+    "availableAboveActions": 685,
+    "busGraphic": {
+      "bottom": 745.3,
+      "height": 422,
+      "top": 323.3,
+      "width": 292
+    },
+    "diagramFigure": {
+      "bottom": 745.3,
+      "height": 422,
+      "top": 323.3,
+      "width": 324
+    },
+    "diagramSlot": {
+      "bottom": 745.3,
+      "height": 422,
+      "top": 323.3,
+      "width": 324
+    },
+    "documentHeight": 969,
+    "estimateNotice": {
+      "bottom": 804.3,
+      "height": 47.1,
+      "top": 757.3,
+      "width": 324
+    },
+    "fixedActions": {
+      "bottom": 844,
+      "height": 143,
+      "top": 701,
+      "width": 358
+    },
+    "initialOverlapPastActions": 120.3,
+    "progress": {
+      "bottom": 35,
+      "height": 19,
+      "top": 16,
+      "width": 358
+    },
+    "recommendationPanel": {
+      "bottom": 821.3,
+      "height": 688.3,
+      "top": 133,
+      "width": 358
+    },
+    "resultCopy": {
+      "bottom": 311.3,
+      "height": 153.2,
+      "top": 158,
+      "width": 324
+    },
+    "routeMetadata": {
+      "bottom": 121,
+      "height": 74,
+      "top": 47,
+      "width": 358
+    },
+    "scenarioId": "advice-preview",
+    "scenarioName": "preview",
+    "scrollRange": 125,
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "screenshot": "preview-390x844.png"
+  },
+  {
+    "adviceContent": {
+      "bottom": 728.3,
+      "height": 712.3,
+      "top": 16,
+      "width": 328
+    },
+    "availableAboveActions": 481,
+    "busGraphic": {
+      "bottom": 671.3,
+      "height": 348,
+      "top": 323.3,
+      "width": 276
+    },
+    "diagramFigure": {
+      "bottom": 671.3,
+      "height": 348,
+      "top": 323.3,
+      "width": 294
+    },
+    "diagramSlot": {
+      "bottom": 671.3,
+      "height": 348,
+      "top": 323.3,
+      "width": 294
+    },
+    "documentHeight": 876,
+    "estimateNotice": {
+      "bottom": 711.3,
+      "height": 28,
+      "top": 683.3,
+      "width": 294
+    },
+    "fixedActions": {
+      "bottom": 640,
+      "height": 143,
+      "top": 497,
+      "width": 328
+    },
+    "initialOverlapPastActions": 231.3,
+    "progress": {
+      "bottom": 35,
+      "height": 19,
+      "top": 16,
+      "width": 328
+    },
+    "recommendationPanel": {
+      "bottom": 728.3,
+      "height": 595.3,
+      "top": 133,
+      "width": 328
+    },
+    "resultCopy": {
+      "bottom": 311.3,
+      "height": 153.2,
+      "top": 158,
+      "width": 294
+    },
+    "routeMetadata": {
+      "bottom": 121,
+      "height": 74,
+      "top": 47,
+      "width": 328
+    },
+    "scenarioId": "advice-neutral-overhead",
+    "scenarioName": "neutral-overhead",
+    "scrollRange": 236,
+    "viewport": {
+      "height": 640,
+      "width": 360
+    },
+    "screenshot": "neutral-overhead-360x640.png"
+  },
+  {
+    "adviceContent": {
+      "bottom": 802.3,
+      "height": 786.3,
+      "top": 16,
+      "width": 358
+    },
+    "availableAboveActions": 685,
+    "busGraphic": {
+      "bottom": 745.3,
+      "height": 422,
+      "top": 323.3,
+      "width": 292
+    },
+    "diagramFigure": {
+      "bottom": 745.3,
+      "height": 422,
+      "top": 323.3,
+      "width": 324
+    },
+    "diagramSlot": {
+      "bottom": 745.3,
+      "height": 422,
+      "top": 323.3,
+      "width": 324
+    },
+    "documentHeight": 950,
+    "estimateNotice": {
+      "bottom": 785.3,
+      "height": 28,
+      "top": 757.3,
+      "width": 324
+    },
+    "fixedActions": {
+      "bottom": 844,
+      "height": 143,
+      "top": 701,
+      "width": 358
+    },
+    "initialOverlapPastActions": 101.3,
+    "progress": {
+      "bottom": 35,
+      "height": 19,
+      "top": 16,
+      "width": 358
+    },
+    "recommendationPanel": {
+      "bottom": 802.3,
+      "height": 669.3,
+      "top": 133,
+      "width": 358
+    },
+    "resultCopy": {
+      "bottom": 311.3,
+      "height": 153.2,
+      "top": 158,
+      "width": 324
+    },
+    "routeMetadata": {
+      "bottom": 121,
+      "height": 74,
+      "top": 47,
+      "width": 358
+    },
+    "scenarioId": "advice-neutral-overhead",
+    "scenarioName": "neutral-overhead",
+    "scrollRange": 106,
+    "viewport": {
+      "height": 844,
+      "width": 390
+    },
+    "screenshot": "neutral-overhead-390x844.png"
+  }
+]
