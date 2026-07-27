@@ -237,6 +237,7 @@
 }
 
 .busCompact .cabinBodyDeck {
+  grid-template-columns: 1fr;
   grid-template-rows: minmax(0, 1.08fr) 18px minmax(0, 1fr);
 }
 
