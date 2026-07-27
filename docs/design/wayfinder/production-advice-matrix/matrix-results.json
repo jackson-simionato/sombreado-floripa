@@ -228,7 +228,7 @@
     }
   ],
   "browserErrors": [],
-  "generatedAt": "2026-07-27T15:28:32.517Z",
+  "generatedAt": "2026-07-27T15:35:59.832Z",
   "interactions": [
     {
       "estimate": {
@@ -238,11 +238,11 @@
         "focusedHeading": "Sobre esta estimativa",
         "isolation": { "ariaHidden": "true", "inert": true },
         "closeRect": {
-          "bottom": 366.26,
+          "bottom": 367.72,
           "height": 48,
           "left": 292.17,
           "right": 336,
-          "top": 318.26,
+          "top": 319.72,
           "width": 43.83
         },
         "sheetAnimationDuration": "0.3s",
@@ -275,11 +275,11 @@
         "focusedHeading": "Sobre esta estimativa",
         "isolation": { "ariaHidden": "true", "inert": true },
         "closeRect": {
-          "bottom": 570.26,
+          "bottom": 571.72,
           "height": 48,
           "left": 322.17,
           "right": 366,
-          "top": 522.26,
+          "top": 523.72,
           "width": 43.83
         },
         "sheetAnimationDuration": "0.3s",
