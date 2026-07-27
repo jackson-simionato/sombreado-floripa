@@ -86,8 +86,8 @@ const browser = await chromium.launch({
 const browserErrors = [];
 const results = [];
 const boundaries = [];
-let interactionEvidence;
-let reducedMotionEvidence;
+const interactionEvidence = [];
+const reducedMotionEvidence = [];
 
 try {
   for (const viewport of viewports) {
@@ -147,12 +147,28 @@ try {
     await page.close();
   }
 
-  interactionEvidence = await verifyInteractions(browser, browserErrors);
-  reducedMotionEvidence = await verifyReducedMotion(browser, browserErrors);
+  for (const viewport of viewports) {
+    interactionEvidence.push(
+      await verifyInteractions(browser, browserErrors, viewport)
+    );
+    reducedMotionEvidence.push(
+      await verifyReducedMotion(browser, browserErrors, viewport)
+    );
+  }
 } finally {
   await browser.close();
 }
 
+assert.equal(
+  evidenceRecordCount(interactionEvidence),
+  viewports.length,
+  "Interaction evidence does not cover both production viewports"
+);
+assert.equal(
+  evidenceRecordCount(reducedMotionEvidence),
+  viewports.length,
+  "Reduced-motion evidence does not cover both production viewports"
+);
 assert.deepEqual(
   browserErrors,
   [],
@@ -174,9 +190,8 @@ const matrixResults = await format(
       areas,
       boundaryChecks: boundaries.length,
       contexts,
-      interactionChecks: ["estimate", "options"].filter(
-        (key) => interactionEvidence[key] !== undefined
-      ).length,
+      interactionChecks: interactionEvidence.length * 2,
+      reducedMotionChecks: reducedMotionEvidence.length,
       viewports,
     },
   }),
@@ -241,6 +256,10 @@ async function collectResultMetrics(page) {
       '[data-testid="advice-trust-row"]',
       "trust row"
     );
+    const announcement = requiredElement(
+      '[data-testid="advice-announcement"]',
+      "polite advice announcement"
+    );
     const actions = requiredElement(
       '[data-testid="advice-result-actions"]',
       "result actions"
@@ -289,6 +308,7 @@ async function collectResultMetrics(page) {
       roundRect(element.getBoundingClientRect())
     );
     const artworkRect = roundRect(artwork.getBoundingClientRect());
+    const announcementStyle = getComputedStyle(announcement);
     const artworkFrame = artwork.parentElement;
 
     if (!(artworkFrame instanceof HTMLElement)) {
@@ -329,6 +349,12 @@ async function collectResultMetrics(page) {
 
     return {
       actionRect: roundRect(actions.getBoundingClientRect()),
+      announcementAriaAtomic: announcement.getAttribute("aria-atomic"),
+      announcementAriaLive: announcement.getAttribute("aria-live"),
+      announcementPosition: announcementStyle.position,
+      announcementRect: roundRect(announcement.getBoundingClientRect()),
+      announcementRole: announcement.getAttribute("role"),
+      announcementText: announcement.textContent?.replace(/\s+/g, " ").trim(),
       artworkComplete: artwork.complete,
       artworkComputedTransform: getComputedStyle(artwork).transform,
       artworkMirrored: artwork.getAttribute("data-artwork-mirrored"),
@@ -459,6 +485,31 @@ function validateResultMetrics(metrics, { area, context, stateName }) {
     [],
     `${stateName}: visible result text is clipped`
   );
+  assert.equal(
+    metrics.announcementRole,
+    "status",
+    `${stateName}: advice announcement is not a status`
+  );
+  assert.equal(
+    metrics.announcementAriaLive,
+    "polite",
+    `${stateName}: advice announcement is not polite`
+  );
+  assert.equal(
+    metrics.announcementAriaAtomic,
+    "true",
+    `${stateName}: advice announcement is not atomic`
+  );
+  assert.equal(
+    metrics.announcementPosition,
+    "absolute",
+    `${stateName}: advice announcement is not visually isolated`
+  );
+  assert.ok(
+    metrics.announcementRect.width <= 1.1 &&
+      metrics.announcementRect.height <= 1.1,
+    `${stateName}: advice announcement duplicates visible copy`
+  );
   assert.match(
     metrics.routeText ?? "",
     new RegExp(longRouteName),
@@ -547,6 +598,11 @@ function validateResultMetrics(metrics, { area, context, stateName }) {
     metrics.contextText,
     expectedContextText,
     `${stateName}: result context is not explicit`
+  );
+  assert.equal(
+    metrics.announcementText,
+    `${expectedContextText}. ${metrics.diagramSummary}`,
+    `${stateName}: polite announcement does not combine context and advice`
   );
 
   if (area === "neutral") {
@@ -973,11 +1029,11 @@ async function verifyBoundary(page, viewport, scenarioId, expectation) {
   };
 }
 
-async function verifyInteractions(activeBrowser, errors) {
+async function verifyInteractions(activeBrowser, errors, viewport) {
   const page = await activeBrowser.newPage({
-    viewport: { width: 390, height: 844 },
+    viewport,
   });
-  collectBrowserErrors(page, errors, "interactions");
+  collectBrowserErrors(page, errors, `interactions-${viewport.name}`);
   await openScenario(page, "advice-matrix-preview-left");
 
   const estimateTrigger = page.getByRole("button", {
@@ -985,6 +1041,25 @@ async function verifyInteractions(activeBrowser, errors) {
   });
   await estimateTrigger.click();
   await assertFocusedHeading(page, "Sobre esta estimativa");
+  const estimateDialog = page.getByRole("dialog", {
+    name: "Sobre esta estimativa",
+  });
+  const estimateCloseRect = await locatorRect(
+    estimateDialog.getByRole("button", { name: "Fechar" })
+  );
+  assertVisibleTarget(
+    estimateCloseRect,
+    viewport,
+    `${viewport.name}: estimate close`
+  );
+  const estimateSheetAnimationDuration = await estimateDialog.evaluate(
+    (dialog) => getComputedStyle(dialog).animationDuration
+  );
+  const estimateSheetSeconds = durationSeconds(estimateSheetAnimationDuration);
+  assert.ok(
+    estimateSheetSeconds >= 0.3 && estimateSheetSeconds <= 0.7,
+    `${viewport.name}: sheet entrance is ${estimateSheetAnimationDuration}, expected 300–700ms`
+  );
   const estimateFocusedHeading = await focusedText(page);
   const estimateIsolation = await page
     .locator('[data-testid="advice-result-background"]')
@@ -1008,7 +1083,7 @@ async function verifyInteractions(activeBrowser, errors) {
   await hideDevelopmentPortal(page);
   await page.screenshot({
     animations: "disabled",
-    path: `${outputPath}390x844-estimate-focus-proof.png`,
+    path: `${outputPath}${viewport.name}-estimate-focus-proof.png`,
   });
   await page.keyboard.press("Tab");
   const estimateFirstTabText = await focusedText(page);
@@ -1027,6 +1102,15 @@ async function verifyInteractions(activeBrowser, errors) {
   const optionsTrigger = page.getByRole("button", { name: "Opções" });
   await optionsTrigger.click();
   await assertFocusedHeading(page, "Outras opções");
+  const optionsDialog = page.getByRole("dialog", { name: "Outras opções" });
+  const optionsCloseRect = await locatorRect(
+    optionsDialog.getByRole("button", { name: "Fechar" })
+  );
+  assertVisibleTarget(
+    optionsCloseRect,
+    viewport,
+    `${viewport.name}: options close`
+  );
   const optionsFocusedHeading = await focusedText(page);
   await page.keyboard.press("Shift+Tab");
   const optionsReverseWrapText = await focusedText(page);
@@ -1063,26 +1147,30 @@ async function verifyInteractions(activeBrowser, errors) {
       firstTabText: estimateFirstTabText,
       focusedHeading: estimateFocusedHeading,
       isolation: estimateIsolation,
+      closeRect: estimateCloseRect,
+      sheetAnimationDuration: estimateSheetAnimationDuration,
+      sheetSeconds: estimateSheetSeconds,
       trappedTabText: estimateTrappedTabText,
     },
     options: {
       backdropRestoredText: optionsBackdropRestoredText,
+      closeRect: optionsCloseRect,
       focusedHeading: optionsFocusedHeading,
       forwardWrapText: optionsForwardWrapText,
       inertAfterClose: optionsInertAfterClose,
       reverseWrapText: optionsReverseWrapText,
     },
     scenarioId: "advice-matrix-preview-left",
-    viewport: { height: 844, width: 390 },
+    viewport,
   };
 }
 
-async function verifyReducedMotion(activeBrowser, errors) {
+async function verifyReducedMotion(activeBrowser, errors, viewport) {
   const page = await activeBrowser.newPage({
     reducedMotion: "reduce",
-    viewport: { width: 360, height: 640 },
+    viewport,
   });
-  collectBrowserErrors(page, errors, "reduced-motion");
+  collectBrowserErrors(page, errors, `reduced-motion-${viewport.name}`);
   await openScenario(page, "advice-matrix-recent-front");
   await page.getByRole("button", { name: "Entenda a estimativa" }).click();
   const motion = await page.getByRole("dialog").evaluate((dialog) => {
@@ -1120,7 +1208,7 @@ async function verifyReducedMotion(activeBrowser, errors) {
       .map(durationSeconds),
     scenarioId: "advice-matrix-recent-front",
     sheetSeconds: durationSeconds(motion.sheetAnimationDuration),
-    viewport: { height: 640, width: 360 },
+    viewport,
   };
 }
 
@@ -1153,10 +1241,47 @@ async function hideDevelopmentPortal(page) {
   });
 }
 
+async function locatorRect(locator) {
+  const box = await locator.boundingBox();
+
+  if (box === null) {
+    throw new Error("Visible browser target has no bounding box");
+  }
+
+  return {
+    bottom: Number((box.y + box.height).toFixed(2)),
+    height: Number(box.height.toFixed(2)),
+    left: Number(box.x.toFixed(2)),
+    right: Number((box.x + box.width).toFixed(2)),
+    top: Number(box.y.toFixed(2)),
+    width: Number(box.width.toFixed(2)),
+  };
+}
+
+function assertVisibleTarget(rect, viewport, label) {
+  assert.ok(
+    rect.height >= 48,
+    `${label} target is ${rect.height}px tall, expected at least 48px`
+  );
+  assert.ok(
+    rect.left >= -0.5 &&
+      rect.right <= viewport.width + 0.5 &&
+      rect.top >= -0.5 &&
+      rect.bottom <= viewport.height + 0.5,
+    `${label} target leaves the viewport`
+  );
+}
+
 function durationSeconds(value) {
   const duration = Number.parseFloat(value);
 
   return value.trim().endsWith("ms") ? duration / 1000 : duration;
+}
+
+function evidenceRecordCount(evidence) {
+  if (evidence === undefined) return 0;
+
+  return Array.isArray(evidence) ? evidence.length : 1;
 }
 
 async function verifyApprovedAssets() {

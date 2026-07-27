@@ -30,8 +30,11 @@ The full run also verifies:
 - no clipped persistent actions or visible result text;
 - accessible summaries and meaningful visual reading order;
 - estimate/options focus, trap, Escape, backdrop, restoration, and inert
-  background behavior;
-- reduced-motion computed durations;
+  background behavior at both viewports;
+- 48px estimate/options sheet Close targets and 300ms standard entrance motion;
+- reduced-motion computed durations at both viewports;
+- visually hidden polite advice announcements that combine context and result
+  summary;
 - distinct withheld and advice-error boundaries, with retained per-viewport
   overflow, clipping, overlap, action-target, and action-rectangle records;
 - retained focus, inert, restoration, trap, and reduced-motion values;

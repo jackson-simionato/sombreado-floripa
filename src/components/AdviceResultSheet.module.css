@@ -28,7 +28,7 @@
   box-shadow: 0 -20px 60px rgb(23 24 22 / 15%);
   position: relative;
   z-index: 1;
-  animation: sheet-enter 180ms ease-out;
+  animation: sheet-enter 300ms ease-out;
 }
 
 .handle {
@@ -56,7 +56,7 @@
   color: var(--color-muted-ink);
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
@@ -64,12 +64,12 @@
   font-family: var(--font-display);
   font-size: 1.75rem;
   font-weight: 620;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   line-height: 1.05;
 }
 
 .close {
-  min-height: 2rem;
+  min-height: 3rem;
   padding: 0;
   border: 0;
   background: transparent;

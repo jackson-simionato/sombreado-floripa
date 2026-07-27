@@ -90,6 +90,18 @@
   gap: var(--space-3);
 }
 
+.srOnly {
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  position: absolute;
+  white-space: nowrap;
+}
+
 @media (max-width: 640px) {
   .resultStack {
     gap: 2px;

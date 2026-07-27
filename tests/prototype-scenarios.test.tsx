@@ -479,7 +479,7 @@ describe("prototype scenarios", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Esse lado tende a pegar menos sol direto no ponto estimado da linha."
+        "Prévia, não orientação ao vivo. Menor incidência estimada neste ponto."
       )
     ).toBeInTheDocument();
     expect(screen.getByText("124")).toBeInTheDocument();

@@ -42,6 +42,7 @@ export function AdviceResultSurface({
   route,
 }: AdviceResultSurfaceProps) {
   const variant = adviceVariantCopy(advice);
+  const modeLabel = resultModeLabel(advice, context);
   const [activeSheet, setActiveSheet] = useState<"estimate" | "options" | null>(
     null
   );
@@ -143,6 +144,15 @@ export function AdviceResultSurface({
   return (
     <>
       <div ref={backgroundRef} data-testid="advice-result-background">
+        <p
+          aria-atomic="true"
+          aria-live="polite"
+          className={styles.srOnly}
+          data-testid="advice-announcement"
+          role="status"
+        >
+          {modeLabel}. {variant.accessibleSummary}
+        </p>
         <section
           className={styles.resultStack}
           data-testid="advice-result-screen"
@@ -166,7 +176,7 @@ export function AdviceResultSurface({
             <div data-testid="advice-result-header">
               <ScreenHeader
                 body={variant.body}
-                eyebrow={resultModeLabel(advice, context)}
+                eyebrow={modeLabel}
                 title={variant.title}
                 variant="result"
               />
@@ -329,9 +339,6 @@ function previewDirectionalAdviceCopy(
 
   return {
     ...copy,
-    body:
-      recommendedSeatArea === "front" || recommendedSeatArea === "back"
-        ? "Essa parte tende a pegar menos sol direto no ponto estimado da linha."
-        : "Esse lado tende a pegar menos sol direto no ponto estimado da linha.",
+    body: "Prévia, não orientação ao vivo. Menor incidência estimada neste ponto.",
   };
 }

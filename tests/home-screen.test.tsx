@@ -1404,6 +1404,11 @@ describe("home screen flow", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
+        "Prévia, não orientação ao vivo. Menor incidência estimada neste ponto."
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
         "Estimativa pela incidência de sol. Pode variar no caminho."
       )
     ).toBeInTheDocument();
@@ -1751,6 +1756,11 @@ describe("home screen flow", () => {
 
     expect(
       await screen.findByText("Prévia da linha · ponto estimado")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Prévia, não orientação ao vivo. Menor incidência estimada neste ponto."
+      )
     ).toBeInTheDocument();
     expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(

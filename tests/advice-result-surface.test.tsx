@@ -37,7 +37,7 @@ describe("AdviceResultSurface", () => {
       },
       "Prévia da linha · ponto estimado",
       "Melhor sentar à direita",
-      "Esse lado tende a pegar menos sol direto no ponto estimado da linha.",
+      "Prévia, não orientação ao vivo. Menor incidência estimada neste ponto.",
       "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.",
     ],
     [
@@ -117,6 +117,49 @@ describe("AdviceResultSurface", () => {
       }
     }
   );
+
+  test("politely announces mounted and updated advice context without adding visible copy", () => {
+    const { rerender } = render(
+      <AdviceResultSurface
+        advice={{
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+        }}
+        context="onboard"
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        route={route}
+      />
+    );
+
+    const announcement = screen.getByRole("status");
+    expect(announcement).toHaveTextContent(
+      "Agora no ônibus. Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus."
+    );
+    expect(screen.getByTestId("advice-result-screen")).not.toContainElement(
+      announcement
+    );
+
+    rerender(
+      <AdviceResultSurface
+        advice={{
+          mode: "neutralComputed",
+          directSunExposure: "overhead",
+        }}
+        context="preview"
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        route={route}
+      />
+    );
+
+    expect(announcement).toHaveTextContent(
+      "Prévia da linha · ponto estimado. O sol está alto; não há lado melhor agora."
+    );
+    expect(announcement).toHaveAttribute("aria-live", "polite");
+    expect(announcement).toHaveAttribute("aria-atomic", "true");
+  });
 
   test("uses the compact diagram contract for the no-scroll result hierarchy", () => {
     render(
