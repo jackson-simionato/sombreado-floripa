@@ -439,6 +439,14 @@ export function OnboardingFlowScreen({
         content = (
           <AdviceResultSurface
             advice={state.advice}
+            context={
+              state.screen === "routePreviewAdviceResult"
+                ? "preview"
+                : "freshnessNotice" in state.advice &&
+                    state.advice.freshnessNotice === "recentFallback"
+                  ? "recent"
+                  : "onboard"
+            }
             directionLabel={selectedDirectionContext}
             onChangeDirection={actions.changeDirection}
             onChangeRoute={actions.changeRoute}

@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 
 import { PrototypeScenarioSwitcher } from "../components/PrototypeScenarioSwitcher";
 import type { PrototypeScenarioId } from "../domain/types";
-import { getPrototypeScenario } from "../mocks/scenarioStates";
+import {
+  getPrototypeScenario,
+  isPrototypeScenarioId,
+} from "../mocks/scenarioStates";
 
 import { HomePageApp } from "./HomePageApp";
 
@@ -12,6 +15,16 @@ export function PrototypeHomePage() {
   const [prototypeScenarioId, setPrototypeScenarioId] =
     useState<PrototypeScenarioId>("location-request");
   const [isMobileViewport, setIsMobileViewport] = useState(false);
+
+  useEffect(() => {
+    const requestedScenario = new URLSearchParams(window.location.search).get(
+      "scenario"
+    );
+
+    if (isPrototypeScenarioId(requestedScenario)) {
+      setPrototypeScenarioId(requestedScenario);
+    }
+  }, []);
 
   useEffect(() => {
     if (

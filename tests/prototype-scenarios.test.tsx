@@ -37,6 +37,64 @@ const scenarioExpectations = [
   ["error-advice", "Algo deu errado"],
 ] as const;
 
+const productionAdviceMatrix = [
+  ["left", "onboard", "advice-matrix-onboard-left", "Sente à esquerda"],
+  [
+    "right",
+    "onboard",
+    "advice-matrix-onboard-right",
+    "Melhor sentar à direita",
+  ],
+  [
+    "front",
+    "onboard",
+    "advice-matrix-onboard-front",
+    "Prefira sentar mais à frente",
+  ],
+  ["back", "onboard", "advice-matrix-onboard-back", "Prefira o fundo"],
+  [
+    "neutral",
+    "onboard",
+    "advice-matrix-onboard-neutral",
+    "Sem lado melhor agora",
+  ],
+  ["left", "preview", "advice-matrix-preview-left", "Sente à esquerda"],
+  [
+    "right",
+    "preview",
+    "advice-matrix-preview-right",
+    "Melhor sentar à direita",
+  ],
+  [
+    "front",
+    "preview",
+    "advice-matrix-preview-front",
+    "Prefira sentar mais à frente",
+  ],
+  ["back", "preview", "advice-matrix-preview-back", "Prefira o fundo"],
+  [
+    "neutral",
+    "preview",
+    "advice-matrix-preview-neutral",
+    "Sem lado melhor agora",
+  ],
+  ["left", "recent", "advice-matrix-recent-left", "Sente à esquerda"],
+  ["right", "recent", "advice-matrix-recent-right", "Melhor sentar à direita"],
+  [
+    "front",
+    "recent",
+    "advice-matrix-recent-front",
+    "Prefira sentar mais à frente",
+  ],
+  ["back", "recent", "advice-matrix-recent-back", "Prefira o fundo"],
+  [
+    "neutral",
+    "recent",
+    "advice-matrix-recent-neutral",
+    "Sem lado melhor agora",
+  ],
+] as const;
+
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
@@ -59,6 +117,71 @@ function mockMobileViewport(matches: boolean) {
 }
 
 describe("prototype scenarios", () => {
+  test.each(productionAdviceMatrix)(
+    "query-selects the production %s %s scenario",
+    async (_area, _context, prototypeScenarioId, expectedHeading) => {
+      window.history.replaceState(
+        null,
+        "",
+        `/prototype?scenario=${prototypeScenarioId}`
+      );
+
+      render(<PrototypePage />);
+
+      expect(
+        await screen.findByRole("heading", { name: expectedHeading })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição"
+        )
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Atualizar localização" })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Opções" })
+      ).toBeInTheDocument();
+    }
+  );
+
+  test.each([
+    ["advice-withheld", "Não é possível recomendar agora"],
+    ["error-advice", "Algo deu errado"],
+  ] as const)(
+    "query-selects the production %s boundary",
+    async (prototypeScenarioId, expectedHeading) => {
+      window.history.replaceState(
+        null,
+        "",
+        `/prototype?scenario=${prototypeScenarioId}`
+      );
+
+      render(<PrototypePage />);
+
+      expect(
+        await screen.findByRole("heading", { name: expectedHeading })
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId("advice-result-screen")
+      ).not.toBeInTheDocument();
+    }
+  );
+
+  test("ignores an unknown query scenario", async () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/prototype?scenario=not-a-production-scenario"
+    );
+
+    render(<PrototypePage />);
+
+    expect(
+      await screen.findByRole("heading", { name: "Viaje na sombra." })
+    ).toBeInTheDocument();
+  });
+
   test.each(scenarioExpectations)(
     "renders %s",
     async (prototypeScenarioId, expectedHeading) => {

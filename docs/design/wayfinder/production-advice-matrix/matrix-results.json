@@ -1,0 +1,4385 @@
+{
+  "assetIntegrity": {
+    "back": {
+      "bytes": 1143240,
+      "sha256": "ceea0578ad539ebb9faab812f3e06d6c01751c76842c011b4fecc0358cb62c80"
+    },
+    "front": {
+      "bytes": 1184328,
+      "sha256": "409797020518f2baa7f56b38dc6f544d89cb0ffa7aad350873521fe1cccc5a19"
+    },
+    "neutral": {
+      "bytes": 350880,
+      "sha256": "16dccdf23212f7b77dc2f84ba715891b694fdf12733a25166c3495bd5f28dd8e"
+    },
+    "side": {
+      "bytes": 417315,
+      "sha256": "949ae66ca5e1f0b4c1d977fe04aec49230e557b1eaefb31e1c301542e757b93f"
+    }
+  },
+  "browserErrors": [],
+  "generatedAt": "2026-07-27T14:56:00.982Z",
+  "results": [
+    {
+      "area": "left",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 448.73,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 198.73,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 447.73,
+          "height": 248,
+          "left": 134,
+          "right": 226,
+          "top": 199.73,
+          "width": 92
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 448.73,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 183.86,
+            "width": 310
+          },
+          {
+            "bottom": 481.73,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 452.73,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Agora no ônibus",
+        "diagramSummary": "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgb(206, 229, 250)", "rgb(241, 225, 192)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquiesquerda",
+          "☀ Maior incidênciaSol diretodireita"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "108px 92px 108px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 488.73,
+          "height": 472.73,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 473,
+        "resultClientHeight": 473,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaAgora no ônibusSente à esquerdaEsse lado deve pegar menos sol direto neste sentido.↑ Frente✓ RecomendadoSente aquiesquerda☀ Maior incidênciaSol diretodireitaRecomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "scenarioId": "advice-matrix-onboard-left",
+      "state": "360x640-left-onboard",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "left",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 448.73,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 198.73,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 447.73,
+          "height": 248,
+          "left": 134,
+          "right": 226,
+          "top": 199.73,
+          "width": 92
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 448.73,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 183.86,
+            "width": 310
+          },
+          {
+            "bottom": 481.73,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 452.73,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Prévia da linha · ponto estimado",
+        "diagramSummary": "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgb(206, 229, 250)", "rgb(241, 225, 192)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquiesquerda",
+          "☀ Maior incidênciaSol diretodireita"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "108px 92px 108px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 488.73,
+          "height": 472.73,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 473,
+        "resultClientHeight": 473,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaPrévia da linha · ponto estimadoSente à esquerdaEsse lado tende a pegar menos sol direto no ponto estimado da linha.↑ Frente✓ RecomendadoSente aquiesquerda☀ Maior incidênciaSol diretodireitaRecomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "scenarioId": "advice-matrix-preview-left",
+      "state": "360x640-left-preview",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "left",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 491.52,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 241.52,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 490.52,
+          "height": 248,
+          "left": 134,
+          "right": 226,
+          "top": 242.52,
+          "width": 92
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 491.52,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 226.64,
+            "width": 310
+          },
+          {
+            "bottom": 524.52,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 495.52,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Última localização conhecida",
+        "diagramSummary": "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgb(206, 229, 250)", "rgb(241, 225, 192)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquiesquerda",
+          "☀ Maior incidênciaSol diretodireita"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "108px 92px 108px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 531.52,
+          "height": 515.52,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 516,
+        "resultClientHeight": 516,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaÚltima localização conhecidaSente à esquerdaEsse lado deve pegar menos sol direto neste sentido.Usando sua última localização conhecida. Atualize quando estiver no ônibus.↑ Frente✓ RecomendadoSente aquiesquerda☀ Maior incidênciaSol diretodireitaRecomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "scenarioId": "advice-matrix-recent-left",
+      "state": "360x640-left-recent",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "right",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(-1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 448.73,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 198.73,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 447.73,
+          "height": 248,
+          "left": 134,
+          "right": 226,
+          "top": 199.73,
+          "width": 92
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 448.73,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 183.86,
+            "width": 310
+          },
+          {
+            "bottom": 481.73,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 452.73,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Agora no ônibus",
+        "diagramSummary": "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgb(241, 225, 192)", "rgb(206, 229, 250)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretoesquerda",
+          "✓ RecomendadoSente aquidireita"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "108px 92px 108px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 488.73,
+          "height": 472.73,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 473,
+        "resultClientHeight": 473,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaAgora no ônibusMelhor sentar à direitaEsse lado deve pegar menos sol direto neste sentido.↑ Frente☀ Maior incidênciaSol diretoesquerda✓ RecomendadoSente aquidireitaRecomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "scenarioId": "advice-matrix-onboard-right",
+      "state": "360x640-right-onboard",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "right",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(-1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 448.73,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 198.73,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 447.73,
+          "height": 248,
+          "left": 134,
+          "right": 226,
+          "top": 199.73,
+          "width": 92
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 448.73,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 183.86,
+            "width": 310
+          },
+          {
+            "bottom": 481.73,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 452.73,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Prévia da linha · ponto estimado",
+        "diagramSummary": "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgb(241, 225, 192)", "rgb(206, 229, 250)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretoesquerda",
+          "✓ RecomendadoSente aquidireita"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "108px 92px 108px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 488.73,
+          "height": 472.73,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 473,
+        "resultClientHeight": 473,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaPrévia da linha · ponto estimadoMelhor sentar à direitaEsse lado tende a pegar menos sol direto no ponto estimado da linha.↑ Frente☀ Maior incidênciaSol diretoesquerda✓ RecomendadoSente aquidireitaRecomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "scenarioId": "advice-matrix-preview-right",
+      "state": "360x640-right-preview",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "right",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(-1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 491.52,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 241.52,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 490.52,
+          "height": 248,
+          "left": 134,
+          "right": 226,
+          "top": 242.52,
+          "width": 92
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 491.52,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 226.64,
+            "width": 310
+          },
+          {
+            "bottom": 524.52,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 495.52,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Última localização conhecida",
+        "diagramSummary": "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgb(241, 225, 192)", "rgb(206, 229, 250)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretoesquerda",
+          "✓ RecomendadoSente aquidireita"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "108px 92px 108px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 531.52,
+          "height": 515.52,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 516,
+        "resultClientHeight": 516,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaÚltima localização conhecidaMelhor sentar à direitaEsse lado deve pegar menos sol direto neste sentido.Usando sua última localização conhecida. Atualize quando estiver no ônibus.↑ Frente☀ Maior incidênciaSol diretoesquerda✓ RecomendadoSente aquidireitaRecomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "scenarioId": "advice-matrix-recent-right",
+      "state": "360x640-right-recent",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "front",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [220, 235, 249, 255],
+            [219, 235, 249, 255],
+            [242, 242, 242, 255],
+            [254, 240, 215, 255],
+            [254, 240, 215, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 453.73,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 203.73,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 340.73,
+          "height": 34,
+          "left": 26,
+          "right": 334,
+          "top": 306.73,
+          "width": 308
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 448.73,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 183.86,
+            "width": 310
+          },
+          {
+            "bottom": 481.73,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 452.73,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Agora no ônibus",
+        "diagramSummary": "Recomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquifrente",
+          "☀ Maior incidênciaSol diretofundo"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "308px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 488.73,
+          "height": 472.73,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 473,
+        "resultClientHeight": 473,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaAgora no ônibusPrefira sentar mais à frenteParte da frente deve pegar menos sol direto neste sentido.↑ Frente✓ RecomendadoSente aquifrente☀ Maior incidênciaSol diretofundoRecomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "renderedProofLandmarks": {
+        "bottom": [241, 225, 192, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [206, 229, 250, 255]
+      },
+      "scenarioId": "advice-matrix-onboard-front",
+      "state": "360x640-front-onboard",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "front",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [220, 235, 249, 255],
+            [219, 235, 249, 255],
+            [242, 242, 242, 255],
+            [254, 240, 215, 255],
+            [254, 240, 215, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 453.73,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 203.73,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 340.73,
+          "height": 34,
+          "left": 26,
+          "right": 334,
+          "top": 306.73,
+          "width": 308
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 448.73,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 183.86,
+            "width": 310
+          },
+          {
+            "bottom": 481.73,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 452.73,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Prévia da linha · ponto estimado",
+        "diagramSummary": "Recomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquifrente",
+          "☀ Maior incidênciaSol diretofundo"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "308px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 488.73,
+          "height": 472.73,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 473,
+        "resultClientHeight": 473,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaPrévia da linha · ponto estimadoPrefira sentar mais à frenteEssa parte tende a pegar menos sol direto no ponto estimado da linha.↑ Frente✓ RecomendadoSente aquifrente☀ Maior incidênciaSol diretofundoRecomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "renderedProofLandmarks": {
+        "bottom": [241, 225, 192, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [206, 229, 250, 255]
+      },
+      "scenarioId": "advice-matrix-preview-front",
+      "state": "360x640-front-preview",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "front",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [220, 235, 249, 255],
+            [219, 235, 249, 255],
+            [242, 242, 242, 255],
+            [254, 240, 215, 255],
+            [254, 240, 215, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 496.52,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 246.52,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 383.52,
+          "height": 34,
+          "left": 26,
+          "right": 334,
+          "top": 349.52,
+          "width": 308
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 491.52,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 226.64,
+            "width": 310
+          },
+          {
+            "bottom": 524.52,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 495.52,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Última localização conhecida",
+        "diagramSummary": "Recomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquifrente",
+          "☀ Maior incidênciaSol diretofundo"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "308px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 531.52,
+          "height": 515.52,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 516,
+        "resultClientHeight": 516,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaÚltima localização conhecidaPrefira sentar mais à frenteParte da frente deve pegar menos sol direto neste sentido.Usando sua última localização conhecida. Atualize quando estiver no ônibus.↑ Frente✓ RecomendadoSente aquifrente☀ Maior incidênciaSol diretofundoRecomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "renderedProofLandmarks": {
+        "bottom": [241, 225, 192, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [206, 229, 250, 255]
+      },
+      "scenarioId": "advice-matrix-recent-front",
+      "state": "360x640-front-recent",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "back",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [254, 235, 199, 255],
+            [254, 235, 200, 255],
+            [242, 242, 242, 255],
+            [218, 232, 248, 255],
+            [218, 233, 248, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 453.73,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 203.73,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 340.73,
+          "height": 34,
+          "left": 26,
+          "right": 334,
+          "top": 306.73,
+          "width": 308
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 448.73,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 183.86,
+            "width": 310
+          },
+          {
+            "bottom": 481.73,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 452.73,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Agora no ônibus",
+        "diagramSummary": "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretofrente",
+          "✓ RecomendadoSente aquifundo"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "308px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 488.73,
+          "height": 472.73,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 473,
+        "resultClientHeight": 473,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaAgora no ônibusPrefira o fundoParte de trás deve pegar menos sol direto neste sentido.↑ Frente☀ Maior incidênciaSol diretofrente✓ RecomendadoSente aquifundoRecomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "renderedProofLandmarks": {
+        "bottom": [217, 232, 247, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [255, 235, 200, 255]
+      },
+      "scenarioId": "advice-matrix-onboard-back",
+      "state": "360x640-back-onboard",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "back",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [254, 235, 199, 255],
+            [254, 235, 200, 255],
+            [242, 242, 242, 255],
+            [218, 232, 248, 255],
+            [218, 233, 248, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 453.73,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 203.73,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 340.73,
+          "height": 34,
+          "left": 26,
+          "right": 334,
+          "top": 306.73,
+          "width": 308
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 448.73,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 183.86,
+            "width": 310
+          },
+          {
+            "bottom": 481.73,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 452.73,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Prévia da linha · ponto estimado",
+        "diagramSummary": "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretofrente",
+          "✓ RecomendadoSente aquifundo"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "308px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 488.73,
+          "height": 472.73,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 473,
+        "resultClientHeight": 473,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaPrévia da linha · ponto estimadoPrefira o fundoEssa parte tende a pegar menos sol direto no ponto estimado da linha.↑ Frente☀ Maior incidênciaSol diretofrente✓ RecomendadoSente aquifundoRecomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "renderedProofLandmarks": {
+        "bottom": [217, 232, 247, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [255, 235, 200, 255]
+      },
+      "scenarioId": "advice-matrix-preview-back",
+      "state": "360x640-back-preview",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "back",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [254, 235, 199, 255],
+            [254, 235, 200, 255],
+            [242, 242, 242, 255],
+            [218, 232, 248, 255],
+            [218, 233, 248, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 496.52,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 246.52,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 383.52,
+          "height": 34,
+          "left": 26,
+          "right": 334,
+          "top": 349.52,
+          "width": 308
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 491.52,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 226.64,
+            "width": 310
+          },
+          {
+            "bottom": 524.52,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 495.52,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Última localização conhecida",
+        "diagramSummary": "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretofrente",
+          "✓ RecomendadoSente aquifundo"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "308px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 531.52,
+          "height": 515.52,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 516,
+        "resultClientHeight": 516,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaÚltima localização conhecidaPrefira o fundoParte de trás deve pegar menos sol direto neste sentido.Usando sua última localização conhecida. Atualize quando estiver no ônibus.↑ Frente☀ Maior incidênciaSol diretofrente✓ RecomendadoSente aquifundoRecomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "renderedProofLandmarks": {
+        "bottom": [217, 232, 247, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [255, 235, 200, 255]
+      },
+      "scenarioId": "advice-matrix-recent-back",
+      "state": "360x640-back-recent",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "neutral",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [234, 67, 41, 255],
+          "rows": [
+            [251, 249, 247, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [251, 249, 246, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 448.73,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 198.73,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 447.73,
+          "height": 248,
+          "left": 134,
+          "right": 226,
+          "top": 199.73,
+          "width": 92
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 448.73,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 183.86,
+            "width": 310
+          },
+          {
+            "bottom": 481.73,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 452.73,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Agora no ônibus",
+        "diagramSummary": "O sol está alto; não há lado melhor agora.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgb(244, 244, 240)", "rgb(244, 244, 240)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "− Sem preferênciaSem destaqueesquerda",
+          "− Sem preferênciaSem destaquedireita"
+        ],
+        "ledgerTones": ["neutral", "neutral"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "108px 92px 108px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 488.73,
+          "height": 472.73,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 473,
+        "resultClientHeight": 473,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaAgora no ônibusSem lado melhor agoraO sol está alto e não há uma diferença relevante entre os lados.↑ Frente− Sem preferênciaSem destaqueesquerda− Sem preferênciaSem destaquedireitaO sol está alto; não há lado melhor agora.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "scenarioId": "advice-matrix-onboard-neutral",
+      "state": "360x640-neutral-onboard",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "neutral",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [234, 67, 41, 255],
+          "rows": [
+            [251, 249, 247, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [251, 249, 246, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 448.73,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 198.73,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 447.73,
+          "height": 248,
+          "left": 134,
+          "right": 226,
+          "top": 199.73,
+          "width": 92
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 448.73,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 183.86,
+            "width": 310
+          },
+          {
+            "bottom": 481.73,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 452.73,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Prévia da linha · ponto estimado",
+        "diagramSummary": "O sol está alto; não há lado melhor agora.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgb(244, 244, 240)", "rgb(244, 244, 240)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "− Sem preferênciaSem destaqueesquerda",
+          "− Sem preferênciaSem destaquedireita"
+        ],
+        "ledgerTones": ["neutral", "neutral"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "108px 92px 108px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 488.73,
+          "height": 472.73,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 473,
+        "resultClientHeight": 473,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaPrévia da linha · ponto estimadoSem lado melhor agoraO sol está alto e não há uma diferença relevante entre os lados.↑ Frente− Sem preferênciaSem destaqueesquerda− Sem preferênciaSem destaquedireitaO sol está alto; não há lado melhor agora.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "scenarioId": "advice-matrix-preview-neutral",
+      "state": "360x640-neutral-preview",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "neutral",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 628,
+          "height": 96,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [234, 67, 41, 255],
+          "rows": [
+            [251, 249, 247, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [251, 249, 246, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 491.52,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 241.52,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 490.52,
+          "height": 248,
+          "left": 134,
+          "right": 226,
+          "top": 242.52,
+          "width": 92
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 93.41,
+            "height": 62,
+            "left": 16,
+            "right": 344,
+            "top": 31.41,
+            "width": 328
+          },
+          {
+            "bottom": 179.86,
+            "height": 73.45,
+            "left": 25,
+            "right": 335,
+            "top": 106.41,
+            "width": 310
+          },
+          {
+            "bottom": 491.52,
+            "height": 264.88,
+            "left": 25,
+            "right": 335,
+            "top": 226.64,
+            "width": 310
+          },
+          {
+            "bottom": 524.52,
+            "height": 29,
+            "left": 25,
+            "right": 335,
+            "top": 495.52,
+            "width": 310
+          },
+          {
+            "bottom": 628,
+            "height": 96,
+            "left": 16,
+            "right": 344,
+            "top": 532,
+            "width": 328
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Última localização conhecida",
+        "diagramSummary": "O sol está alto; não há lado melhor agora.",
+        "documentClientHeight": 640,
+        "documentClientWidth": 360,
+        "documentScrollHeight": 640,
+        "documentScrollWidth": 360,
+        "ledgerBackgrounds": ["rgb(244, 244, 240)", "rgb(244, 244, 240)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "− Sem preferênciaSem destaqueesquerda",
+          "− Sem preferênciaSem destaquedireita"
+        ],
+        "ledgerTones": ["neutral", "neutral"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 628,
+          "height": 32,
+          "left": 156.55,
+          "right": 203.44,
+          "top": 596,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 588,
+          "height": 56,
+          "left": 16,
+          "right": 344,
+          "top": 532,
+          "width": 328
+        },
+        "proofGridColumns": "108px 92px 108px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 531.52,
+          "height": 515.52,
+          "left": 16,
+          "right": 344,
+          "top": 16,
+          "width": 328
+        },
+        "resultScrollHeight": 516,
+        "resultClientHeight": 516,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaÚltima localização conhecidaSem lado melhor agoraO sol está alto e não há uma diferença relevante entre os lados.Usando sua última localização conhecida. Atualize quando estiver no ônibus.↑ Frente− Sem preferênciaSem destaqueesquerda− Sem preferênciaSem destaquedireitaO sol está alto; não há lado melhor agora.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "scenarioId": "advice-matrix-recent-neutral",
+      "state": "360x640-neutral-recent",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "left",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 559.42,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 309.42,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 558.42,
+          "height": 248,
+          "left": 148.7,
+          "right": 241.28,
+          "top": 310.42,
+          "width": 92.58
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 286.55,
+            "height": 115.8,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 559.42,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 294.55,
+            "width": 332
+          },
+          {
+            "bottom": 610.48,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 567.42,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Agora no ônibus",
+        "diagramSummary": "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgb(206, 229, 250)", "rgb(241, 225, 192)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquiesquerda",
+          "☀ Maior incidênciaSol diretodireita"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "118.703px 92.5781px 118.719px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 623.48,
+          "height": 607.48,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 607,
+        "resultClientHeight": 607,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaAgora no ônibusSente à esquerdaEsse lado deve pegar menos sol direto neste sentido.↑ Frente✓ RecomendadoSente aquiesquerda☀ Maior incidênciaSol diretodireitaRecomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "scenarioId": "advice-matrix-onboard-left",
+      "state": "390x844-left-onboard",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "left",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 559.42,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 309.42,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 558.42,
+          "height": 248,
+          "left": 148.7,
+          "right": 241.28,
+          "top": 310.42,
+          "width": 92.58
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 286.55,
+            "height": 115.8,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 559.42,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 294.55,
+            "width": 332
+          },
+          {
+            "bottom": 610.48,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 567.42,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Prévia da linha · ponto estimado",
+        "diagramSummary": "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgb(206, 229, 250)", "rgb(241, 225, 192)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquiesquerda",
+          "☀ Maior incidênciaSol diretodireita"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "118.703px 92.5781px 118.719px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 623.48,
+          "height": 607.48,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 607,
+        "resultClientHeight": 607,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaPrévia da linha · ponto estimadoSente à esquerdaEsse lado tende a pegar menos sol direto no ponto estimado da linha.↑ Frente✓ RecomendadoSente aquiesquerda☀ Maior incidênciaSol diretodireitaRecomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "scenarioId": "advice-matrix-preview-left",
+      "state": "390x844-left-preview",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "left",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 637.48,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 387.48,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 636.48,
+          "height": 248,
+          "left": 148.7,
+          "right": 241.28,
+          "top": 388.48,
+          "width": 92.58
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 286.55,
+            "height": 115.8,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 637.48,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 372.61,
+            "width": 332
+          },
+          {
+            "bottom": 688.55,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 645.48,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Última localização conhecida",
+        "diagramSummary": "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgb(206, 229, 250)", "rgb(241, 225, 192)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquiesquerda",
+          "☀ Maior incidênciaSol diretodireita"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "118.703px 92.5781px 118.719px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 701.55,
+          "height": 685.55,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 686,
+        "resultClientHeight": 686,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaÚltima localização conhecidaSente à esquerdaEsse lado deve pegar menos sol direto neste sentido.Usando sua última localização conhecida. Atualize quando estiver no ônibus.↑ Frente✓ RecomendadoSente aquiesquerda☀ Maior incidênciaSol diretodireitaRecomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "scenarioId": "advice-matrix-recent-left",
+      "state": "390x844-left-recent",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "right",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(-1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 596.86,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 346.86,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 595.86,
+          "height": 248,
+          "left": 148.7,
+          "right": 241.28,
+          "top": 347.86,
+          "width": 92.58
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 323.98,
+            "height": 153.23,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 596.86,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 331.98,
+            "width": 332
+          },
+          {
+            "bottom": 647.92,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 604.86,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Agora no ônibus",
+        "diagramSummary": "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgb(241, 225, 192)", "rgb(206, 229, 250)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretoesquerda",
+          "✓ RecomendadoSente aquidireita"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "118.703px 92.5781px 118.719px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 660.92,
+          "height": 644.92,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 645,
+        "resultClientHeight": 645,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaAgora no ônibusMelhor sentar à direitaEsse lado deve pegar menos sol direto neste sentido.↑ Frente☀ Maior incidênciaSol diretoesquerda✓ RecomendadoSente aquidireitaRecomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "scenarioId": "advice-matrix-onboard-right",
+      "state": "390x844-right-onboard",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "right",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(-1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 596.86,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 346.86,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 595.86,
+          "height": 248,
+          "left": 148.7,
+          "right": 241.28,
+          "top": 347.86,
+          "width": 92.58
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 323.98,
+            "height": 153.23,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 596.86,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 331.98,
+            "width": 332
+          },
+          {
+            "bottom": 647.92,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 604.86,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Prévia da linha · ponto estimado",
+        "diagramSummary": "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgb(241, 225, 192)", "rgb(206, 229, 250)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretoesquerda",
+          "✓ RecomendadoSente aquidireita"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "118.703px 92.5781px 118.719px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 660.92,
+          "height": 644.92,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 645,
+        "resultClientHeight": 645,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaPrévia da linha · ponto estimadoMelhor sentar à direitaEsse lado tende a pegar menos sol direto no ponto estimado da linha.↑ Frente☀ Maior incidênciaSol diretoesquerda✓ RecomendadoSente aquidireitaRecomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "scenarioId": "advice-matrix-preview-right",
+      "state": "390x844-right-preview",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "right",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(-1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [225, 66, 43, 255],
+          "rows": [
+            [211, 232, 250, 255],
+            [211, 232, 249, 255],
+            [210, 231, 249, 255],
+            [211, 231, 249, 255],
+            [210, 231, 249, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 674.92,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 424.92,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 673.92,
+          "height": 248,
+          "left": 148.7,
+          "right": 241.28,
+          "top": 425.92,
+          "width": 92.58
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 323.98,
+            "height": 153.23,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 674.92,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 410.05,
+            "width": 332
+          },
+          {
+            "bottom": 725.98,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 682.92,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Última localização conhecida",
+        "diagramSummary": "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgb(241, 225, 192)", "rgb(206, 229, 250)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretoesquerda",
+          "✓ RecomendadoSente aquidireita"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "118.703px 92.5781px 118.719px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 738.98,
+          "height": 722.98,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 723,
+        "resultClientHeight": 723,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaÚltima localização conhecidaMelhor sentar à direitaEsse lado deve pegar menos sol direto neste sentido.Usando sua última localização conhecida. Atualize quando estiver no ônibus.↑ Frente☀ Maior incidênciaSol diretoesquerda✓ RecomendadoSente aquidireitaRecomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "scenarioId": "advice-matrix-recent-right",
+      "state": "390x844-right-recent",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "front",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [220, 235, 249, 255],
+            [219, 235, 249, 255],
+            [242, 242, 242, 255],
+            [254, 240, 215, 255],
+            [254, 240, 215, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 601.86,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 351.86,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 488.86,
+          "height": 34,
+          "left": 30,
+          "right": 360,
+          "top": 454.86,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 323.98,
+            "height": 153.23,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 596.86,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 331.98,
+            "width": 332
+          },
+          {
+            "bottom": 647.92,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 604.86,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Agora no ônibus",
+        "diagramSummary": "Recomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquifrente",
+          "☀ Maior incidênciaSol diretofundo"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "330px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 660.92,
+          "height": 644.92,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 645,
+        "resultClientHeight": 645,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaAgora no ônibusPrefira sentar mais à frenteParte da frente deve pegar menos sol direto neste sentido.↑ Frente✓ RecomendadoSente aquifrente☀ Maior incidênciaSol diretofundoRecomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "renderedProofLandmarks": {
+        "bottom": [241, 225, 192, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [206, 229, 250, 255]
+      },
+      "scenarioId": "advice-matrix-onboard-front",
+      "state": "390x844-front-onboard",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "front",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [220, 235, 249, 255],
+            [219, 235, 249, 255],
+            [242, 242, 242, 255],
+            [254, 240, 215, 255],
+            [254, 240, 215, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 601.86,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 351.86,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 488.86,
+          "height": 34,
+          "left": 30,
+          "right": 360,
+          "top": 454.86,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 323.98,
+            "height": 153.23,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 596.86,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 331.98,
+            "width": 332
+          },
+          {
+            "bottom": 647.92,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 604.86,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Prévia da linha · ponto estimado",
+        "diagramSummary": "Recomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquifrente",
+          "☀ Maior incidênciaSol diretofundo"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "330px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 660.92,
+          "height": 644.92,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 645,
+        "resultClientHeight": 645,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaPrévia da linha · ponto estimadoPrefira sentar mais à frenteEssa parte tende a pegar menos sol direto no ponto estimado da linha.↑ Frente✓ RecomendadoSente aquifrente☀ Maior incidênciaSol diretofundoRecomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "renderedProofLandmarks": {
+        "bottom": [241, 225, 192, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [206, 229, 250, 255]
+      },
+      "scenarioId": "advice-matrix-preview-front",
+      "state": "390x844-front-preview",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "front",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [220, 235, 249, 255],
+            [219, 235, 249, 255],
+            [242, 242, 242, 255],
+            [254, 240, 215, 255],
+            [254, 240, 215, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 679.92,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 429.92,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 566.92,
+          "height": 34,
+          "left": 30,
+          "right": 360,
+          "top": 532.92,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 323.98,
+            "height": 153.23,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 674.92,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 410.05,
+            "width": 332
+          },
+          {
+            "bottom": 725.98,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 682.92,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Última localização conhecida",
+        "diagramSummary": "Recomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "✓ RecomendadoSente aquifrente",
+          "☀ Maior incidênciaSol diretofundo"
+        ],
+        "ledgerTones": ["recommended", "sunny"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "330px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 738.98,
+          "height": 722.98,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 723,
+        "resultClientHeight": 723,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaÚltima localização conhecidaPrefira sentar mais à frenteParte da frente deve pegar menos sol direto neste sentido.Usando sua última localização conhecida. Atualize quando estiver no ônibus.↑ Frente✓ RecomendadoSente aquifrente☀ Maior incidênciaSol diretofundoRecomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "renderedProofLandmarks": {
+        "bottom": [241, 225, 192, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [206, 229, 250, 255]
+      },
+      "scenarioId": "advice-matrix-recent-front",
+      "state": "390x844-front-recent",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "back",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [254, 235, 199, 255],
+            [254, 235, 200, 255],
+            [242, 242, 242, 255],
+            [218, 232, 248, 255],
+            [218, 233, 248, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 564.42,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 314.42,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 451.42,
+          "height": 34,
+          "left": 30,
+          "right": 360,
+          "top": 417.42,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 286.55,
+            "height": 115.8,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 559.42,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 294.55,
+            "width": 332
+          },
+          {
+            "bottom": 610.48,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 567.42,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Agora no ônibus",
+        "diagramSummary": "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretofrente",
+          "✓ RecomendadoSente aquifundo"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "330px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 623.48,
+          "height": 607.48,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 607,
+        "resultClientHeight": 607,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaAgora no ônibusPrefira o fundoParte de trás deve pegar menos sol direto neste sentido.↑ Frente☀ Maior incidênciaSol diretofrente✓ RecomendadoSente aquifundoRecomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "renderedProofLandmarks": {
+        "bottom": [217, 232, 247, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [255, 235, 200, 255]
+      },
+      "scenarioId": "advice-matrix-onboard-back",
+      "state": "390x844-back-onboard",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "back",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [254, 235, 199, 255],
+            [254, 235, 200, 255],
+            [242, 242, 242, 255],
+            [218, 232, 248, 255],
+            [218, 233, 248, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 564.42,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 314.42,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 451.42,
+          "height": 34,
+          "left": 30,
+          "right": 360,
+          "top": 417.42,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 286.55,
+            "height": 115.8,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 559.42,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 294.55,
+            "width": 332
+          },
+          {
+            "bottom": 610.48,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 567.42,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Prévia da linha · ponto estimado",
+        "diagramSummary": "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretofrente",
+          "✓ RecomendadoSente aquifundo"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "330px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 623.48,
+          "height": 607.48,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 607,
+        "resultClientHeight": 607,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaPrévia da linha · ponto estimadoPrefira o fundoEssa parte tende a pegar menos sol direto no ponto estimado da linha.↑ Frente☀ Maior incidênciaSol diretofrente✓ RecomendadoSente aquifundoRecomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "renderedProofLandmarks": {
+        "bottom": [217, 232, 247, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [255, 235, 200, 255]
+      },
+      "scenarioId": "advice-matrix-preview-back",
+      "state": "390x844-back-preview",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "back",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [226, 64, 42, 255],
+          "rows": [
+            [254, 235, 199, 255],
+            [254, 235, 200, 255],
+            [242, 242, 242, 255],
+            [218, 232, 248, 255],
+            [218, 233, 248, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 642.48,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 392.48,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 529.48,
+          "height": 34,
+          "left": 30,
+          "right": 360,
+          "top": 495.48,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 286.55,
+            "height": 115.8,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 637.48,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 372.61,
+            "width": 332
+          },
+          {
+            "bottom": 688.55,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 645.48,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "horizontal",
+        "clippedVisibleText": [],
+        "contextText": "Última localização conhecida",
+        "diagramSummary": "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 0)"],
+        "ledgerPositions": ["top", "bottom"],
+        "ledgerText": [
+          "☀ Maior incidênciaSol diretofrente",
+          "✓ RecomendadoSente aquifundo"
+        ],
+        "ledgerTones": ["sunny", "recommended"],
+        "neutralMiddleRow": "true",
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "330px",
+        "proofGridRows": "107px 34px 107px",
+        "resultRect": {
+          "bottom": 701.55,
+          "height": 685.55,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 686,
+        "resultClientHeight": 686,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaÚltima localização conhecidaPrefira o fundoParte de trás deve pegar menos sol direto neste sentido.Usando sua última localização conhecida. Atualize quando estiver no ônibus.↑ Frente☀ Maior incidênciaSol diretofrente✓ RecomendadoSente aquifundoRecomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": "5",
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "renderedProofLandmarks": {
+        "bottom": [217, 232, 247, 255],
+        "middle": [242, 242, 242, 255],
+        "top": [255, 235, 200, 255]
+      },
+      "scenarioId": "advice-matrix-recent-back",
+      "state": "390x844-back-recent",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "neutral",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [234, 67, 41, 255],
+          "rows": [
+            [251, 249, 247, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [251, 249, 246, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 596.86,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 346.86,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 595.86,
+          "height": 248,
+          "left": 148.7,
+          "right": 241.28,
+          "top": 347.86,
+          "width": 92.58
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 323.98,
+            "height": 153.23,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 596.86,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 331.98,
+            "width": 332
+          },
+          {
+            "bottom": 647.92,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 604.86,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Agora no ônibus",
+        "diagramSummary": "O sol está alto; não há lado melhor agora.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgb(244, 244, 240)", "rgb(244, 244, 240)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "− Sem preferênciaSem destaqueesquerda",
+          "− Sem preferênciaSem destaquedireita"
+        ],
+        "ledgerTones": ["neutral", "neutral"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "118.703px 92.5781px 118.719px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 660.92,
+          "height": 644.92,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 645,
+        "resultClientHeight": 645,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaAgora no ônibusSem lado melhor agoraO sol está alto e não há uma diferença relevante entre os lados.↑ Frente− Sem preferênciaSem destaqueesquerda− Sem preferênciaSem destaquedireitaO sol está alto; não há lado melhor agora.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "scenarioId": "advice-matrix-onboard-neutral",
+      "state": "390x844-neutral-onboard",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "neutral",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [234, 67, 41, 255],
+          "rows": [
+            [251, 249, 247, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [251, 249, 246, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 596.86,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 346.86,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 595.86,
+          "height": 248,
+          "left": 148.7,
+          "right": 241.28,
+          "top": 347.86,
+          "width": 92.58
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 323.98,
+            "height": 153.23,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 596.86,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 331.98,
+            "width": 332
+          },
+          {
+            "bottom": 647.92,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 604.86,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Prévia da linha · ponto estimado",
+        "diagramSummary": "O sol está alto; não há lado melhor agora.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgb(244, 244, 240)", "rgb(244, 244, 240)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "− Sem preferênciaSem destaqueesquerda",
+          "− Sem preferênciaSem destaquedireita"
+        ],
+        "ledgerTones": ["neutral", "neutral"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "118.703px 92.5781px 118.719px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 660.92,
+          "height": 644.92,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 645,
+        "resultClientHeight": 645,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaPrévia da linha · ponto estimadoSem lado melhor agoraO sol está alto e não há uma diferença relevante entre os lados.↑ Frente− Sem preferênciaSem destaqueesquerda− Sem preferênciaSem destaquedireitaO sol está alto; não há lado melhor agora.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "scenarioId": "advice-matrix-preview-neutral",
+      "state": "390x844-neutral-preview",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "neutral",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 832,
+          "height": 96,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "artworkComplete": true,
+        "artworkComputedTransform": "matrix(1, 0, 0, 1, -125, -125)",
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkPixelLandmarks": {
+          "rearLamp": [234, 67, 41, 255],
+          "rows": [
+            [251, 249, 247, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [250, 249, 246, 255],
+            [251, 249, 246, 255]
+          ]
+        },
+        "artworkRect": {
+          "bottom": 674.92,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 424.92,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 673.92,
+          "height": 248,
+          "left": 148.7,
+          "right": 241.28,
+          "top": 425.92,
+          "width": 92.58
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 145.75,
+            "height": 104.36,
+            "left": 16,
+            "right": 374,
+            "top": 41.39,
+            "width": 358
+          },
+          {
+            "bottom": 323.98,
+            "height": 153.23,
+            "left": 29,
+            "right": 361,
+            "top": 170.75,
+            "width": 332
+          },
+          {
+            "bottom": 674.92,
+            "height": 264.88,
+            "left": 29,
+            "right": 361,
+            "top": 410.05,
+            "width": 332
+          },
+          {
+            "bottom": 725.98,
+            "height": 43.06,
+            "left": 29,
+            "right": 361,
+            "top": 682.92,
+            "width": 332
+          },
+          {
+            "bottom": 832,
+            "height": 96,
+            "left": 16,
+            "right": 374,
+            "top": 736,
+            "width": 358
+          }
+        ],
+        "busAxis": "vertical",
+        "clippedVisibleText": [],
+        "contextText": "Última localização conhecida",
+        "diagramSummary": "O sol está alto; não há lado melhor agora.",
+        "documentClientHeight": 844,
+        "documentClientWidth": 390,
+        "documentScrollHeight": 844,
+        "documentScrollWidth": 390,
+        "ledgerBackgrounds": ["rgb(244, 244, 240)", "rgb(244, 244, 240)"],
+        "ledgerPositions": ["left", "right"],
+        "ledgerText": [
+          "− Sem preferênciaSem destaqueesquerda",
+          "− Sem preferênciaSem destaquedireita"
+        ],
+        "ledgerTones": ["neutral", "neutral"],
+        "neutralMiddleRow": null,
+        "optionsRect": {
+          "bottom": 832,
+          "height": 32,
+          "left": 171.55,
+          "right": 218.44,
+          "top": 800,
+          "width": 46.89
+        },
+        "primaryRect": {
+          "bottom": 792,
+          "height": 56,
+          "left": 16,
+          "right": 374,
+          "top": 736,
+          "width": 358
+        },
+        "proofGridColumns": "118.703px 92.5781px 118.719px",
+        "proofGridRows": "248px",
+        "resultRect": {
+          "bottom": 738.98,
+          "height": 722.98,
+          "left": 16,
+          "right": 374,
+          "top": 16,
+          "width": 358
+        },
+        "resultScrollHeight": 723,
+        "resultClientHeight": 723,
+        "routeText": "124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido Ida",
+        "screenText": "4 de 4124 124 TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da ConceiçãoTICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceiçãosentido IdaÚltima localização conhecidaSem lado melhor agoraO sol está alto e não há uma diferença relevante entre os lados.Usando sua última localização conhecida. Atualize quando estiver no ônibus.↑ Frente− Sem preferênciaSem destaqueesquerda− Sem preferênciaSem destaquedireitaO sol está alto; não há lado melhor agora.Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "seatRowCount": null,
+        "trustText": "Estimativa pela incidência de sol. Pode variar no caminho.Entenda a estimativa",
+        "visibleRouteName": "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "scenarioId": "advice-matrix-recent-neutral",
+      "state": "390x844-neutral-recent",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    }
+  ],
+  "summary": {
+    "adviceCombinations": 30,
+    "areas": ["left", "right", "front", "back", "neutral"],
+    "boundaryChecks": 4,
+    "contexts": ["onboard", "preview", "recent"],
+    "interactionChecks": 2,
+    "viewports": [
+      { "name": "360x640", "width": 360, "height": 640 },
+      { "name": "390x844", "width": 390, "height": 844 }
+    ]
+  }
+}

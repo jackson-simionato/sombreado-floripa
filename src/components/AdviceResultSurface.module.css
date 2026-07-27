@@ -112,3 +112,32 @@
     gap: var(--space-2);
   }
 }
+
+@media (max-width: 640px) and (max-height: 700px) {
+  .resultStack {
+    gap: var(--space-1);
+  }
+
+  .progress {
+    font-size: 0.62rem;
+    line-height: 1.15;
+  }
+
+  .recommendationPanel {
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-2) 6px;
+    border-radius: var(--radius-lg);
+  }
+
+  .estimateNotice {
+    gap: var(--space-2);
+    padding-top: 0;
+    font-size: 0.68rem;
+    line-height: 1.25;
+  }
+
+  .estimateNotice button {
+    min-height: 1.75rem;
+    font-size: 0.68rem;
+  }
+}

@@ -67,3 +67,25 @@
     font-size: 0.94rem;
   }
 }
+
+@media (max-width: 640px) and (max-height: 700px) {
+  .card {
+    gap: var(--space-2);
+    padding: 6px var(--space-2);
+  }
+
+  .text {
+    gap: 0;
+  }
+
+  .text p,
+  .text span {
+    font-size: 0.72rem;
+    line-height: 1.15;
+  }
+
+  .text strong {
+    font-size: 0.82rem;
+    line-height: 1.12;
+  }
+}

@@ -198,6 +198,18 @@ export type MockScenarioId =
   | "api-error-geometry"
   | "api-error-advice";
 
+export type ProductionAdviceArea =
+  | "left"
+  | "right"
+  | "front"
+  | "back"
+  | "neutral";
+
+export type ProductionAdviceContext = "onboard" | "preview" | "recent";
+
+export type ProductionAdviceMatrixScenarioId =
+  `advice-matrix-${ProductionAdviceContext}-${ProductionAdviceArea}`;
+
 export type PrototypeScenarioId =
   | "location-request"
   | "location-finding-nearby"
@@ -225,7 +237,8 @@ export type PrototypeScenarioId =
   | "error-manual-search"
   | "error-directions"
   | "error-geometry"
-  | "error-advice";
+  | "error-advice"
+  | ProductionAdviceMatrixScenarioId;
 
 export type ScreenStateName =
   | "locationRequest"

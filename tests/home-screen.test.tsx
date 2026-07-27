@@ -1410,6 +1410,48 @@ describe("home screen flow", () => {
   });
 
   test.each([
+    ["advice-matrix-onboard-left", "Agora no ônibus", "Sente à esquerda"],
+    [
+      "advice-matrix-preview-front",
+      "Prévia da linha · ponto estimado",
+      "Prefira sentar mais à frente",
+    ],
+    [
+      "advice-matrix-recent-back",
+      "Última localização conhecida",
+      "Prefira o fundo",
+    ],
+    [
+      "advice-matrix-preview-neutral",
+      "Prévia da linha · ponto estimado",
+      "Sem lado melhor agora",
+    ],
+  ] as const)(
+    "renders deterministic production matrix scenario %s with long route copy and reachable actions",
+    async (scenarioId, contextLabel, heading) => {
+      render(
+        <HomePageApp prototypeScenarioId={scenarioId} runtime="prototype" />
+      );
+
+      expect(await screen.findByText(contextLabel)).toBeInTheDocument();
+      expect(
+        screen.getByRole("heading", { name: heading })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição"
+        )
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Atualizar localização" })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Opções" })
+      ).toBeInTheDocument();
+    }
+  );
+
+  test.each([
     [
       "advice-exposure-front-recommends-back",
       "Prefira o fundo",

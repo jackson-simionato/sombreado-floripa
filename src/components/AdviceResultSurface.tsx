@@ -19,6 +19,7 @@ import styles from "./AdviceResultSurface.module.css";
 
 type AdviceResultSurfaceProps = {
   advice: Exclude<UiAdviceState, { mode: "withheld" }>;
+  context?: "onboard" | "preview" | "recent";
   directionLabel?: string;
   onChangeDirection?: () => void;
   onChangeRoute(): void;
@@ -33,6 +34,7 @@ const useIsomorphicLayoutEffect =
 
 export function AdviceResultSurface({
   advice,
+  context,
   directionLabel,
   onChangeDirection,
   onChangeRoute,
@@ -164,7 +166,7 @@ export function AdviceResultSurface({
             <div data-testid="advice-result-header">
               <ScreenHeader
                 body={variant.body}
-                eyebrow={resultModeLabel(advice)}
+                eyebrow={resultModeLabel(advice, context)}
                 title={variant.title}
                 variant="result"
               />
@@ -274,10 +276,13 @@ function adviceVariantCopy(
 }
 
 function resultModeLabel(
-  advice: Exclude<UiAdviceState, { mode: "withheld" }>
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>,
+  context?: AdviceResultSurfaceProps["context"]
 ): string {
-  if (advice.mode === "preview") return "Prévia da linha · ponto estimado";
-  if (advice.freshnessNotice === "recentFallback") {
+  if (context === "preview" || advice.mode === "preview") {
+    return "Prévia da linha · ponto estimado";
+  }
+  if (context === "recent" || advice.freshnessNotice === "recentFallback") {
     return "Última localização conhecida";
   }
 

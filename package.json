@@ -16,6 +16,7 @@
     "prepare": "husky",
     "test": "vitest run",
     "start": "vinext start",
+    "test:advice-matrix": "node scripts/run-production-advice-qa.mjs",
     "test:visual": "playwright test",
     "typecheck": "tsc --noEmit"
   },
