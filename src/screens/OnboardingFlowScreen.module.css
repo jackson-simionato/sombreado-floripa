@@ -15,21 +15,12 @@
   font-weight: 450;
 }
 
-.progress,
 .summaryLabel,
-.metaText,
-.estimateNotice {
+.metaText {
   margin: 0;
   color: var(--color-muted-ink);
   font-size: 0.875rem;
   line-height: 1.45;
-}
-
-.progress {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 .summaryLabel {
@@ -43,50 +34,6 @@
 
 .inlineActions {
   display: flex;
-}
-
-.resultStack {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.recommendationPanel {
-  display: grid;
-  gap: var(--space-4);
-  padding: var(--space-5);
-  border: 1px solid
-    color-mix(in srgb, var(--color-outline-variant) 62%, transparent);
-  border-radius: var(--radius-xl);
-  background: var(--color-paper);
-  box-shadow: 0 28px 60px rgb(27 28 26 / 6%);
-  position: relative;
-  overflow: hidden;
-}
-
-.recommendationPanel::before {
-  content: "";
-  height: 5px;
-  background: linear-gradient(
-    90deg,
-    var(--color-tertiary-fixed) 0 48%,
-    var(--color-paper) 48% 52%,
-    var(--color-secondary-container) 52% 100%
-  );
-  position: absolute;
-  inset: 0 0 auto;
-}
-
-.diagramFocus {
-  display: grid;
-  place-items: center;
-  margin-block: var(--space-1) 0;
-}
-
-.estimateNotice {
-  padding-top: var(--space-2);
-  border-top: 1px solid
-    color-mix(in srgb, var(--color-outline-variant) 58%, transparent);
-  font-size: 0.82rem;
 }
 
 .mapShell {
@@ -138,7 +85,6 @@
     line-height: 1;
   }
 
-  .progress,
   .summaryLabel,
   .metaText {
     font-size: 0.82rem;
@@ -146,15 +92,6 @@
 
   .list {
     gap: var(--space-3);
-  }
-
-  .recommendationPanel {
-    gap: var(--space-3);
-    padding: var(--space-5) var(--space-4) var(--space-4);
-  }
-
-  .diagramFocus {
-    margin-block: 0;
   }
 
   .mapSvg {

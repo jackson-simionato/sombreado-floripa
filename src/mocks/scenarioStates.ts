@@ -307,6 +307,24 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
     },
   },
   {
+    id: "advice-recent-location",
+    label: "Conselho: localização recente",
+    seed: {
+      state: buildState({
+        ...adviceState(
+          "onboardAdviceResult",
+          mockAdvisories.advisoryExposureRightRecommendsLeft
+        ),
+        advice: {
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+          freshnessNotice: "recentFallback",
+        },
+      }),
+    },
+  },
+  {
     id: "advice-neutral-overhead",
     label: "Conselho: neutro sol alto",
     seed: {

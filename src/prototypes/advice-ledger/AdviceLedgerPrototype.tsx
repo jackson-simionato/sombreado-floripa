@@ -2,12 +2,12 @@
 
 import type { CSSProperties, RefObject } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CaretUp } from "@phosphor-icons/react/dist/icons/CaretUp";
-import { Check } from "@phosphor-icons/react/dist/icons/Check";
-import { DoorOpen } from "@phosphor-icons/react/dist/icons/DoorOpen";
-import { Info } from "@phosphor-icons/react/dist/icons/Info";
-import { Minus } from "@phosphor-icons/react/dist/icons/Minus";
-import { Sun } from "@phosphor-icons/react/dist/icons/Sun";
+import { CaretUp } from "@phosphor-icons/react/CaretUp";
+import { Check } from "@phosphor-icons/react/Check";
+import { DoorOpen } from "@phosphor-icons/react/DoorOpen";
+import { Info } from "@phosphor-icons/react/Info";
+import { Minus } from "@phosphor-icons/react/Minus";
+import { Sun } from "@phosphor-icons/react/Sun";
 
 import { RouteCodeBadge } from "../../components/RouteCodeBadge";
 

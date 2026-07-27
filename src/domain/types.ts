@@ -216,6 +216,7 @@ export type PrototypeScenarioId =
   | "advice-onboard-right"
   | "advice-onboard-front"
   | "advice-onboard-back"
+  | "advice-recent-location"
   | "advice-neutral-overhead"
   | "advice-neutral-none"
   | "advice-preview"

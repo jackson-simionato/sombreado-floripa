@@ -25,6 +25,7 @@ const scenarioExpectations = [
   ["advice-onboard-right", "Melhor sentar à direita"],
   ["advice-onboard-front", "Prefira sentar mais à frente"],
   ["advice-onboard-back", "Prefira sentar mais atrás"],
+  ["advice-recent-location", "Sente à esquerda"],
   ["advice-neutral-overhead", "Sem lado melhor agora"],
   ["advice-neutral-none", "Sem sol direto relevante agora"],
   ["advice-preview", "Melhor sentar à direita"],
@@ -334,7 +335,9 @@ describe("prototype scenarios", () => {
       )
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Estimativa pelo sol direto. Pode variar no caminho.")
+      screen.getByText(
+        "Estimativa pela incidência de sol. Pode variar no caminho."
+      )
     ).toBeInTheDocument();
   });
 
@@ -343,7 +346,9 @@ describe("prototype scenarios", () => {
       <HomePageApp prototypeScenarioId="advice-preview" runtime="prototype" />
     );
 
-    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Prévia da linha · ponto estimado")
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
         name: "Melhor sentar à direita",
@@ -359,7 +364,7 @@ describe("prototype scenarios", () => {
     expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Prévia a cerca de 64 m fora da rota. Estimativa pelo sol direto; pode variar no caminho."
+        "Estimativa pela incidência de sol. Pode variar no caminho."
       )
     ).toBeInTheDocument();
     expect(
@@ -372,6 +377,24 @@ describe("prototype scenarios", () => {
     expect(
       screen.queryByRole("heading", { name: /Prévia/i })
     ).not.toBeInTheDocument();
+  });
+
+  test("recent-location advice makes the stale result visible through HomePageApp", async () => {
+    render(
+      <HomePageApp
+        prototypeScenarioId="advice-recent-location"
+        runtime="prototype"
+      />
+    );
+
+    expect(
+      await screen.findByText("Última localização conhecida")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Usando sua última localização conhecida. Atualize quando estiver no ônibus."
+      )
+    ).toBeInTheDocument();
   });
 
   test("neutral advice keeps route context without leaking a side recommendation", async () => {

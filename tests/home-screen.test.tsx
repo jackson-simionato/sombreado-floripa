@@ -219,6 +219,10 @@ describe("home screen flow", () => {
     expect(
       await screen.findByRole("heading", { name: "Sente à esquerda" })
     ).toBeInTheDocument();
+    expect(screen.getByTestId("advice-result-screen")).toBeInTheDocument();
+    expect(screen.getByTestId("advice-result-actions")).toHaveTextContent(
+      "Atualizar localizaçãoTrocar linha"
+    );
     expect(
       fetchMock.mock.calls.some(
         ([url, init]) =>
@@ -707,7 +711,9 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Prévia da linha · ponto estimado")
+    ).toBeInTheDocument();
     expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
     expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
       mode: "preview",
@@ -751,10 +757,14 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Última localização conhecida")
+    ).toBeInTheDocument();
     expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
     expect(
-      screen.getByText(/última localização conhecida/i)
+      screen.getByText(
+        "Usando sua última localização conhecida. Atualize quando estiver no ônibus."
+      )
     ).toBeInTheDocument();
     expect(requestAdvice).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -817,7 +827,9 @@ describe("home screen flow", () => {
         screen.getByRole("button", { name: "Confirmar esta linha" })
       );
 
-      expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+      expect(
+        await screen.findByText("Prévia da linha · ponto estimado")
+      ).toBeInTheDocument();
       expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
       expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
         mode: "preview",
@@ -1176,7 +1188,9 @@ describe("home screen flow", () => {
     expect(screen.getByText("Agora no ônibus")).toBeInTheDocument();
     expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(
-      screen.getByText("Estimativa pelo sol direto. Pode variar no caminho.")
+      screen.getByText(
+        "Estimativa pela incidência de sol. Pode variar no caminho."
+      )
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Atualizar localização" })
@@ -1381,14 +1395,16 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Prévia da linha · ponto estimado")
+    ).toBeInTheDocument();
     expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(
       screen.getByRole("heading", { name: "Melhor sentar à direita" })
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Prévia a cerca de 64 m fora da rota. Estimativa pelo sol direto; pode variar no caminho."
+        "Estimativa pela incidência de sol. Pode variar no caminho."
       )
     ).toBeInTheDocument();
   });
@@ -1450,7 +1466,11 @@ describe("home screen flow", () => {
         screen.queryByText("Melhor sentar à direita")
       ).not.toBeInTheDocument();
       expect(
-        screen.getByLabelText(/Diagrama neutro do ônibus/i)
+        screen.getByLabelText(
+          heading === "Sem lado melhor agora"
+            ? /O sol está alto; não há lado melhor agora/i
+            : /Diagrama neutro do ônibus/i
+        )
       ).toBeInTheDocument();
     }
   );
@@ -1687,7 +1707,9 @@ describe("home screen flow", () => {
       screen.getByRole("button", { name: "Confirmar esta linha" })
     );
 
-    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Prévia da linha · ponto estimado")
+    ).toBeInTheDocument();
     expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(
       screen.getByLabelText(/Recomendação: sente à direita/i)
