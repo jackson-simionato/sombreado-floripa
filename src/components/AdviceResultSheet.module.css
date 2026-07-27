@@ -1,0 +1,144 @@
+.backdrop {
+  display: grid;
+  align-items: end;
+  padding-top: var(--space-6);
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+}
+
+.backdropDismiss {
+  padding: 0;
+  border: 0;
+  background: rgb(23 24 22 / 36%);
+  cursor: default;
+  position: absolute;
+  inset: 0;
+}
+
+.sheet {
+  width: min(100%, var(--app-max-width));
+  max-height: min(76dvh, 35rem);
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-5)
+    max(var(--space-5), env(safe-area-inset-bottom));
+  overflow-y: auto;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--color-paper);
+  box-shadow: 0 -20px 60px rgb(23 24 22 / 15%);
+  position: relative;
+  z-index: 1;
+  animation: sheet-enter 180ms ease-out;
+}
+
+.handle {
+  width: 2.625rem;
+  height: 0.25rem;
+  margin: 0 auto var(--space-3);
+  border-radius: 999px;
+  background: var(--color-outline-variant);
+}
+
+.heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--space-3);
+}
+
+.heading p,
+.heading h2,
+.body p {
+  margin: 0;
+}
+
+.heading p {
+  color: var(--color-muted-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heading h2 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.close {
+  min-height: 2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 0.25rem;
+}
+
+.body {
+  display: grid;
+  gap: var(--space-3);
+  padding-block: var(--space-5) var(--space-1);
+}
+
+.body p {
+  color: var(--color-muted-ink);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.optionList {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-5);
+}
+
+.optionList button {
+  min-height: 4.5rem;
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-container-low);
+  color: var(--color-primary);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.optionList strong {
+  font-size: 1rem;
+}
+
+.optionList span {
+  color: var(--color-muted-ink);
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+@keyframes sheet-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    animation: none;
+  }
+}

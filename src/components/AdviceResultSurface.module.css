@@ -51,10 +51,38 @@
 }
 
 .estimateNotice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
   padding-top: var(--space-2);
   border-top: 1px solid
     color-mix(in srgb, var(--color-outline-variant) 58%, transparent);
   font-size: 0.82rem;
+}
+
+.estimateNotice p {
+  margin: 0;
+}
+
+.estimateNotice button,
+.optionsAction {
+  min-height: 2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 0.25rem;
+}
+
+.optionsAction {
+  justify-self: center;
 }
 
 .actions {

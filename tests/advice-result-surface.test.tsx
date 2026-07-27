@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi } from "vitest";
 
@@ -136,7 +136,7 @@ describe("AdviceResultSurface", () => {
     );
   });
 
-  test("refreshes advice and keeps a direct route-change action", async () => {
+  test("refreshes advice and keeps route changes behind options", async () => {
     const user = userEvent.setup();
     const onRefresh = vi.fn();
     const onChangeRoute = vi.fn();
@@ -157,10 +157,180 @@ describe("AdviceResultSurface", () => {
     await user.click(
       screen.getByRole("button", { name: "Atualizar localização" })
     );
-    await user.click(screen.getByRole("button", { name: "Trocar linha" }));
+    await user.click(screen.getByRole("button", { name: "Opções" }));
+    await user.click(screen.getByRole("button", { name: /^Trocar linha/ }));
 
     expect(onRefresh).toHaveBeenCalledOnce();
     expect(onChangeRoute).toHaveBeenCalledOnce();
     expect(screen.getByTestId("advice-result-actions")).toBeInTheDocument();
+  });
+
+  test("keeps a concise estimate notice visible and focuses its sheet heading", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <AdviceResultSurface
+        advice={{
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+        }}
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        route={route}
+      />
+    );
+
+    expect(screen.getByTestId("advice-trust-row")).toHaveTextContent(
+      "Estimativa pela incidência de sol. Pode variar no caminho."
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Entenda a estimativa" })
+    );
+
+    const heading = await screen.findByRole("heading", {
+      name: "Sobre esta estimativa",
+    });
+    await waitFor(() => expect(heading).toHaveFocus());
+  });
+
+  test("isolates the result and traps focus while an estimate sheet is open", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <AdviceResultSurface
+        advice={{
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+        }}
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        route={route}
+      />
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Entenda a estimativa" })
+    );
+
+    const background = screen.getByTestId("advice-result-background");
+    expect(background).toHaveAttribute("inert");
+    expect(background).toHaveAttribute("aria-hidden", "true");
+
+    const dialog = screen.getByRole("dialog", {
+      name: "Sobre esta estimativa",
+    });
+    const close = within(dialog).getByRole("button", { name: "Fechar" });
+    await waitFor(() =>
+      expect(
+        within(dialog).getByRole("heading", { name: "Sobre esta estimativa" })
+      ).toHaveFocus()
+    );
+
+    close.focus();
+    await user.tab();
+    expect(close).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(close).toHaveFocus();
+  });
+
+  test("closes the estimate sheet from Escape or its backdrop and restores the trigger", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <AdviceResultSurface
+        advice={{
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+        }}
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        route={route}
+      />
+    );
+
+    const trigger = screen.getByRole("button", {
+      name: "Entenda a estimativa",
+    });
+    await user.click(trigger);
+    await user.keyboard("{Escape}");
+
+    await waitFor(() => expect(trigger).toHaveFocus());
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    await user.click(trigger);
+    await user.click(screen.getByRole("button", { name: "Fechar painel" }));
+
+    await waitFor(() => expect(trigger).toHaveFocus());
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  test("runs real direction and route changes from the options sheet", async () => {
+    const user = userEvent.setup();
+    const onChangeDirection = vi.fn();
+    const onChangeRoute = vi.fn();
+
+    render(
+      <AdviceResultSurface
+        advice={{
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+        }}
+        onChangeDirection={onChangeDirection}
+        onChangeRoute={onChangeRoute}
+        onRefresh={vi.fn()}
+        route={route}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: "Opções" }));
+    await user.click(screen.getByRole("button", { name: /^Trocar sentido/ }));
+    expect(onChangeDirection).toHaveBeenCalledOnce();
+
+    await user.click(screen.getByRole("button", { name: "Opções" }));
+    await user.click(screen.getByRole("button", { name: /^Trocar linha/ }));
+    expect(onChangeRoute).toHaveBeenCalledOnce();
+  });
+
+  test("cleans up document state when a sheet closes or the surface unmounts", async () => {
+    const user = userEvent.setup();
+    const { unmount } = render(
+      <AdviceResultSurface
+        advice={{
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+        }}
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        route={route}
+      />
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Entenda a estimativa" })
+    );
+    expect(document.body.style.overflow).toBe("hidden");
+
+    await user.click(screen.getByRole("button", { name: "Fechar" }));
+    expect(document.body.style.overflow).toBe("");
+    expect(screen.getByTestId("advice-result-background")).not.toHaveAttribute(
+      "aria-hidden"
+    );
+    expect(screen.getByTestId("advice-result-background")).not.toHaveAttribute(
+      "inert"
+    );
+
+    await user.click(screen.getByRole("button", { name: "Opções" }));
+    const background = screen.getByTestId("advice-result-background");
+    unmount();
+    expect(document.body.style.overflow).toBe("");
+    expect(background).not.toHaveAttribute("aria-hidden");
+    expect(background).not.toHaveAttribute("inert");
   });
 });

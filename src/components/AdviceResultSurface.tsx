@@ -1,4 +1,7 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+
 import { AdviceBusDiagram } from "./AdviceBusDiagram";
+import { AdviceResultSheet } from "./AdviceResultSheet";
 import { Button } from "./Button";
 import { Notice } from "./Notice";
 import { RouteSummaryCard } from "./RouteSummaryCard";
@@ -11,6 +14,7 @@ import styles from "./AdviceResultSurface.module.css";
 type AdviceResultSurfaceProps = {
   advice: Exclude<UiAdviceState, { mode: "withheld" }>;
   directionLabel?: string;
+  onChangeDirection?: () => void;
   onChangeRoute(): void;
   onRefresh(): void;
   route?: { code: string; name: string };
@@ -22,77 +26,210 @@ const ESTIMATE_NOTICE =
 export function AdviceResultSurface({
   advice,
   directionLabel,
+  onChangeDirection,
   onChangeRoute,
   onRefresh,
   route,
 }: AdviceResultSurfaceProps) {
   const variant = adviceVariantCopy(advice);
+  const [activeSheet, setActiveSheet] = useState<"estimate" | "options" | null>(
+    null
+  );
+  const backgroundRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLElement>(null);
+  const sheetHeadingRef = useRef<HTMLHeadingElement>(null);
+  const estimateTriggerRef = useRef<HTMLButtonElement>(null);
+  const optionsTriggerRef = useRef<HTMLButtonElement>(null);
+
+  const closeSheet = useCallback(() => {
+    const trigger =
+      activeSheet === "estimate"
+        ? estimateTriggerRef.current
+        : optionsTriggerRef.current;
+
+    setActiveSheet(null);
+    window.requestAnimationFrame(() => trigger?.focus());
+  }, [activeSheet]);
+
+  useEffect(() => {
+    if (activeSheet === null) {
+      return;
+    }
+
+    const background = backgroundRef.current;
+    const previousOverflow = document.body.style.overflow;
+
+    if (background !== null) {
+      background.inert = true;
+      background.setAttribute("inert", "");
+      background.setAttribute("aria-hidden", "true");
+    }
+    document.body.style.overflow = "hidden";
+    window.requestAnimationFrame(() => sheetHeadingRef.current?.focus());
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeSheet();
+        return;
+      }
+
+      if (event.key !== "Tab" || dialogRef.current === null) {
+        return;
+      }
+
+      const focusable = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+      );
+
+      if (focusable.length === 0) {
+        event.preventDefault();
+        sheetHeadingRef.current?.focus();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (
+        event.shiftKey &&
+        (document.activeElement === first ||
+          document.activeElement === sheetHeadingRef.current)
+      ) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      if (background !== null) {
+        background.inert = false;
+        background.removeAttribute("inert");
+        background.removeAttribute("aria-hidden");
+      }
+    };
+  }, [activeSheet, closeSheet]);
+
+  const changeDirection = useCallback(() => {
+    closeSheet();
+    onChangeDirection?.();
+  }, [closeSheet, onChangeDirection]);
+
+  const changeRoute = useCallback(() => {
+    closeSheet();
+    onChangeRoute();
+  }, [closeSheet, onChangeRoute]);
 
   return (
     <>
-      <section
-        className={styles.resultStack}
-        data-testid="advice-result-screen"
-        aria-labelledby="screen-title"
-      >
-        <p className={styles.progress}>4 de 4</p>
-        {route !== undefined ? (
-          <div data-testid="advice-route-receipt">
-            <RouteSummaryCard
-              directionLabel={
-                directionLabel !== undefined
-                  ? `sentido ${directionLabel}`
-                  : undefined
-              }
-              routeCode={route.code}
-              routeName={route.name}
-            />
-          </div>
-        ) : null}
-        <div className={styles.recommendationPanel}>
-          <div data-testid="advice-result-header">
-            <ScreenHeader
-              body={variant.body}
-              eyebrow={resultModeLabel(advice)}
-              title={variant.title}
-              variant="result"
-            />
-          </div>
-          {advice.mode !== "preview" &&
-          advice.freshnessNotice === "recentFallback" ? (
-            <Notice>
-              Usando sua última localização conhecida. Atualize quando estiver
-              no ônibus.
-            </Notice>
+      <div ref={backgroundRef} data-testid="advice-result-background">
+        <section
+          className={styles.resultStack}
+          data-testid="advice-result-screen"
+          aria-labelledby="screen-title"
+        >
+          <p className={styles.progress}>4 de 4</p>
+          {route !== undefined ? (
+            <div data-testid="advice-route-receipt">
+              <RouteSummaryCard
+                directionLabel={
+                  directionLabel !== undefined
+                    ? `sentido ${directionLabel}`
+                    : undefined
+                }
+                routeCode={route.code}
+                routeName={route.name}
+              />
+            </div>
           ) : null}
-          <div
-            className={styles.diagramFocus}
-            data-diagram-density="compact"
-            data-result-focus="diagram"
-            data-testid="advice-diagram-proof"
-          >
-            <AdviceBusDiagram
-              advice={advice}
-              density="compact"
-              summary={variant.accessibleSummary}
-            />
+          <div className={styles.recommendationPanel}>
+            <div data-testid="advice-result-header">
+              <ScreenHeader
+                body={variant.body}
+                eyebrow={resultModeLabel(advice)}
+                title={variant.title}
+                variant="result"
+              />
+            </div>
+            {advice.mode !== "preview" &&
+            advice.freshnessNotice === "recentFallback" ? (
+              <Notice>
+                Usando sua última localização conhecida. Atualize quando estiver
+                no ônibus.
+              </Notice>
+            ) : null}
+            <div
+              className={styles.diagramFocus}
+              data-diagram-density="compact"
+              data-result-focus="diagram"
+              data-testid="advice-diagram-proof"
+            >
+              <AdviceBusDiagram
+                advice={advice}
+                density="compact"
+                summary={variant.accessibleSummary}
+              />
+            </div>
+            <div
+              className={styles.estimateNotice}
+              data-testid="advice-trust-row"
+            >
+              <p>{ESTIMATE_NOTICE}</p>
+              <button
+                ref={estimateTriggerRef}
+                onClick={() => setActiveSheet("estimate")}
+                type="button"
+              >
+                Entenda a estimativa
+              </button>
+            </div>
           </div>
-          <p className={styles.estimateNotice} data-testid="advice-trust-row">
-            {ESTIMATE_NOTICE}
-          </p>
-        </div>
-      </section>
-      <StickyActions>
-        <div className={styles.actions} data-testid="advice-result-actions">
-          <Button onClick={onRefresh}>Atualizar localização</Button>
-          <Button onClick={onChangeRoute} variant="secondary">
-            Trocar linha
-          </Button>
-        </div>
-      </StickyActions>
+        </section>
+        <StickyActions>
+          <div className={styles.actions} data-testid="advice-result-actions">
+            <Button onClick={onRefresh}>Atualizar localização</Button>
+            <button
+              ref={optionsTriggerRef}
+              className={styles.optionsAction}
+              onClick={() => setActiveSheet("options")}
+              type="button"
+            >
+              Opções
+            </button>
+          </div>
+        </StickyActions>
+      </div>
+      {activeSheet !== null ? (
+        <AdviceResultSheet
+          dialogRef={dialogRef}
+          headingRef={sheetHeadingRef}
+          kind={activeSheet}
+          onChangeDirection={
+            onChangeDirection === undefined ? undefined : changeDirection
+          }
+          onChangeRoute={changeRoute}
+          onClose={closeSheet}
+        />
+      ) : null}
     </>
   );
 }
+
+const FOCUSABLE_SELECTOR = [
+  "button:not([disabled])",
+  "[href]",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
 
 function adviceVariantCopy(
   advice: Exclude<UiAdviceState, { mode: "withheld" }>

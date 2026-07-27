@@ -221,7 +221,7 @@ describe("home screen flow", () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId("advice-result-screen")).toBeInTheDocument();
     expect(screen.getByTestId("advice-result-actions")).toHaveTextContent(
-      "Atualizar localizaçãoTrocar linha"
+      "Atualizar localizaçãoOpções"
     );
     expect(
       fetchMock.mock.calls.some(

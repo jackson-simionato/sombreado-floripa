@@ -440,6 +440,7 @@ export function OnboardingFlowScreen({
           <AdviceResultSurface
             advice={state.advice}
             directionLabel={selectedDirectionContext}
+            onChangeDirection={actions.changeDirection}
             onChangeRoute={actions.changeRoute}
             onRefresh={actions.refreshAdvice}
             route={state.selectedRoute}
