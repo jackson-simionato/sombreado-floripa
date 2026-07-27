@@ -4,14 +4,13 @@ import { Notice } from "./Notice";
 import { RouteSummaryCard } from "./RouteSummaryCard";
 import { ScreenHeader } from "./ScreenHeader";
 import { StickyActions } from "./StickyActions";
-import type { UiAdviceState } from "../domain/types";
+import type { DirectionalExposure, UiAdviceState } from "../domain/types";
 
 import styles from "./AdviceResultSurface.module.css";
 
 type AdviceResultSurfaceProps = {
   advice: Exclude<UiAdviceState, { mode: "withheld" }>;
   directionLabel?: string;
-  onChangeDirection?(): void;
   onChangeRoute(): void;
   onRefresh(): void;
   route?: { code: string; name: string };
@@ -68,11 +67,13 @@ export function AdviceResultSurface({
           ) : null}
           <div
             className={styles.diagramFocus}
+            data-diagram-density="compact"
             data-result-focus="diagram"
             data-testid="advice-diagram-proof"
           >
             <AdviceBusDiagram
               advice={advice}
+              density="compact"
               summary={variant.accessibleSummary}
             />
           </div>
@@ -135,9 +136,7 @@ function resultModeLabel(
   return "Agora no ônibus";
 }
 
-function directionalAdviceCopy(
-  recommendedSeatArea: "left" | "right" | "front" | "back"
-) {
+function directionalAdviceCopy(recommendedSeatArea: DirectionalExposure) {
   switch (recommendedSeatArea) {
     case "left":
       return {
@@ -162,7 +161,7 @@ function directionalAdviceCopy(
       };
     case "back":
       return {
-        title: "Prefira sentar mais atrás",
+        title: "Prefira o fundo",
         body: "Parte de trás deve pegar menos sol direto neste sentido.",
         accessibleSummary:
           "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
@@ -171,7 +170,7 @@ function directionalAdviceCopy(
 }
 
 function previewDirectionalAdviceCopy(
-  recommendedSeatArea: "left" | "right" | "front" | "back"
+  recommendedSeatArea: DirectionalExposure
 ) {
   const copy = directionalAdviceCopy(recommendedSeatArea);
 

@@ -58,6 +58,18 @@ describe("AdviceResultSurface", () => {
       "O sol está alto e não há uma diferença relevante entre os lados.",
       "O sol está alto; não há lado melhor agora.",
     ],
+    [
+      "back advice",
+      {
+        mode: "onboard",
+        directSunExposure: "front",
+        recommendedSeatArea: "back",
+      },
+      "Agora no ônibus",
+      "Prefira o fundo",
+      "Parte de trás deve pegar menos sol direto neste sentido.",
+      "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
+    ],
   ] as const)(
     "renders route receipt, status, proof, and trust copy for %s",
     (_name, advice, status, title, body, accessibleSummary) => {
@@ -99,6 +111,30 @@ describe("AdviceResultSurface", () => {
       }
     }
   );
+
+  test("uses the compact diagram contract for the no-scroll result hierarchy", () => {
+    render(
+      <AdviceResultSurface
+        advice={{
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+        }}
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        route={route}
+      />
+    );
+
+    expect(screen.getByTestId("advice-diagram-proof")).toHaveAttribute(
+      "data-diagram-density",
+      "compact"
+    );
+    expect(screen.getByTestId("bus-shell")).toHaveAttribute(
+      "data-diagram-density",
+      "compact"
+    );
+  });
 
   test("refreshes advice and keeps a direct route-change action", async () => {
     const user = userEvent.setup();

@@ -63,13 +63,21 @@
 }
 
 @media (max-width: 640px) {
+  .resultStack {
+    gap: var(--space-2);
+  }
+
   .recommendationPanel {
-    gap: var(--space-3);
-    padding: var(--space-5) var(--space-4) var(--space-4);
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-3) var(--space-3);
   }
 
   .diagramFocus {
-    margin-block: 0;
+    margin: 0;
+  }
+
+  .estimateNotice {
+    padding-top: var(--space-1);
   }
 
   .actions {

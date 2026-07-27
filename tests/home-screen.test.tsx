@@ -1412,7 +1412,7 @@ describe("home screen flow", () => {
   test.each([
     [
       "advice-exposure-front-recommends-back",
-      "Prefira sentar mais atrás",
+      "Prefira o fundo",
       /sente mais atrás/i,
     ],
     [

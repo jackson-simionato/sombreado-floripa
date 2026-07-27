@@ -24,7 +24,7 @@ const scenarioExpectations = [
   ["advice-onboard-left", "Sente à esquerda"],
   ["advice-onboard-right", "Melhor sentar à direita"],
   ["advice-onboard-front", "Prefira sentar mais à frente"],
-  ["advice-onboard-back", "Prefira sentar mais atrás"],
+  ["advice-onboard-back", "Prefira o fundo"],
   ["advice-recent-location", "Sente à esquerda"],
   ["advice-neutral-overhead", "Sem lado melhor agora"],
   ["advice-neutral-none", "Sem sol direto relevante agora"],
@@ -319,7 +319,7 @@ describe("prototype scenarios", () => {
     );
     expect(screen.getByTestId("bus-shell")).toHaveAttribute(
       "data-diagram-density",
-      "default"
+      "compact"
     );
     expect(screen.getByTestId("bus-shell")).toHaveAttribute(
       "data-diagram-proportion",
