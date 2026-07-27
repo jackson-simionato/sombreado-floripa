@@ -1,4 +1,10 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi } from "vitest";
 
@@ -165,34 +171,44 @@ describe("AdviceResultSurface", () => {
     expect(screen.getByTestId("advice-result-actions")).toBeInTheDocument();
   });
 
-  test("keeps a concise estimate notice visible and focuses its sheet heading", async () => {
-    const user = userEvent.setup();
+  test("focuses the estimate heading synchronously before isolating the result", () => {
+    const requestAnimationFrame = vi
+      .spyOn(window, "requestAnimationFrame")
+      .mockImplementation(() => 1);
 
-    render(
-      <AdviceResultSurface
-        advice={{
-          mode: "onboard",
-          directSunExposure: "right",
-          recommendedSeatArea: "left",
-        }}
-        onChangeRoute={vi.fn()}
-        onRefresh={vi.fn()}
-        route={route}
-      />
-    );
+    try {
+      render(
+        <AdviceResultSurface
+          advice={{
+            mode: "onboard",
+            directSunExposure: "right",
+            recommendedSeatArea: "left",
+          }}
+          onChangeRoute={vi.fn()}
+          onRefresh={vi.fn()}
+          route={route}
+        />
+      );
 
-    expect(screen.getByTestId("advice-trust-row")).toHaveTextContent(
-      "Estimativa pela incidência de sol. Pode variar no caminho."
-    );
+      expect(screen.getByTestId("advice-trust-row")).toHaveTextContent(
+        "Estimativa pela incidência de sol. Pode variar no caminho."
+      );
 
-    await user.click(
-      screen.getByRole("button", { name: "Entenda a estimativa" })
-    );
+      const trigger = screen.getByRole("button", {
+        name: "Entenda a estimativa",
+      });
+      trigger.focus();
+      fireEvent.click(trigger);
 
-    const heading = await screen.findByRole("heading", {
-      name: "Sobre esta estimativa",
-    });
-    await waitFor(() => expect(heading).toHaveFocus());
+      expect(
+        screen.getByRole("heading", { name: "Sobre esta estimativa" })
+      ).toHaveFocus();
+      expect(screen.getByTestId("advice-result-background")).toHaveAttribute(
+        "inert"
+      );
+    } finally {
+      requestAnimationFrame.mockRestore();
+    }
   });
 
   test("isolates the result and traps focus while an estimate sheet is open", async () => {

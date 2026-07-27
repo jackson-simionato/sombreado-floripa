@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { AdviceBusDiagram } from "./AdviceBusDiagram";
 import { AdviceResultSheet } from "./AdviceResultSheet";
@@ -22,6 +28,8 @@ type AdviceResultSurfaceProps = {
 
 const ESTIMATE_NOTICE =
   "Estimativa pela incidência de sol. Pode variar no caminho.";
+const useIsomorphicLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 export function AdviceResultSurface({
   advice,
@@ -40,6 +48,7 @@ export function AdviceResultSurface({
   const sheetHeadingRef = useRef<HTMLHeadingElement>(null);
   const estimateTriggerRef = useRef<HTMLButtonElement>(null);
   const optionsTriggerRef = useRef<HTMLButtonElement>(null);
+  const restoreFocusRef = useRef<HTMLButtonElement | null>(null);
 
   const closeSheet = useCallback(() => {
     const trigger =
@@ -47,25 +56,27 @@ export function AdviceResultSurface({
         ? estimateTriggerRef.current
         : optionsTriggerRef.current;
 
+    restoreFocusRef.current = trigger;
     setActiveSheet(null);
-    window.requestAnimationFrame(() => trigger?.focus());
   }, [activeSheet]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (activeSheet === null) {
+      restoreFocusRef.current?.focus();
+      restoreFocusRef.current = null;
       return;
     }
 
     const background = backgroundRef.current;
     const previousOverflow = document.body.style.overflow;
 
+    sheetHeadingRef.current?.focus();
     if (background !== null) {
       background.inert = true;
       background.setAttribute("inert", "");
       background.setAttribute("aria-hidden", "true");
     }
     document.body.style.overflow = "hidden";
-    window.requestAnimationFrame(() => sheetHeadingRef.current?.focus());
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
