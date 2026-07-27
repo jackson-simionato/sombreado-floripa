@@ -65,6 +65,16 @@
   z-index: 0;
 }
 
+.deckProof .ledgerTop {
+  justify-items: start;
+  text-align: left;
+}
+
+.deckProof .ledgerBottom {
+  justify-items: end;
+  text-align: right;
+}
+
 [data-advice-area="back"] .deckProof {
   --deck-safe-color: rgb(217 232 247);
   --deck-exposure-color: rgb(255 235 200);

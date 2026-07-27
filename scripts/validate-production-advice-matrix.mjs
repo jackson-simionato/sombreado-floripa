@@ -85,6 +85,9 @@ const browser = await chromium.launch({
 });
 const browserErrors = [];
 const results = [];
+const boundaries = [];
+let interactionEvidence;
+let reducedMotionEvidence;
 
 try {
   for (const viewport of viewports) {
@@ -104,20 +107,14 @@ try {
         const metrics = await collectResultMetrics(page);
         validateResultMetrics(metrics, { area, context, stateName });
 
-        const renderedProofLandmarks =
-          area === "front" || area === "back"
-            ? await sampleRenderedDeckProof(page)
-            : undefined;
-
-        if (renderedProofLandmarks !== undefined) {
-          validateRenderedDeckProof(renderedProofLandmarks, area, stateName);
-        }
+        const renderedProof = await sampleRenderedProof(page);
+        validateRenderedProof(renderedProof, area, stateName);
 
         results.push({
           area,
           context,
           metrics,
-          renderedProofLandmarks,
+          renderedProof,
           scenarioId,
           state: stateName,
           viewport,
@@ -133,19 +130,25 @@ try {
       }
     }
 
-    await verifyBoundary(page, viewport, "advice-withheld", {
-      absentText: "Algo deu errado",
-      heading: "Não é possível recomendar agora",
-    });
-    await verifyBoundary(page, viewport, "error-advice", {
-      absentText: "Não é possível recomendar agora",
-      heading: "Algo deu errado",
-    });
+    boundaries.push(
+      await verifyBoundary(page, viewport, "advice-withheld", {
+        absentText: "Algo deu errado",
+        actions: ["Trocar linha", "Tentar de novo"],
+        heading: "Não é possível recomendar agora",
+      })
+    );
+    boundaries.push(
+      await verifyBoundary(page, viewport, "error-advice", {
+        absentText: "Não é possível recomendar agora",
+        actions: ["Tentar de novo", "Procurar linha manualmente"],
+        heading: "Algo deu errado",
+      })
+    );
     await page.close();
   }
 
-  await verifyInteractions(browser, browserErrors);
-  await verifyReducedMotion(browser, browserErrors);
+  interactionEvidence = await verifyInteractions(browser, browserErrors);
+  reducedMotionEvidence = await verifyReducedMotion(browser, browserErrors);
 } finally {
   await browser.close();
 }
@@ -160,15 +163,20 @@ const matrixResultsPath = `${outputPath}matrix-results.json`;
 const matrixResults = await format(
   JSON.stringify({
     assetIntegrity,
+    boundaries,
     browserErrors,
     generatedAt: new Date().toISOString(),
+    interactions: interactionEvidence,
+    reducedMotion: reducedMotionEvidence,
     results,
     summary: {
       adviceCombinations: results.length,
       areas,
-      boundaryChecks: viewports.length * 2,
+      boundaryChecks: boundaries.length,
       contexts,
-      interactionChecks: 2,
+      interactionChecks: ["estimate", "options"].filter(
+        (key) => interactionEvidence[key] !== undefined
+      ).length,
       viewports,
     },
   }),
@@ -249,6 +257,10 @@ async function collectResultMetrics(page) {
     const options = requiredElement(
       '[data-testid="advice-result-actions"] button:last-child',
       "options action"
+    );
+    const estimateTrigger = requiredElement(
+      '[data-testid="advice-trust-row"] button',
+      "estimate trigger"
     );
     const ledgers = Array.from(document.querySelectorAll("[data-ledger-tone]"));
     const proofGrid = requiredElement(
@@ -336,6 +348,7 @@ async function collectResultMetrics(page) {
       documentClientWidth: document.documentElement.clientWidth,
       documentScrollHeight: document.documentElement.scrollHeight,
       documentScrollWidth: document.documentElement.scrollWidth,
+      estimateTriggerRect: roundRect(estimateTrigger.getBoundingClientRect()),
       ledgerBackgrounds: ledgers.map(
         (ledger) => getComputedStyle(ledger).backgroundColor
       ),
@@ -417,13 +430,30 @@ function validateResultMetrics(metrics, { area, context, stateName }) {
   );
   assert.ok(
     metrics.boxes[3].bottom <= metrics.actionRect.top + 1,
-    `${stateName}: persistent actions cover visible result content`
+    `${stateName}: persistent actions cover visible result content (${metrics.boxes[3].bottom}px > ${metrics.actionRect.top}px)`
   );
   assert.ok(
     metrics.primaryRect.top >= 0 &&
       metrics.optionsRect.bottom <= metrics.viewportHeight + 0.5,
     `${stateName}: a persistent action is clipped`
   );
+  for (const [label, rect] of [
+    ["primary action", metrics.primaryRect],
+    ["options action", metrics.optionsRect],
+    ["estimate trigger", metrics.estimateTriggerRect],
+  ]) {
+    assert.ok(
+      rect.height >= 48,
+      `${stateName}: ${label} is ${rect.height}px tall, expected at least 48px`
+    );
+    assert.ok(
+      rect.left >= -0.5 &&
+        rect.right <= metrics.viewportWidth + 0.5 &&
+        rect.top >= -0.5 &&
+        rect.bottom <= metrics.viewportHeight + 0.5,
+      `${stateName}: ${label} leaves the viewport`
+    );
+  }
   assert.deepEqual(
     metrics.clippedVisibleText,
     [],
@@ -606,61 +636,185 @@ function validateArtworkLandmarks(actual, expected, stateName) {
   );
 }
 
-async function sampleRenderedDeckProof(page) {
+async function sampleRenderedProof(page) {
   const proof = page.locator('[data-testid="bus-shell"] > div');
-  const screenshot = await proof.screenshot({ animations: "disabled" });
+  const geometry = await page.evaluate(() => {
+    const proofGrid = document.querySelector('[data-testid="bus-shell"] > div');
+    const artwork = document.querySelector(
+      '[data-testid="advice-bus-artwork"]'
+    );
 
-  return page.evaluate(async (pngBase64) => {
-    const image = new Image();
-    image.src = `data:image/png;base64,${pngBase64}`;
-    await image.decode();
-    const canvas = document.createElement("canvas");
-    canvas.width = image.naturalWidth;
-    canvas.height = image.naturalHeight;
-    const context = canvas.getContext("2d", { willReadFrequently: true });
-
-    if (context === null) {
-      throw new Error("Could not sample rendered deck proof");
+    if (
+      !(proofGrid instanceof HTMLElement) ||
+      !(artwork instanceof HTMLImageElement)
+    ) {
+      throw new Error("Missing rendered proof geometry");
     }
 
-    context.drawImage(image, 0, 0);
-    const x = 10;
-    const points = {
-      bottom: [x, Math.floor(image.naturalHeight * 0.78)],
-      middle: [x, Math.floor(image.naturalHeight * 0.5)],
-      top: [x, Math.floor(image.naturalHeight * 0.22)],
-    };
+    const proofRect = proofGrid.getBoundingClientRect();
+    const artworkRect = artwork.getBoundingClientRect();
 
-    return Object.fromEntries(
-      Object.entries(points).map(([name, [sampleX, sampleY]]) => [
-        name,
-        Array.from(context.getImageData(sampleX, sampleY, 1, 1).data),
-      ])
-    );
-  }, screenshot.toString("base64"));
+    return {
+      artwork: {
+        height: artworkRect.height,
+        left: artworkRect.left - proofRect.left,
+        top: artworkRect.top - proofRect.top,
+        width: artworkRect.width,
+      },
+      visibleFieldLabels: Array.from(
+        proofGrid.querySelectorAll("[data-ledger-tone]")
+      ).map((ledger) => ledger.textContent?.replace(/\s+/g, " ").trim()),
+    };
+  });
+  const screenshot = await proof.screenshot({ animations: "disabled" });
+
+  return page.evaluate(
+    async ({ geometry, pngBase64 }) => {
+      const image = new Image();
+      image.src = `data:image/png;base64,${pngBase64}`;
+      await image.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+
+      if (context === null) {
+        throw new Error("Could not sample rendered proof");
+      }
+
+      context.drawImage(image, 0, 0);
+      const fieldPoints = {
+        bottom: [10, Math.floor(image.naturalHeight * 0.78)],
+        left: [10, Math.floor(image.naturalHeight * 0.5)],
+        middle: [10, Math.floor(image.naturalHeight * 0.5)],
+        right: [image.naturalWidth - 10, Math.floor(image.naturalHeight * 0.5)],
+        top: [10, Math.floor(image.naturalHeight * 0.22)],
+      };
+      const artworkPoint = (x, y) => [
+        Math.round(geometry.artwork.left + (x / 1254) * geometry.artwork.width),
+        Math.round(geometry.artwork.top + (y / 1254) * geometry.artwork.height),
+      ];
+      const rowPoints = [337, 475, 612, 750, 887].map((y) =>
+        artworkPoint(480, y)
+      );
+      const rearLampPoint = artworkPoint(480, 1021);
+
+      return {
+        artwork: {
+          rearLamp: sample(rearLampPoint),
+          rows: rowPoints.map(sample),
+        },
+        dimensions: {
+          height: image.naturalHeight,
+          width: image.naturalWidth,
+        },
+        fields: Object.fromEntries(
+          Object.entries(fieldPoints).map(([name, point]) => [
+            name,
+            sample(point),
+          ])
+        ),
+        geometry: geometry.artwork,
+        visibleFieldLabels: geometry.visibleFieldLabels,
+      };
+
+      function sample([x, y]) {
+        return {
+          point: [x, y],
+          rgba: Array.from(context.getImageData(x, y, 1, 1).data),
+        };
+      }
+    },
+    { geometry, pngBase64: screenshot.toString("base64") }
+  );
 }
 
-function validateRenderedDeckProof(samples, area, stateName) {
-  const recommended =
-    area === "front" ? [206, 229, 250, 255] : [217, 232, 247, 255];
-  const sunny = area === "front" ? [241, 225, 192, 255] : [255, 235, 200, 255];
-  const neutral = [242, 242, 242, 255];
+function validateRenderedProof(proof, area, stateName) {
+  const fieldColors = {
+    neutral: [244, 244, 240, 255],
+    recommendedBack: [217, 232, 247, 255],
+    recommendedFront: [206, 229, 250, 255],
+    sunnyBack: [255, 235, 200, 255],
+    sunnyFront: [241, 225, 192, 255],
+  };
 
-  assertPixel(
-    samples.top,
-    area === "front" ? recommended : sunny,
-    `${stateName}: rendered front field`
-  );
-  assertPixel(
-    samples.middle,
-    neutral,
-    `${stateName}: rendered neutral middle field`
-  );
-  assertPixel(
-    samples.bottom,
-    area === "front" ? sunny : recommended,
-    `${stateName}: rendered back field`
-  );
+  if (area === "front" || area === "back") {
+    const expected = expectedArtworkLandmarks[area];
+    assert.equal(
+      proof.artwork.rows.length,
+      5,
+      `${stateName}: composited proof does not retain five seat-row samples`
+    );
+    proof.artwork.rows.forEach((sample, index) => {
+      assertPixel(
+        sample.rgba,
+        expected.rows[index],
+        `${stateName}: composited seat-row ${index + 1}`
+      );
+    });
+    assertPixel(
+      proof.artwork.rearLamp.rgba,
+      expected.rearLamp,
+      `${stateName}: composited red rear lantern`
+    );
+    assertPixel(
+      proof.fields.top.rgba,
+      area === "front" ? fieldColors.recommendedFront : fieldColors.sunnyBack,
+      `${stateName}: rendered front field`
+    );
+    assertPixel(
+      proof.fields.middle.rgba,
+      [242, 242, 242, 255],
+      `${stateName}: rendered neutral middle field`
+    );
+    assertPixel(
+      proof.fields.bottom.rgba,
+      area === "front" ? fieldColors.sunnyFront : fieldColors.recommendedBack,
+      `${stateName}: rendered back field`
+    );
+  } else if (area === "left" || area === "right") {
+    assertPixel(
+      proof.fields.left.rgba,
+      area === "left" ? fieldColors.recommendedFront : fieldColors.sunnyFront,
+      `${stateName}: rendered left-side field`
+    );
+    assertPixel(
+      proof.fields.right.rgba,
+      area === "left" ? fieldColors.sunnyFront : fieldColors.recommendedFront,
+      `${stateName}: rendered right-side field`
+    );
+  } else {
+    assertPixel(
+      proof.fields.left.rgba,
+      fieldColors.neutral,
+      `${stateName}: rendered neutral left field`
+    );
+    assertPixel(
+      proof.fields.right.rgba,
+      fieldColors.neutral,
+      `${stateName}: rendered neutral right field`
+    );
+  }
+
+  if (area === "neutral") {
+    assert.ok(
+      proof.visibleFieldLabels.every(
+        (label) =>
+          label?.includes("Sem preferência") && label.includes("Sem destaque")
+      ),
+      `${stateName}: neutral rendered fields are not visibly described`
+    );
+  } else {
+    assert.ok(
+      proof.visibleFieldLabels.some((label) =>
+        label?.includes("Recomendado")
+      ) &&
+        proof.visibleFieldLabels.some((label) =>
+          label?.includes("Maior incidência")
+        ),
+      `${stateName}: rendered field semantics rely on color alone`
+    );
+  }
 }
 
 function assertPixel(actual, expected, label) {
@@ -699,12 +853,75 @@ async function verifyBoundary(page, viewport, scenarioId, expectation) {
     `${scenarioId}: boundary states are not distinct`
   );
 
-  const layout = await page.evaluate(() => ({
-    scrollHeight: document.documentElement.scrollHeight,
-    scrollWidth: document.documentElement.scrollWidth,
-    viewportHeight: window.innerHeight,
-    viewportWidth: window.innerWidth,
-  }));
+  const layout = await page.evaluate((expectedActions) => {
+    const heading = document.querySelector("h1");
+    const content = heading?.closest("section");
+    const actions = expectedActions.map((name) => {
+      const action = Array.from(document.querySelectorAll("button")).find(
+        (button) => button.textContent?.replace(/\s+/g, " ").trim() === name
+      );
+
+      if (!(action instanceof HTMLElement)) {
+        throw new Error(`Missing boundary action: ${name}`);
+      }
+
+      return action;
+    });
+    const actionWrapper = actions[0]?.parentElement;
+
+    if (
+      !(heading instanceof HTMLElement) ||
+      !(content instanceof HTMLElement) ||
+      !(actionWrapper instanceof HTMLElement)
+    ) {
+      throw new Error("Missing boundary layout elements");
+    }
+
+    return {
+      actionRect: roundRect(actionWrapper.getBoundingClientRect()),
+      actions: actions.map((action) => ({
+        name: action.textContent?.replace(/\s+/g, " ").trim(),
+        rect: roundRect(action.getBoundingClientRect()),
+      })),
+      clippedVisibleText: Array.from(
+        document.querySelectorAll("h1, p, strong, span, button")
+      )
+        .filter((element) => {
+          if (!(element instanceof HTMLElement)) return false;
+          const rect = element.getBoundingClientRect();
+          const style = getComputedStyle(element);
+
+          return (
+            rect.width > 2 &&
+            rect.height > 2 &&
+            style.display !== "none" &&
+            style.visibility !== "hidden" &&
+            (element.scrollWidth > element.clientWidth + 1 ||
+              element.scrollHeight > element.clientHeight + 1)
+          );
+        })
+        .map((element) => element.textContent?.replace(/\s+/g, " ").trim()),
+      contentClientWidth: content.clientWidth,
+      contentRect: roundRect(content.getBoundingClientRect()),
+      contentScrollWidth: content.scrollWidth,
+      heading: heading.textContent?.replace(/\s+/g, " ").trim(),
+      scrollHeight: document.documentElement.scrollHeight,
+      scrollWidth: document.documentElement.scrollWidth,
+      viewportHeight: window.innerHeight,
+      viewportWidth: window.innerWidth,
+    };
+
+    function roundRect(rect) {
+      return {
+        bottom: Number(rect.bottom.toFixed(2)),
+        height: Number(rect.height.toFixed(2)),
+        left: Number(rect.left.toFixed(2)),
+        right: Number(rect.right.toFixed(2)),
+        top: Number(rect.top.toFixed(2)),
+        width: Number(rect.width.toFixed(2)),
+      };
+    }
+  }, expectation.actions);
 
   assert.ok(
     layout.scrollHeight <= layout.viewportHeight + 1,
@@ -714,6 +931,32 @@ async function verifyBoundary(page, viewport, scenarioId, expectation) {
     layout.scrollWidth <= layout.viewportWidth + 1,
     `${viewport.name}-${scenarioId}: horizontal overflow`
   );
+  assert.ok(
+    layout.contentScrollWidth <= layout.contentClientWidth + 1,
+    `${viewport.name}-${scenarioId}: boundary content overflows horizontally`
+  );
+  assert.ok(
+    layout.contentRect.bottom <= layout.actionRect.top + 1,
+    `${viewport.name}-${scenarioId}: actions overlap boundary copy`
+  );
+  assert.deepEqual(
+    layout.clippedVisibleText,
+    [],
+    `${viewport.name}-${scenarioId}: boundary copy is clipped`
+  );
+  layout.actions.forEach(({ name, rect }) => {
+    assert.ok(
+      rect.height >= 48,
+      `${viewport.name}-${scenarioId}: ${name} is ${rect.height}px tall`
+    );
+    assert.ok(
+      rect.left >= -0.5 &&
+        rect.right <= layout.viewportWidth + 0.5 &&
+        rect.top >= -0.5 &&
+        rect.bottom <= layout.viewportHeight + 0.5,
+      `${viewport.name}-${scenarioId}: ${name} leaves the viewport`
+    );
+  });
 
   if (viewport.name === "360x640") {
     await hideDevelopmentPortal(page);
@@ -722,6 +965,12 @@ async function verifyBoundary(page, viewport, scenarioId, expectation) {
       path: `${outputPath}${viewport.name}-${scenarioId}.png`,
     });
   }
+
+  return {
+    ...layout,
+    scenarioId,
+    viewport,
+  };
 }
 
 async function verifyInteractions(activeBrowser, errors) {
@@ -736,6 +985,7 @@ async function verifyInteractions(activeBrowser, errors) {
   });
   await estimateTrigger.click();
   await assertFocusedHeading(page, "Sobre esta estimativa");
+  const estimateFocusedHeading = await focusedText(page);
   const estimateIsolation = await page
     .locator('[data-testid="advice-result-background"]')
     .evaluate((element) => ({
@@ -747,8 +997,11 @@ async function verifyInteractions(activeBrowser, errors) {
     { ariaHidden: "true", inert: true },
     "Estimate sheet does not isolate the production result"
   );
+  const estimateBodyOverflow = await page.evaluate(
+    () => document.body.style.overflow
+  );
   assert.equal(
-    await page.evaluate(() => document.body.style.overflow),
+    estimateBodyOverflow,
     "hidden",
     "Estimate sheet does not lock background scrolling"
   );
@@ -758,42 +1011,70 @@ async function verifyInteractions(activeBrowser, errors) {
     path: `${outputPath}390x844-estimate-focus-proof.png`,
   });
   await page.keyboard.press("Tab");
-  assert.equal(await focusedText(page), "Fechar", "Tab misses estimate close");
+  const estimateFirstTabText = await focusedText(page);
+  assert.equal(estimateFirstTabText, "Fechar", "Tab misses estimate close");
   await page.keyboard.press("Tab");
+  const estimateTrappedTabText = await focusedText(page);
   assert.equal(
-    await focusedText(page),
+    estimateTrappedTabText,
     "Fechar",
     "Estimate focus does not trap"
   );
   await page.keyboard.press("Escape");
   await waitForFocusedText(page, "Entenda a estimativa");
+  const estimateEscapeRestoredText = await focusedText(page);
 
   const optionsTrigger = page.getByRole("button", { name: "Opções" });
   await optionsTrigger.click();
   await assertFocusedHeading(page, "Outras opções");
+  const optionsFocusedHeading = await focusedText(page);
   await page.keyboard.press("Shift+Tab");
+  const optionsReverseWrapText = await focusedText(page);
   assert.equal(
-    await focusedText(page),
+    optionsReverseWrapText,
     "Trocar linhaVoltar para a seleção de linhas.",
     "Reverse tab misses the final options control"
   );
   await page.keyboard.press("Tab");
+  const optionsForwardWrapText = await focusedText(page);
   assert.equal(
-    await focusedText(page),
+    optionsForwardWrapText,
     "Fechar",
     "Options focus order is wrong"
   );
   await page.mouse.click(8, 8);
   await waitForFocusedText(page, "Opções");
+  const optionsBackdropRestoredText = await focusedText(page);
+  const optionsInertAfterClose = await page
+    .locator('[data-testid="advice-result-background"]')
+    .getAttribute("inert");
   assert.equal(
-    await page
-      .locator('[data-testid="advice-result-background"]')
-      .getAttribute("inert"),
+    optionsInertAfterClose,
     null,
     "Backdrop close leaves the result inert"
   );
 
   await page.close();
+
+  return {
+    estimate: {
+      bodyOverflow: estimateBodyOverflow,
+      escapeRestoredText: estimateEscapeRestoredText,
+      firstTabText: estimateFirstTabText,
+      focusedHeading: estimateFocusedHeading,
+      isolation: estimateIsolation,
+      trappedTabText: estimateTrappedTabText,
+    },
+    options: {
+      backdropRestoredText: optionsBackdropRestoredText,
+      focusedHeading: optionsFocusedHeading,
+      forwardWrapText: optionsForwardWrapText,
+      inertAfterClose: optionsInertAfterClose,
+      reverseWrapText: optionsReverseWrapText,
+    },
+    scenarioId: "advice-matrix-preview-left",
+    viewport: { height: 844, width: 390 },
+  };
 }
 
 async function verifyReducedMotion(activeBrowser, errors) {
@@ -831,6 +1112,16 @@ async function verifyReducedMotion(activeBrowser, errors) {
     `Reduced-motion transitions remain ${motion.actionTransitionDuration}`
   );
   await page.close();
+
+  return {
+    ...motion,
+    actionSeconds: motion.actionTransitionDuration
+      .split(",")
+      .map(durationSeconds),
+    scenarioId: "advice-matrix-recent-front",
+    sheetSeconds: durationSeconds(motion.sheetAnimationDuration),
+    viewport: { height: 640, width: 360 },
+  };
 }
 
 async function assertFocusedHeading(page, name) {
