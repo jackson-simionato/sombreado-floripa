@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import type { ReactNode } from "react";
 
-import { AdviceBusDiagram } from "../components/AdviceBusDiagram";
+import { AdviceResultSurface } from "../components/AdviceResultSurface";
 import { AppShell } from "../components/AppShell";
 import { BrandHeader } from "../components/BrandHeader";
 import { BusSplitDiagram } from "../components/BusSplitDiagram";
@@ -19,7 +19,6 @@ import type {
   DirectionChoice,
   RouteCandidate,
   RouteDirectionKind,
-  UiAdviceState,
 } from "../domain/types";
 import type { OnboardingFlowController } from "../hooks/useOnboardingFlow";
 import { copy } from "../content/copy";
@@ -45,6 +44,10 @@ export function OnboardingFlowScreen({
     state.selectedRoute === undefined
       ? undefined
       : `${state.selectedRoute.code} ${state.selectedRoute.name}`;
+  const selectedDirectionContext =
+    state.selectedDirection === undefined
+      ? undefined
+      : formatDirectionContext(state.selectedDirection);
 
   const mapPoints = state.geometry?.polyline ?? [];
 
@@ -314,7 +317,7 @@ export function OnboardingFlowScreen({
             title="Linha confirmada"
           />
           <RouteSummary
-            directionLabel={state.selectedDirection?.name}
+            directionLabel={selectedDirectionContext}
             routeLabel={selectedRouteLabel}
           />
         </section>
@@ -358,7 +361,7 @@ export function OnboardingFlowScreen({
             title="Confirme sua linha"
           />
           <RouteSummary
-            directionLabel={state.selectedDirection?.name}
+            directionLabel={selectedDirectionContext}
             routeLabel={selectedRouteLabel}
           />
           <SchematicRouteMap points={mapPoints} />
@@ -386,7 +389,7 @@ export function OnboardingFlowScreen({
             Ainda é possível confirmar pela linha e pelo sentido.
           </Notice>
           <RouteSummary
-            directionLabel={state.selectedDirection?.name}
+            directionLabel={selectedDirectionContext}
             routeLabel={selectedRouteLabel}
           />
           <Panel>
@@ -418,7 +421,7 @@ export function OnboardingFlowScreen({
             title="Calculando pelo sol direto..."
           />
           <RouteSummary
-            directionLabel={state.selectedDirection?.name}
+            directionLabel={selectedDirectionContext}
             routeLabel={selectedRouteLabel}
           />
         </section>
@@ -433,22 +436,27 @@ export function OnboardingFlowScreen({
     case "onboardAdviceResult":
     case "routePreviewAdviceResult":
       if (state.advice !== undefined && state.advice.mode !== "withheld") {
-        content = renderAdviceResult({
-          advice: state.advice,
-          directionLabel: state.selectedDirection?.name,
-          route: state.selectedRoute,
-        });
+        content = (
+          <AdviceResultSurface
+            advice={state.advice}
+            context={
+              state.screen === "routePreviewAdviceResult"
+                ? "preview"
+                : "freshnessNotice" in state.advice &&
+                    state.advice.freshnessNotice === "recentFallback"
+                  ? "recent"
+                  : "onboard"
+            }
+            directionLabel={selectedDirectionContext}
+            onChangeDirection={actions.changeDirection}
+            onChangeRoute={actions.changeRoute}
+            onRefresh={actions.refreshAdvice}
+            route={state.selectedRoute}
+          />
+        );
       } else {
         content = null;
       }
-      stickyPrimary = (
-        <Button onClick={actions.refreshAdvice}>Atualizar localização</Button>
-      );
-      stickySecondary = (
-        <Button onClick={actions.changeRoute} variant="secondary">
-          Trocar linha
-        </Button>
-      );
       break;
 
     case "trueWithheld":
@@ -464,7 +472,7 @@ export function OnboardingFlowScreen({
             title="Não é possível recomendar agora"
           />
           <RouteSummary
-            directionLabel={state.selectedDirection?.name}
+            directionLabel={selectedDirectionContext}
             routeLabel={selectedRouteLabel}
           />
         </section>
@@ -488,7 +496,7 @@ export function OnboardingFlowScreen({
           />
           {selectedRouteLabel !== undefined ? (
             <RouteSummary
-              directionLabel={state.selectedDirection?.name}
+              directionLabel={selectedDirectionContext}
               routeLabel={selectedRouteLabel}
             />
           ) : null}
@@ -509,10 +517,12 @@ export function OnboardingFlowScreen({
   return (
     <AppShell>
       <div className={styles.screen}>{content}</div>
-      <StickyActions>
-        {stickyPrimary}
-        {stickySecondary}
-      </StickyActions>
+      {stickyPrimary !== null || stickySecondary !== null ? (
+        <StickyActions>
+          {stickyPrimary}
+          {stickySecondary}
+        </StickyActions>
+      ) : null}
     </AppShell>
   );
 }
@@ -546,90 +556,6 @@ function renderLoadingScreen(
         <RouteSummary routeLabel={selectedRouteLabel} />
       ) : null}
     </section>
-  );
-}
-
-function renderAdviceResult({
-  advice,
-  directionLabel,
-  route,
-}: {
-  advice: Exclude<UiAdviceState, { mode: "withheld" }>;
-  directionLabel?: string;
-  route?: { code: string; name: string };
-}) {
-  const variant = adviceVariantCopy(advice);
-
-  return (
-    <AdviceResultSurface
-      advice={advice}
-      directionLabel={directionLabel}
-      route={route}
-      variant={variant}
-    />
-  );
-}
-
-function AdviceResultSurface({
-  advice,
-  directionLabel,
-  route,
-  variant,
-}: {
-  advice: Exclude<UiAdviceState, { mode: "withheld" }>;
-  directionLabel?: string;
-  route?: { code: string; name: string };
-  variant: ReturnType<typeof adviceVariantCopy>;
-}) {
-  return (
-    <section className={styles.resultStack} aria-labelledby="screen-title">
-      <p className={styles.progress}>4 de 4</p>
-      <ResultRouteMetadata directionLabel={directionLabel} route={route} />
-      <div className={styles.recommendationPanel}>
-        <ScreenHeader
-          body={variant.body}
-          eyebrow={resultModeLabel(advice)}
-          title={variant.title}
-          variant="result"
-        />
-        {advice.mode !== "preview" &&
-        advice.freshnessNotice === "recentFallback" ? (
-          <Notice>
-            Usando sua última localização conhecida. Atualize quando estiver no
-            ônibus.
-          </Notice>
-        ) : null}
-        <div className={styles.diagramFocus} data-result-focus="diagram">
-          <AdviceBusDiagram
-            advice={advice}
-            summary={variant.accessibleSummary}
-          />
-        </div>
-        <p className={styles.estimateNotice}>{variant.trustNotice}</p>
-      </div>
-    </section>
-  );
-}
-
-function ResultRouteMetadata({
-  directionLabel,
-  route,
-}: {
-  directionLabel?: string;
-  route?: { code: string; name: string };
-}) {
-  if (route === undefined) {
-    return null;
-  }
-
-  return (
-    <RouteSummaryCard
-      directionLabel={
-        directionLabel !== undefined ? `sentido ${directionLabel}` : undefined
-      }
-      routeCode={route.code}
-      routeName={route.name}
-    />
   );
 }
 
@@ -673,6 +599,17 @@ function DirectionCard({
       onSelect={onSelect}
     />
   );
+}
+
+function formatDirectionContext(
+  direction: Pick<DirectionChoice, "directionKind" | "name">
+): string {
+  const directionKindLabel = formatRouteDirectionKind(direction.directionKind);
+  if (directionKindLabel === undefined) {
+    return direction.name;
+  }
+
+  return `${direction.name} · ${directionKindLabel}`;
 }
 
 function formatRouteDirectionKind(
@@ -801,116 +738,6 @@ function locationIssueLabel(
     default:
       return "Você pode seguir sem localização e escolher a linha manualmente.";
   }
-}
-
-const ESTIMATE_NOTICE = "Estimativa pelo sol direto. Pode variar no caminho.";
-
-function adviceVariantCopy(
-  advice: Exclude<UiAdviceState, { mode: "withheld" }>
-): {
-  title: string;
-  body: string;
-  accessibleSummary: string;
-  trustNotice: string;
-} {
-  if (advice.mode === "preview") {
-    return {
-      ...previewDirectionalAdviceCopy(advice.recommendedSeatArea),
-      trustNotice: previewTrustCopy(advice.distanceFromRouteMeters),
-    };
-  }
-
-  if (advice.mode === "neutralComputed") {
-    if (advice.directSunExposure === "overhead") {
-      return {
-        title: "Sem lado melhor agora",
-        body: "Sol alto demais para uma lateral se destacar neste trecho.",
-        accessibleSummary:
-          "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora.",
-        trustNotice: ESTIMATE_NOTICE,
-      };
-    }
-
-    return {
-      title: "Sem sol direto relevante agora",
-      body: "Não há sol direto suficiente para recomendar uma lateral neste trecho.",
-      accessibleSummary:
-        "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora.",
-      trustNotice: ESTIMATE_NOTICE,
-    };
-  }
-
-  return {
-    ...directionalAdviceCopy(advice.recommendedSeatArea),
-    trustNotice: ESTIMATE_NOTICE,
-  };
-}
-
-function resultModeLabel(
-  advice: Exclude<UiAdviceState, { mode: "withheld" }>
-): string {
-  return advice.mode === "preview" ? "Prévia da linha" : "Agora no ônibus";
-}
-
-function directionalAdviceCopy(
-  recommendedSeatArea: "left" | "right" | "front" | "back"
-) {
-  switch (recommendedSeatArea) {
-    case "left":
-      return {
-        title: "Sente à esquerda",
-        body: "Esse lado deve pegar menos sol direto neste sentido.",
-        accessibleSummary:
-          "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus.",
-      };
-    case "right":
-      return {
-        title: "Melhor sentar à direita",
-        body: "Esse lado deve pegar menos sol direto neste sentido.",
-        accessibleSummary:
-          "Recomendação: sente à direita. O sol direto aparece do lado esquerdo do ônibus.",
-      };
-    case "front":
-      return {
-        title: "Prefira sentar mais à frente",
-        body: "Parte da frente deve pegar menos sol direto neste sentido.",
-        accessibleSummary:
-          "Recomendação: sente mais à frente. O sol direto aparece mais forte na parte de trás do ônibus.",
-      };
-    case "back":
-      return {
-        title: "Prefira sentar mais atrás",
-        body: "Parte de trás deve pegar menos sol direto neste sentido.",
-        accessibleSummary:
-          "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
-      };
-  }
-}
-
-function previewDirectionalAdviceCopy(
-  recommendedSeatArea: "left" | "right" | "front" | "back"
-) {
-  const copy = directionalAdviceCopy(recommendedSeatArea);
-
-  if (recommendedSeatArea === "front" || recommendedSeatArea === "back") {
-    return {
-      ...copy,
-      body: "Essa parte tende a pegar menos sol direto no ponto estimado da linha.",
-    };
-  }
-
-  return {
-    ...copy,
-    body: "Esse lado tende a pegar menos sol direto no ponto estimado da linha.",
-  };
-}
-
-function previewTrustCopy(distanceFromRouteMeters?: number): string {
-  if (distanceFromRouteMeters === undefined) {
-    return "Prévia da linha confirmada. Estimativa pelo sol direto; pode variar no caminho.";
-  }
-
-  return `Prévia a cerca de ${Math.round(distanceFromRouteMeters)} m fora da rota. Estimativa pelo sol direto; pode variar no caminho.`;
 }
 
 function withheldReasonCopy(reasonCode?: AdvisoryReasonCode): string {

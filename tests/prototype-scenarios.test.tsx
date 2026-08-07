@@ -24,7 +24,8 @@ const scenarioExpectations = [
   ["advice-onboard-left", "Sente à esquerda"],
   ["advice-onboard-right", "Melhor sentar à direita"],
   ["advice-onboard-front", "Prefira sentar mais à frente"],
-  ["advice-onboard-back", "Prefira sentar mais atrás"],
+  ["advice-onboard-back", "Prefira o fundo"],
+  ["advice-recent-location", "Sente à esquerda"],
   ["advice-neutral-overhead", "Sem lado melhor agora"],
   ["advice-neutral-none", "Sem sol direto relevante agora"],
   ["advice-preview", "Melhor sentar à direita"],
@@ -34,6 +35,64 @@ const scenarioExpectations = [
   ["error-directions", "Algo deu errado"],
   ["error-geometry", "Algo deu errado"],
   ["error-advice", "Algo deu errado"],
+] as const;
+
+const productionAdviceMatrix = [
+  ["left", "onboard", "advice-matrix-onboard-left", "Sente à esquerda"],
+  [
+    "right",
+    "onboard",
+    "advice-matrix-onboard-right",
+    "Melhor sentar à direita",
+  ],
+  [
+    "front",
+    "onboard",
+    "advice-matrix-onboard-front",
+    "Prefira sentar mais à frente",
+  ],
+  ["back", "onboard", "advice-matrix-onboard-back", "Prefira o fundo"],
+  [
+    "neutral",
+    "onboard",
+    "advice-matrix-onboard-neutral",
+    "Sem lado melhor agora",
+  ],
+  ["left", "preview", "advice-matrix-preview-left", "Sente à esquerda"],
+  [
+    "right",
+    "preview",
+    "advice-matrix-preview-right",
+    "Melhor sentar à direita",
+  ],
+  [
+    "front",
+    "preview",
+    "advice-matrix-preview-front",
+    "Prefira sentar mais à frente",
+  ],
+  ["back", "preview", "advice-matrix-preview-back", "Prefira o fundo"],
+  [
+    "neutral",
+    "preview",
+    "advice-matrix-preview-neutral",
+    "Sem lado melhor agora",
+  ],
+  ["left", "recent", "advice-matrix-recent-left", "Sente à esquerda"],
+  ["right", "recent", "advice-matrix-recent-right", "Melhor sentar à direita"],
+  [
+    "front",
+    "recent",
+    "advice-matrix-recent-front",
+    "Prefira sentar mais à frente",
+  ],
+  ["back", "recent", "advice-matrix-recent-back", "Prefira o fundo"],
+  [
+    "neutral",
+    "recent",
+    "advice-matrix-recent-neutral",
+    "Sem lado melhor agora",
+  ],
 ] as const;
 
 afterEach(() => {
@@ -58,6 +117,71 @@ function mockMobileViewport(matches: boolean) {
 }
 
 describe("prototype scenarios", () => {
+  test.each(productionAdviceMatrix)(
+    "query-selects the production %s %s scenario",
+    async (_area, _context, prototypeScenarioId, expectedHeading) => {
+      window.history.replaceState(
+        null,
+        "",
+        `/prototype?scenario=${prototypeScenarioId}`
+      );
+
+      render(<PrototypePage />);
+
+      expect(
+        await screen.findByRole("heading", { name: expectedHeading })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição"
+        )
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Atualizar localização" })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Opções" })
+      ).toBeInTheDocument();
+    }
+  );
+
+  test.each([
+    ["advice-withheld", "Não é possível recomendar agora"],
+    ["error-advice", "Algo deu errado"],
+  ] as const)(
+    "query-selects the production %s boundary",
+    async (prototypeScenarioId, expectedHeading) => {
+      window.history.replaceState(
+        null,
+        "",
+        `/prototype?scenario=${prototypeScenarioId}`
+      );
+
+      render(<PrototypePage />);
+
+      expect(
+        await screen.findByRole("heading", { name: expectedHeading })
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId("advice-result-screen")
+      ).not.toBeInTheDocument();
+    }
+  );
+
+  test("ignores an unknown query scenario", async () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/prototype?scenario=not-a-production-scenario"
+    );
+
+    render(<PrototypePage />);
+
+    expect(
+      await screen.findByRole("heading", { name: "Viaje na sombra." })
+    ).toBeInTheDocument();
+  });
+
   test.each(scenarioExpectations)(
     "renders %s",
     async (prototypeScenarioId, expectedHeading) => {
@@ -215,8 +339,9 @@ describe("prototype scenarios", () => {
   });
 
   test.each([
-    ["error-geometry", "124 TICEN - Lagoa", "TICEN para Lagoa"],
-    ["error-advice", "124 TICEN - Lagoa", "TICEN para Lagoa"],
+    ["advice-computing", "124 TICEN - Lagoa", "TICEN para Lagoa · Ida"],
+    ["error-geometry", "124 TICEN - Lagoa", "TICEN para Lagoa · Ida"],
+    ["error-advice", "124 TICEN - Lagoa", "TICEN para Lagoa · Ida"],
   ] as const)(
     "preserves post-selection context in %s",
     async (prototypeScenarioId, routeLabel, directionLabel) => {
@@ -317,7 +442,7 @@ describe("prototype scenarios", () => {
     );
     expect(screen.getByTestId("bus-shell")).toHaveAttribute(
       "data-diagram-density",
-      "default"
+      "compact"
     );
     expect(screen.getByTestId("bus-shell")).toHaveAttribute(
       "data-diagram-proportion",
@@ -325,16 +450,18 @@ describe("prototype scenarios", () => {
     );
     expect(routeCode).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
-    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
+    expect(
+      screen.getByText("sentido TICEN para Lagoa · Ida")
+    ).toBeInTheDocument();
     expect(screen.queryByText("Recomendação")).not.toBeInTheDocument();
     expect(
       screen.getByLabelText(
         "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus."
       )
     ).toBeInTheDocument();
-    expect(
-      screen.getByText("Estimativa pelo sol direto. Pode variar no caminho.")
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("advice-trust-row")).toHaveTextContent(
+      "Estimativa pela incidência de sol. Não considera prédios, nuvens, películas ou cortinas."
+    );
   });
 
   test("preview advice uses text distinction and one compact trust notice", async () => {
@@ -342,7 +469,9 @@ describe("prototype scenarios", () => {
       <HomePageApp prototypeScenarioId="advice-preview" runtime="prototype" />
     );
 
-    expect(await screen.findByText("Prévia da linha")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Prévia da linha · ponto estimado")
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
         name: "Melhor sentar à direita",
@@ -350,17 +479,17 @@ describe("prototype scenarios", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Esse lado tende a pegar menos sol direto no ponto estimado da linha."
+        "Prévia, não orientação ao vivo. Menor incidência estimada neste ponto."
       )
     ).toBeInTheDocument();
     expect(screen.getByText("124")).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
-    expect(screen.getByText("sentido TICEN para Lagoa")).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Prévia a cerca de 64 m fora da rota. Estimativa pelo sol direto; pode variar no caminho."
-      )
+      screen.getByText("sentido TICEN para Lagoa · Ida")
     ).toBeInTheDocument();
+    expect(screen.getByTestId("advice-trust-row")).toHaveTextContent(
+      "Estimativa pela incidência de sol. Não considera prédios, nuvens, películas ou cortinas."
+    );
     expect(
       screen.queryByText(/Prévia estimada para linha confirmada/i)
     ).not.toBeInTheDocument();
@@ -371,6 +500,24 @@ describe("prototype scenarios", () => {
     expect(
       screen.queryByRole("heading", { name: /Prévia/i })
     ).not.toBeInTheDocument();
+  });
+
+  test("recent-location advice makes the stale result visible through HomePageApp", async () => {
+    render(
+      <HomePageApp
+        prototypeScenarioId="advice-recent-location"
+        runtime="prototype"
+      />
+    );
+
+    expect(
+      await screen.findByText("Última localização conhecida")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Usando sua última localização conhecida. Atualize quando estiver no ônibus."
+      )
+    ).toBeInTheDocument();
   });
 
   test("neutral advice keeps route context without leaking a side recommendation", async () => {

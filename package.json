@@ -16,10 +16,12 @@
     "prepare": "husky",
     "test": "vitest run",
     "start": "vinext start",
+    "test:advice-matrix": "node scripts/run-production-advice-qa.mjs",
     "test:visual": "playwright test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "next": "^15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -50,6 +52,7 @@
     "typescript-eslint": "^8.0.0",
     "vinext": "^0.0.7",
     "vite": "^7.3.6",
-    "vitest": "^3.0.0"
+    "vitest": "^3.0.0",
+    "wrangler": "^4.114.0"
   }
 }

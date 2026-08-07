@@ -8,9 +8,35 @@ type AdviceBusDiagramProps = {
   summary: string;
 };
 
-type CabinZone = {
-  label: string;
-  tone: "recommended" | "sunny" | "neutral";
+type AdviceArea = "left" | "right" | "front" | "back" | "neutral";
+type LedgerTone = "recommended" | "sunny" | "neutral";
+
+type LedgerContent = {
+  areaLabel: string;
+  cue: "✓" | "☀" | "−";
+  eyebrow: string;
+  title: string;
+  tone: LedgerTone;
+};
+
+const BUS_ARTWORK_SIZE = 250;
+
+const ARTWORK_BY_AREA: Record<AdviceArea, string> = {
+  back: "/images/advice-bus-back.png",
+  front: "/images/advice-bus-front.png",
+  left: "/images/advice-bus-side.png",
+  neutral: "/images/advice-bus-neutral.png",
+  right: "/images/advice-bus-side.png",
+};
+
+const LEDGER_POSITION_CLASS: Record<
+  "left" | "right" | "top" | "bottom",
+  string
+> = {
+  bottom: styles.ledgerBottom,
+  left: "",
+  right: "",
+  top: styles.ledgerTop,
 };
 
 export function AdviceBusDiagram({
@@ -18,169 +44,131 @@ export function AdviceBusDiagram({
   density = "default",
   summary,
 }: AdviceBusDiagramProps) {
-  if (advice.mode === "neutralComputed") {
-    return (
-      <figure className={styles.figure} aria-label={summary}>
-        <CabinInterior
-          density={density}
-          zones={[
-            { label: "esquerda", tone: "neutral" },
-            { label: "direita", tone: "neutral" },
-          ]}
-          variant="side"
-        />
-        <figcaption className={styles.caption}>{summary}</figcaption>
-      </figure>
-    );
-  }
-
-  if (
-    advice.recommendedSeatArea === "front" ||
-    advice.recommendedSeatArea === "back"
-  ) {
-    const recommendFront = advice.recommendedSeatArea === "front";
-
-    return (
-      <figure className={styles.figure} aria-label={summary}>
-        <CabinInterior
-          density={density}
-          zones={[
-            { label: "frente", tone: recommendFront ? "recommended" : "sunny" },
-            { label: "trás", tone: recommendFront ? "sunny" : "recommended" },
-          ]}
-          variant="deck"
-        />
-        <figcaption className={styles.caption}>{summary}</figcaption>
-      </figure>
-    );
-  }
-
-  const recommendLeft = advice.recommendedSeatArea === "left";
+  const area = areaFor(advice);
+  const ledgers = ledgersFor(area);
+  const isDeck = area === "front" || area === "back";
 
   return (
-    <figure className={styles.figure} aria-label={summary}>
-      <CabinInterior
-        density={density}
-        zones={[
-          { label: "esquerda", tone: recommendLeft ? "recommended" : "sunny" },
-          { label: "direita", tone: recommendLeft ? "sunny" : "recommended" },
-        ]}
-        variant="side"
-      />
-      <figcaption className={styles.caption}>{summary}</figcaption>
-    </figure>
-  );
-}
-
-function CabinInterior({
-  density,
-  zones,
-  variant,
-}: {
-  density: "default" | "compact";
-  zones: [CabinZone, CabinZone];
-  variant: "side" | "deck";
-}) {
-  return (
-    <div
-      className={`${styles.bus} ${density === "compact" ? styles.busCompact : ""}`}
+    <figure
+      aria-label={summary}
+      className={styles.figure}
+      data-advice-area={area}
       data-diagram-density={density}
       data-diagram-layout="long-bus"
       data-diagram-proportion="elongated-bus"
       data-diagram-shape="transit-pictogram-bus"
       data-diagram-size="result-focus"
+      data-neutral-middle-row={isDeck ? "true" : undefined}
+      data-proof-axis={isDeck ? "horizontal" : "vertical"}
+      data-seat-row-count={isDeck ? "5" : undefined}
       data-testid="bus-shell"
-      aria-hidden="true"
     >
-      <span
-        className={styles.wheelCue}
-        data-diagram-cue="wheels"
-        data-testid="bus-wheels"
-      />
-      <div className={styles.frontCue} data-diagram-cue="front">
-        <span className={styles.routeSign} data-testid="bus-front-sign">
-          ônibus
-        </span>
-        <span className={styles.windshield} data-testid="bus-windshield">
-          frente
-        </span>
-        <span className={styles.driverCue} />
+      <p className={styles.frontCue}>
+        <span aria-hidden="true">↑</span> Frente
+      </p>
+      <div className={`${styles.proofGrid} ${isDeck ? styles.deckProof : ""}`}>
+        <Ledger content={ledgers[0]} position={isDeck ? "top" : "left"} />
+        <BusArtwork area={area} />
+        <Ledger content={ledgers[1]} position={isDeck ? "bottom" : "right"} />
       </div>
-      <div
-        className={`${styles.cabinBody} ${
-          variant === "deck" ? styles.cabinBodyDeck : ""
+      <figcaption className={styles.srOnly}>{summary}</figcaption>
+    </figure>
+  );
+}
+
+function areaFor(
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>
+): AdviceArea {
+  return advice.mode === "neutralComputed"
+    ? "neutral"
+    : advice.recommendedSeatArea;
+}
+
+function ledgersFor(area: AdviceArea): [LedgerContent, LedgerContent] {
+  switch (area) {
+    case "left":
+      return [recommendedLedger("esquerda"), sunnyLedger("direita")];
+    case "right":
+      return [sunnyLedger("esquerda"), recommendedLedger("direita")];
+    case "front":
+      return [recommendedLedger("frente"), sunnyLedger("fundo")];
+    case "back":
+      return [sunnyLedger("frente"), recommendedLedger("fundo")];
+    case "neutral":
+      return [neutralLedger("esquerda"), neutralLedger("direita")];
+  }
+}
+
+function recommendedLedger(areaLabel: string): LedgerContent {
+  return {
+    areaLabel,
+    cue: "✓",
+    eyebrow: "Recomendado",
+    title: "Sente aqui",
+    tone: "recommended",
+  };
+}
+
+function sunnyLedger(areaLabel: string): LedgerContent {
+  return {
+    areaLabel,
+    cue: "☀",
+    eyebrow: "Maior incidência",
+    title: "Sol direto",
+    tone: "sunny",
+  };
+}
+
+function neutralLedger(areaLabel: string): LedgerContent {
+  return {
+    areaLabel,
+    cue: "−",
+    eyebrow: "Sem preferência",
+    title: "Sem destaque",
+    tone: "neutral",
+  };
+}
+
+function BusArtwork({ area }: { area: AdviceArea }) {
+  const isMirrored = area === "right";
+
+  return (
+    <div className={styles.busArtworkFrame}>
+      <img
+        alt=""
+        aria-hidden="true"
+        className={`${styles.busArtwork} ${
+          isMirrored ? styles.busArtworkMirrored : ""
         }`}
-        data-diagram-cue="seats"
-      >
-        {variant === "side" ? (
-          <>
-            <CabinZoneView side="left" zone={zones[0]} />
-            <div className={styles.aisle}>
-              <span>corredor</span>
-            </div>
-            <CabinZoneView side="right" zone={zones[1]} />
-          </>
-        ) : (
-          <>
-            <CabinDeckZoneView zone={zones[0]} />
-            <div className={styles.deckAisle}>
-              <span>corredor</span>
-            </div>
-            <CabinDeckZoneView zone={zones[1]} />
-          </>
-        )}
-      </div>
-      <span className={styles.rearCue} data-diagram-cue="rear-bumper" />
+        data-artwork-mirrored={isMirrored ? "true" : "false"}
+        data-artwork-size={BUS_ARTWORK_SIZE}
+        data-artwork-variant={area}
+        data-testid="advice-bus-artwork"
+        src={ARTWORK_BY_AREA[area]}
+        style={{ width: `${BUS_ARTWORK_SIZE}px` }}
+      />
     </div>
   );
 }
 
-function CabinZoneView({
-  side,
-  zone,
+function Ledger({
+  content,
+  position,
 }: {
-  side: "left" | "right";
-  zone: CabinZone;
+  content: LedgerContent;
+  position: "left" | "right" | "top" | "bottom";
 }) {
   return (
     <div
-      className={`${styles.zone} ${side === "left" ? styles.zoneLeft : styles.zoneRight} ${toneClass(zone.tone)}`}
+      className={`${styles.ledger} ${styles[content.tone]} ${LEDGER_POSITION_CLASS[position]}`}
+      data-ledger-position={position}
+      data-ledger-tone={content.tone}
     >
-      <span className={styles.sideLabel}>{zone.label}</span>
-      <SeatRows />
-      <strong>{calloutFor(zone.tone)}</strong>
+      <span className={styles.ledgerEyebrow}>
+        <span aria-hidden="true">{content.cue}</span> {content.eyebrow}
+      </span>
+      <strong>{content.title}</strong>
+      <small>{content.areaLabel}</small>
     </div>
   );
-}
-
-function CabinDeckZoneView({ zone }: { zone: CabinZone }) {
-  return (
-    <div className={`${styles.deckZone} ${toneClass(zone.tone)}`}>
-      <span className={styles.sideLabel}>{zone.label}</span>
-      <SeatRows />
-      <strong>{calloutFor(zone.tone)}</strong>
-    </div>
-  );
-}
-
-function SeatRows() {
-  return (
-    <span className={styles.seatRows} data-diagram-cue="seat-rows">
-      {Array.from({ length: 6 }, (_, index) => (
-        <span key={index} />
-      ))}
-    </span>
-  );
-}
-
-function toneClass(tone: CabinZone["tone"]) {
-  if (tone === "recommended") return styles.zoneRecommended;
-  if (tone === "sunny") return styles.zoneSunny;
-  return styles.zoneNeutral;
-}
-
-function calloutFor(tone: CabinZone["tone"]) {
-  if (tone === "recommended") return "Sente aqui";
-  if (tone === "sunny") return "sol direto";
-  return "sem destaque";
 }

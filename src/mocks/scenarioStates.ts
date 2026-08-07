@@ -10,9 +10,13 @@ import type {
   MapAvailability,
   MockLocationResult,
   MockScenarioId,
+  ProductionAdviceArea,
+  ProductionAdviceContext,
+  ProductionAdviceMatrixScenarioId,
   PrototypeScenarioId,
   RetryTarget,
   TargetAdvisoryResponse,
+  UiAdviceState,
 } from "../domain/types";
 import {
   fixtureIds,
@@ -72,6 +76,10 @@ const missingGeometryDirections = toDirectionChoices(
 const selectedMissingGeometryDirection = toSelectedDirection(
   missingGeometryDirections[0]
 );
+const selectedMatrixRoute = {
+  ...selectedNearbyRoute,
+  name: "TICEN - UFSC via Pantanal e Córrego Grande até Lagoa da Conceição",
+};
 
 const routeGeometry =
   routeGeometryByDirectionId[fixtureIds.routeDirections.lagoaOutbound];
@@ -83,7 +91,7 @@ const advisoryRequest = buildTargetAdvisoryRequest({
   now: () => new Date("2026-05-26T12:00:00.000Z"),
 });
 
-export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
+const existingPrototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
   {
     id: "location-request",
     label: "Localização: pedir acesso",
@@ -307,6 +315,24 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
     },
   },
   {
+    id: "advice-recent-location",
+    label: "Conselho: localização recente",
+    seed: {
+      state: buildState({
+        ...adviceState(
+          "onboardAdviceResult",
+          mockAdvisories.advisoryExposureRightRecommendsLeft
+        ),
+        advice: {
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+          freshnessNotice: "recentFallback",
+        },
+      }),
+    },
+  },
+  {
     id: "advice-neutral-overhead",
     label: "Conselho: neutro sol alto",
     seed: {
@@ -432,6 +458,31 @@ export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
   },
 ] as const;
 
+const productionAdviceAreas = [
+  "left",
+  "right",
+  "front",
+  "back",
+  "neutral",
+] as const satisfies ReadonlyArray<ProductionAdviceArea>;
+const productionAdviceContexts = [
+  "onboard",
+  "preview",
+  "recent",
+] as const satisfies ReadonlyArray<ProductionAdviceContext>;
+
+export const productionAdviceMatrixScenarios = productionAdviceContexts.flatMap(
+  (context) =>
+    productionAdviceAreas.map((area) =>
+      productionAdviceMatrixScenario(area, context)
+    )
+);
+
+export const prototypeScenarios: ReadonlyArray<PrototypeScenarioDefinition> = [
+  ...existingPrototypeScenarios,
+  ...productionAdviceMatrixScenarios,
+];
+
 export function getPrototypeScenario(
   id: PrototypeScenarioId
 ): PrototypeScenarioDefinition {
@@ -439,6 +490,113 @@ export function getPrototypeScenario(
     prototypeScenarios.find((scenario) => scenario.id === id) ??
     prototypeScenarios[0]
   );
+}
+
+export function isPrototypeScenarioId(
+  value: string | null
+): value is PrototypeScenarioId {
+  return prototypeScenarios.some((scenario) => scenario.id === value);
+}
+
+function productionAdviceMatrixScenario(
+  area: ProductionAdviceArea,
+  context: ProductionAdviceContext
+): PrototypeScenarioDefinition {
+  const id: ProductionAdviceMatrixScenarioId = `advice-matrix-${context}-${area}`;
+
+  return {
+    id,
+    label: `Matriz: ${contextLabel(context)} · ${areaLabel(area)}`,
+    seed: {
+      state: buildState({
+        screen:
+          context === "preview"
+            ? "routePreviewAdviceResult"
+            : "onboardAdviceResult",
+        requestStatus: "success",
+        nearbyCandidates,
+        selectedRoute: selectedMatrixRoute,
+        selectedDirection,
+        directionChoices: nearbyDirections,
+        advice: productionMatrixAdvice(area, context),
+        advisoryRequest,
+      }),
+      mockScenarioId: "nearby-routes",
+    },
+  };
+}
+
+function productionMatrixAdvice(
+  area: ProductionAdviceArea,
+  context: ProductionAdviceContext
+): Exclude<UiAdviceState, { mode: "withheld" }> {
+  if (area === "neutral") {
+    return {
+      mode: "neutralComputed",
+      directSunExposure: "overhead",
+      freshnessNotice: context === "recent" ? "recentFallback" : undefined,
+    };
+  }
+
+  const directSunExposure = oppositeArea(area);
+
+  if (context === "preview") {
+    return {
+      mode: "preview",
+      directSunExposure,
+      recommendedSeatArea: area,
+      previewSource: "estimated_route_point",
+      distanceFromRouteMeters: 280,
+    };
+  }
+
+  return {
+    mode: "onboard",
+    directSunExposure,
+    recommendedSeatArea: area,
+    freshnessNotice: context === "recent" ? "recentFallback" : undefined,
+  };
+}
+
+function oppositeArea(
+  area: Exclude<ProductionAdviceArea, "neutral">
+): Exclude<ProductionAdviceArea, "neutral"> {
+  switch (area) {
+    case "left":
+      return "right";
+    case "right":
+      return "left";
+    case "front":
+      return "back";
+    case "back":
+      return "front";
+  }
+}
+
+function contextLabel(context: ProductionAdviceContext): string {
+  switch (context) {
+    case "onboard":
+      return "a bordo";
+    case "preview":
+      return "prévia";
+    case "recent":
+      return "local recente";
+  }
+}
+
+function areaLabel(area: ProductionAdviceArea): string {
+  switch (area) {
+    case "left":
+      return "esquerda";
+    case "right":
+      return "direita";
+    case "front":
+      return "frente";
+    case "back":
+      return "fundo";
+    case "neutral":
+      return "neutro";
+  }
 }
 
 function adviceState(

@@ -1,0 +1,3495 @@
+{
+  "consoleErrors": [],
+  "generatedAt": "2026-07-27T13:08:29.236Z",
+  "results": [
+    {
+      "area": "left",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 468.08,
+          "height": 250,
+          "left": 54.98,
+          "right": 304.98,
+          "top": 218.08,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 487,
+          "height": 287.84,
+          "left": 83.59,
+          "right": 276.39,
+          "top": 199.16,
+          "width": 192.8
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 175.16,
+            "height": 70.84,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 323.84,
+            "left": 14,
+            "right": 346,
+            "top": 183.16,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaAgora no ônibusSente à esquerdaEste lado tende a ter menor incidência de sol.FrenteRecomendadoSente aquiesquerdaRecomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.Evite se puderMaior incidênciadireitaAo entrar, escolha as janelas à sua esquerda.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-left-onboard",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "left",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 476.61,
+          "height": 250,
+          "left": 54.98,
+          "right": 304.98,
+          "top": 226.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 487,
+          "height": 270.78,
+          "left": 83.59,
+          "right": 276.39,
+          "top": 216.22,
+          "width": 192.8
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaPrévia da linha · ponto estimadoSente à esquerdaEste lado tende a ter menor incidência de sol neste ponto estimado.FrenteRecomendadoSente aquiesquerdaRecomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.Evite se puderMaior incidênciadireitaAo entrar, escolha as janelas à sua esquerda.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-left-preview",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "left",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 476.61,
+          "height": 250,
+          "left": 54.98,
+          "right": 304.98,
+          "top": 226.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 487,
+          "height": 270.78,
+          "left": 83.59,
+          "right": 276.39,
+          "top": 216.22,
+          "width": 192.8
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaÚltima localização conhecidaSente à esquerdaPela última posição conhecida, este lado tende a ter menor incidência de sol.FrenteRecomendadoSente aquiesquerdaRecomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.Evite se puderMaior incidênciadireitaAo entrar, escolha as janelas à sua esquerda.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-left-recent",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "right",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 468.08,
+          "height": 250,
+          "left": 54.98,
+          "right": 304.98,
+          "top": 218.08,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 487,
+          "height": 287.84,
+          "left": 83.59,
+          "right": 276.39,
+          "top": 199.16,
+          "width": 192.8
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 175.16,
+            "height": 70.84,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 323.84,
+            "left": 14,
+            "right": 346,
+            "top": 183.16,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaAgora no ônibusSente à direitaEste lado tende a ter menor incidência de sol.FrenteEvite se puderMaior incidênciaesquerdaRecomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.RecomendadoSente aquidireitaAo entrar, escolha as janelas à sua direita.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-right-onboard",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "right",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 476.61,
+          "height": 250,
+          "left": 54.98,
+          "right": 304.98,
+          "top": 226.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 487,
+          "height": 270.78,
+          "left": 83.59,
+          "right": 276.39,
+          "top": 216.22,
+          "width": 192.8
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaPrévia da linha · ponto estimadoSente à direitaEste lado tende a ter menor incidência de sol neste ponto estimado.FrenteEvite se puderMaior incidênciaesquerdaRecomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.RecomendadoSente aquidireitaAo entrar, escolha as janelas à sua direita.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-right-preview",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "right",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 476.61,
+          "height": 250,
+          "left": 54.98,
+          "right": 304.98,
+          "top": 226.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 487,
+          "height": 270.78,
+          "left": 83.59,
+          "right": 276.39,
+          "top": 216.22,
+          "width": 192.8
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaÚltima localização conhecidaSente à direitaPela última posição conhecida, este lado tende a ter menor incidência de sol.FrenteEvite se puderMaior incidênciaesquerdaRecomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.RecomendadoSente aquidireitaAo entrar, escolha as janelas à sua direita.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-right-recent",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "front",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 473.08,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 223.08,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 360.08,
+          "height": 34,
+          "left": 15,
+          "right": 345,
+          "top": 326.08,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 175.16,
+            "height": 70.84,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 323.84,
+            "left": 14,
+            "right": 346,
+            "top": 183.16,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaAgora no ônibusPrefira a frenteA parte da frente tende a ter menor incidência de sol.FrenteRecomendadoSente aquifrenteRecomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.Evite se puderMaior incidênciatrásAo entrar, procure assentos na parte da frente.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-front-onboard",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "front",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 481.61,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 231.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 368.61,
+          "height": 34,
+          "left": 15,
+          "right": 345,
+          "top": 334.61,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaPrévia da linha · ponto estimadoPrefira a frenteA parte da frente tende a ter menor incidência de sol neste ponto estimado.FrenteRecomendadoSente aquifrenteRecomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.Evite se puderMaior incidênciatrásAo entrar, procure assentos na parte da frente.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-front-preview",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "front",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 481.61,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 231.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 368.61,
+          "height": 34,
+          "left": 15,
+          "right": 345,
+          "top": 334.61,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaÚltima localização conhecidaPrefira a frentePela última posição conhecida, a frente tende a ter menor incidência de sol.FrenteRecomendadoSente aquifrenteRecomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.Evite se puderMaior incidênciatrásAo entrar, procure assentos na parte da frente.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-front-recent",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "back",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 473.08,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 223.08,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 360.08,
+          "height": 34,
+          "left": 15,
+          "right": 345,
+          "top": 326.08,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 175.16,
+            "height": 70.84,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 323.84,
+            "left": 14,
+            "right": 346,
+            "top": 183.16,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaAgora no ônibusPrefira o fundoA parte de trás tende a ter menor incidência de sol.FrenteEvite se puderMaior incidênciafrenteRecomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.RecomendadoSente aquitrásAo entrar, siga para os assentos mais ao fundo.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-back-onboard",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "back",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 481.61,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 231.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 368.61,
+          "height": 34,
+          "left": 15,
+          "right": 345,
+          "top": 334.61,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaPrévia da linha · ponto estimadoPrefira o fundoA parte de trás tende a ter menor incidência de sol neste ponto estimado.FrenteEvite se puderMaior incidênciafrenteRecomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.RecomendadoSente aquitrásAo entrar, siga para os assentos mais ao fundo.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-back-preview",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "back",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 481.61,
+          "height": 250,
+          "left": 55,
+          "right": 305,
+          "top": 231.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 368.61,
+          "height": 34,
+          "left": 15,
+          "right": 345,
+          "top": 334.61,
+          "width": 330
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaÚltima localização conhecidaPrefira o fundoPela última posição conhecida, a parte de trás tende a ter menor incidência de sol.FrenteEvite se puderMaior incidênciafrenteRecomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.RecomendadoSente aquitrásAo entrar, siga para os assentos mais ao fundo.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-back-recent",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "neutral",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 476.61,
+          "height": 250,
+          "left": 54.98,
+          "right": 304.98,
+          "top": 226.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 487,
+          "height": 270.78,
+          "left": 83.59,
+          "right": 276.39,
+          "top": 216.22,
+          "width": 192.8
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Diagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.",
+        "ledgerTones": ["neutral", "neutral"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaAgora no ônibusSem lado melhor agoraNenhuma área melhora bastante a incidência de sol neste trecho.FrenteSem destaqueSem preferênciaesquerdaDiagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.Sem destaqueSem preferênciadireitaEscolha o assento mais confortável para você.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-neutral-onboard",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "neutral",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 476.61,
+          "height": 250,
+          "left": 54.98,
+          "right": 304.98,
+          "top": 226.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 487,
+          "height": 270.78,
+          "left": 83.59,
+          "right": 276.39,
+          "top": 216.22,
+          "width": 192.8
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Diagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.",
+        "ledgerTones": ["neutral", "neutral"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaPrévia da linha · ponto estimadoSem lado melhor agoraNeste ponto estimado, nenhuma área aparece como claramente melhor.FrenteSem destaqueSem preferênciaesquerdaDiagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.Sem destaqueSem preferênciadireitaEscolha o assento mais confortável para você.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-neutral-preview",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "neutral",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 634,
+          "height": 76,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 476.61,
+          "height": 250,
+          "left": 54.98,
+          "right": 304.98,
+          "top": 226.61,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 487,
+          "height": 270.78,
+          "left": 83.59,
+          "right": 276.39,
+          "top": 216.22,
+          "width": 192.8
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 92.31,
+            "height": 58,
+            "left": 14,
+            "right": 346,
+            "top": 34.31,
+            "width": 332
+          },
+          {
+            "bottom": 192.22,
+            "height": 87.91,
+            "left": 14,
+            "right": 346,
+            "top": 104.31,
+            "width": 332
+          },
+          {
+            "bottom": 507,
+            "height": 306.78,
+            "left": 14,
+            "right": 346,
+            "top": 200.22,
+            "width": 332
+          },
+          {
+            "bottom": 550,
+            "height": 35,
+            "left": 14,
+            "right": 346,
+            "top": 515,
+            "width": 332
+          },
+          {
+            "bottom": 634,
+            "height": 76,
+            "left": 14,
+            "right": 346,
+            "top": 558,
+            "width": 332
+          }
+        ],
+        "bodyClientHeight": 640,
+        "bodyClientWidth": 360,
+        "bodyScrollHeight": 640,
+        "bodyScrollWidth": 360,
+        "clippedLedgerText": [],
+        "diagramSummary": "Diagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.",
+        "ledgerTones": ["neutral", "neutral"],
+        "primaryRect": {
+          "bottom": 602,
+          "height": 44,
+          "left": 14,
+          "right": 346,
+          "top": 558,
+          "width": 332
+        },
+        "screenClientHeight": 640,
+        "screenRect": {
+          "bottom": 640,
+          "height": 640,
+          "left": 0,
+          "right": 360,
+          "top": 0,
+          "width": 360
+        },
+        "screenScrollHeight": 640,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaÚltima localização conhecidaSem lado melhor agoraNa última posição conhecida, nenhuma área aparece como claramente melhor.FrenteSem destaqueSem preferênciaesquerdaDiagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.Sem destaqueSem preferênciadireitaEscolha o assento mais confortável para você.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 634,
+          "height": 32,
+          "left": 142.05,
+          "right": 217.94,
+          "top": 602,
+          "width": 75.89
+        },
+        "viewportHeight": 640,
+        "viewportWidth": 360
+      },
+      "state": "360x640-neutral-recent",
+      "viewport": { "name": "360x640", "width": 360, "height": 640 }
+    },
+    {
+      "area": "left",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 559.31,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 309.31,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 680,
+          "height": 491.38,
+          "left": 144.48,
+          "right": 245.5,
+          "top": 188.63,
+          "width": 101.02
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 165.63,
+            "height": 67.31,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 527.38,
+            "left": 14,
+            "right": 376,
+            "top": 172.63,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaAgora no ônibusSente à esquerdaEste lado tende a ter menor incidência de sol.FrenteRecomendadoSente aquiesquerdaRecomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.Evite se puderMaior incidênciadireitaAo entrar, escolha as janelas à sua esquerda.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-left-onboard",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "left",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 567.64,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 317.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 680,
+          "height": 474.72,
+          "left": 144.48,
+          "right": 245.5,
+          "top": 205.28,
+          "width": 101.02
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaPrévia da linha · ponto estimadoSente à esquerdaEste lado tende a ter menor incidência de sol neste ponto estimado.FrenteRecomendadoSente aquiesquerdaRecomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.Evite se puderMaior incidênciadireitaAo entrar, escolha as janelas à sua esquerda.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-left-preview",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "left",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 567.64,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 317.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 680,
+          "height": 474.72,
+          "left": 144.48,
+          "right": 245.5,
+          "top": 205.28,
+          "width": 101.02
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "left",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaÚltima localização conhecidaSente à esquerdaPela última posição conhecida, este lado tende a ter menor incidência de sol.FrenteRecomendadoSente aquiesquerdaRecomendação: sente à esquerda. A maior incidência de sol aparece do lado direito do ônibus.Evite se puderMaior incidênciadireitaAo entrar, escolha as janelas à sua esquerda.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-left-recent",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "right",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 559.31,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 309.31,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 680,
+          "height": 491.38,
+          "left": 144.48,
+          "right": 245.5,
+          "top": 188.63,
+          "width": 101.02
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 165.63,
+            "height": 67.31,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 527.38,
+            "left": 14,
+            "right": 376,
+            "top": 172.63,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaAgora no ônibusSente à direitaEste lado tende a ter menor incidência de sol.FrenteEvite se puderMaior incidênciaesquerdaRecomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.RecomendadoSente aquidireitaAo entrar, escolha as janelas à sua direita.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-right-onboard",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "right",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 567.64,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 317.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 680,
+          "height": 474.72,
+          "left": 144.48,
+          "right": 245.5,
+          "top": 205.28,
+          "width": 101.02
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaPrévia da linha · ponto estimadoSente à direitaEste lado tende a ter menor incidência de sol neste ponto estimado.FrenteEvite se puderMaior incidênciaesquerdaRecomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.RecomendadoSente aquidireitaAo entrar, escolha as janelas à sua direita.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-right-preview",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "right",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "true",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 567.64,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 317.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 680,
+          "height": 474.72,
+          "left": 144.48,
+          "right": 245.5,
+          "top": 205.28,
+          "width": 101.02
+        },
+        "artworkSource": "/images/advice-bus-side.png",
+        "artworkVariant": "right",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaÚltima localização conhecidaSente à direitaPela última posição conhecida, este lado tende a ter menor incidência de sol.FrenteEvite se puderMaior incidênciaesquerdaRecomendação: sente à direita. A maior incidência de sol aparece do lado esquerdo do ônibus.RecomendadoSente aquidireitaAo entrar, escolha as janelas à sua direita.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-right-recent",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "front",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 564.31,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 314.31,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 451.31,
+          "height": 34,
+          "left": 15,
+          "right": 375,
+          "top": 417.31,
+          "width": 360
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 165.63,
+            "height": 67.31,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 527.38,
+            "left": 14,
+            "right": 376,
+            "top": 172.63,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaAgora no ônibusPrefira a frenteA parte da frente tende a ter menor incidência de sol.FrenteRecomendadoSente aquifrenteRecomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.Evite se puderMaior incidênciatrásAo entrar, procure assentos na parte da frente.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-front-onboard",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "front",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 572.64,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 322.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 459.64,
+          "height": 34,
+          "left": 15,
+          "right": 375,
+          "top": 425.64,
+          "width": 360
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaPrévia da linha · ponto estimadoPrefira a frenteA parte da frente tende a ter menor incidência de sol neste ponto estimado.FrenteRecomendadoSente aquifrenteRecomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.Evite se puderMaior incidênciatrásAo entrar, procure assentos na parte da frente.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-front-preview",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "front",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 572.64,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 322.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 459.64,
+          "height": 34,
+          "left": 15,
+          "right": 375,
+          "top": 425.64,
+          "width": 360
+        },
+        "artworkSource": "/images/advice-bus-front.png",
+        "artworkVariant": "front",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.",
+        "ledgerTones": ["recommended", "sunny"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaÚltima localização conhecidaPrefira a frentePela última posição conhecida, a frente tende a ter menor incidência de sol.FrenteRecomendadoSente aquifrenteRecomendação: sente mais à frente. A maior incidência de sol aparece na parte de trás do ônibus.Evite se puderMaior incidênciatrásAo entrar, procure assentos na parte da frente.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-front-recent",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "back",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 564.31,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 314.31,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 451.31,
+          "height": 34,
+          "left": 15,
+          "right": 375,
+          "top": 417.31,
+          "width": 360
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 165.63,
+            "height": 67.31,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 527.38,
+            "left": 14,
+            "right": 376,
+            "top": 172.63,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaAgora no ônibusPrefira o fundoA parte de trás tende a ter menor incidência de sol.FrenteEvite se puderMaior incidênciafrenteRecomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.RecomendadoSente aquitrásAo entrar, siga para os assentos mais ao fundo.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-back-onboard",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "back",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 572.64,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 322.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 459.64,
+          "height": 34,
+          "left": 15,
+          "right": 375,
+          "top": 425.64,
+          "width": 360
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaPrévia da linha · ponto estimadoPrefira o fundoA parte de trás tende a ter menor incidência de sol neste ponto estimado.FrenteEvite se puderMaior incidênciafrenteRecomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.RecomendadoSente aquitrásAo entrar, siga para os assentos mais ao fundo.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-back-preview",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "back",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 572.64,
+          "height": 250,
+          "left": 70,
+          "right": 320,
+          "top": 322.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 459.64,
+          "height": 34,
+          "left": 15,
+          "right": 375,
+          "top": 425.64,
+          "width": 360
+        },
+        "artworkSource": "/images/advice-bus-back.png",
+        "artworkVariant": "back",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Recomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.",
+        "ledgerTones": ["sunny", "recommended"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaÚltima localização conhecidaPrefira o fundoPela última posição conhecida, a parte de trás tende a ter menor incidência de sol.FrenteEvite se puderMaior incidênciafrenteRecomendação: sente mais atrás. A maior incidência de sol aparece na parte da frente do ônibus.RecomendadoSente aquitrásAo entrar, siga para os assentos mais ao fundo.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-back-recent",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "neutral",
+      "context": "onboard",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 567.64,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 317.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 680,
+          "height": 474.72,
+          "left": 144.48,
+          "right": 245.5,
+          "top": 205.28,
+          "width": 101.02
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Diagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.",
+        "ledgerTones": ["neutral", "neutral"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaAgora no ônibusSem lado melhor agoraNenhuma área melhora bastante a incidência de sol neste trecho.FrenteSem destaqueSem preferênciaesquerdaDiagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.Sem destaqueSem preferênciadireitaEscolha o assento mais confortável para você.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-neutral-onboard",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "neutral",
+      "context": "preview",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 567.64,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 317.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 680,
+          "height": 474.72,
+          "left": 144.48,
+          "right": 245.5,
+          "top": 205.28,
+          "width": 101.02
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Diagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.",
+        "ledgerTones": ["neutral", "neutral"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaPrévia da linha · ponto estimadoSem lado melhor agoraNeste ponto estimado, nenhuma área aparece como claramente melhor.FrenteSem destaqueSem preferênciaesquerdaDiagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.Sem destaqueSem preferênciadireitaEscolha o assento mais confortável para você.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-neutral-preview",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    },
+    {
+      "area": "neutral",
+      "context": "recent",
+      "metrics": {
+        "actionRect": {
+          "bottom": 834,
+          "height": 80,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "artworkComplete": true,
+        "artworkMirrored": "false",
+        "artworkNaturalHeight": 1254,
+        "artworkNaturalWidth": 1254,
+        "artworkRect": {
+          "bottom": 567.64,
+          "height": 250,
+          "left": 69.98,
+          "right": 319.98,
+          "top": 317.64,
+          "width": 250
+        },
+        "artworkFrameRect": {
+          "bottom": 680,
+          "height": 474.72,
+          "left": 144.48,
+          "right": 245.5,
+          "top": 205.28,
+          "width": 101.02
+        },
+        "artworkSource": "/images/advice-bus-neutral.png",
+        "artworkVariant": "neutral",
+        "boxes": [
+          {
+            "bottom": 87.31,
+            "height": 56,
+            "left": 14,
+            "right": 376,
+            "top": 31.31,
+            "width": 362
+          },
+          {
+            "bottom": 182.28,
+            "height": 83.97,
+            "left": 14,
+            "right": 376,
+            "top": 98.31,
+            "width": 362
+          },
+          {
+            "bottom": 700,
+            "height": 510.72,
+            "left": 14,
+            "right": 376,
+            "top": 189.28,
+            "width": 362
+          },
+          {
+            "bottom": 747,
+            "height": 40,
+            "left": 14,
+            "right": 376,
+            "top": 707,
+            "width": 362
+          },
+          {
+            "bottom": 834,
+            "height": 80,
+            "left": 14,
+            "right": 376,
+            "top": 754,
+            "width": 362
+          }
+        ],
+        "bodyClientHeight": 844,
+        "bodyClientWidth": 390,
+        "bodyScrollHeight": 844,
+        "bodyScrollWidth": 390,
+        "clippedLedgerText": [],
+        "diagramSummary": "Diagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.",
+        "ledgerTones": ["neutral", "neutral"],
+        "primaryRect": {
+          "bottom": 802,
+          "height": 48,
+          "left": 14,
+          "right": 376,
+          "top": 754,
+          "width": 362
+        },
+        "screenClientHeight": 844,
+        "screenRect": {
+          "bottom": 844,
+          "height": 844,
+          "left": 0,
+          "right": 390,
+          "top": 0,
+          "width": 390
+        },
+        "screenScrollHeight": 844,
+        "screenText": "4 de 4124 TICEN – Lagoasentido IdaÚltima localização conhecidaSem lado melhor agoraNa última posição conhecida, nenhuma área aparece como claramente melhor.FrenteSem destaqueSem preferênciaesquerdaDiagrama neutro do ônibus. Nenhuma área aparece como uma recomendação melhor agora.Sem destaqueSem preferênciadireitaEscolha o assento mais confortável para você.Estimativa pela incidência de sol.Pode variar no caminho.Entenda a estimativaAtualizar localizaçãoOpções",
+        "optionsRect": {
+          "bottom": 834,
+          "height": 32,
+          "left": 154.7,
+          "right": 235.3,
+          "top": 802,
+          "width": 80.59
+        },
+        "viewportHeight": 844,
+        "viewportWidth": 390
+      },
+      "state": "390x844-neutral-recent",
+      "viewport": { "name": "390x844", "width": 390, "height": 844 }
+    }
+  ],
+  "summary": {
+    "combinations": 30,
+    "contexts": ["onboard", "preview", "recent"],
+    "areas": ["left", "right", "front", "back", "neutral"],
+    "viewports": [
+      { "name": "360x640", "width": 360, "height": 640 },
+      { "name": "390x844", "width": 390, "height": 844 }
+    ]
+  }
+}
