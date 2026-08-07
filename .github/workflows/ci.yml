@@ -55,23 +55,25 @@ jobs:
       group: sombreado-cloudflare-deploy
       cancel-in-progress: false
     env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+      NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
       ALLOW_SKIP_DEPLOY: ${{ secrets.ALLOW_SKIP_DEPLOY }}
 
     steps:
       - name: Require Cloudflare deploy secrets on main
         id: secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           if [ -z "${CLOUDFLARE_API_TOKEN}" ] || [ -z "${CLOUDFLARE_ACCOUNT_ID}" ] || [ -z "${NEXT_PUBLIC_API_URL}" ]; then
             if [ "${ALLOW_SKIP_DEPLOY}" = "1" ]; then
-              echo "ALLOW_SKIP_DEPLOY=1; skipping Cloudflare deploy."
+              echo "::warning::Cloudflare deploy skipped (ALLOW_SKIP_DEPLOY=1; secrets or vars incomplete)."
               echo "should_deploy=false" >> "$GITHUB_OUTPUT"
+              echo "deployed=false" >> "$GITHUB_OUTPUT"
               exit 0
             fi
             echo "CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, and NEXT_PUBLIC_API_URL are required on main."
-            echo "Set them as repository secrets, or set ALLOW_SKIP_DEPLOY=1 to opt out explicitly."
+            echo "Set the Cloudflare token/account as repository secrets, NEXT_PUBLIC_API_URL as a repository variable, or set ALLOW_SKIP_DEPLOY=1 to opt out explicitly."
             exit 1
           fi
           echo "should_deploy=true" >> "$GITHUB_OUTPUT"
@@ -98,9 +100,19 @@ jobs:
           NEXT_PUBLIC_API_URL: ${{ env.NEXT_PUBLIC_API_URL }}
 
       - name: Deploy Worker
+        id: deploy
         if: steps.secrets.outputs.should_deploy == 'true'
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@da0e0dfe58b7a431659754fdf3f186c529afbe65 # v3.14.1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
+
+      - name: Smoke-check Worker
+        if: steps.secrets.outputs.should_deploy == 'true'
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          test -n "$DEPLOYMENT_URL"
+          curl -fsS --retry 5 --retry-delay 2 "$DEPLOYMENT_URL" -o /dev/null
+          echo "deployed=true" >> "$GITHUB_OUTPUT"

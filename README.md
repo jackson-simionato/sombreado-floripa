@@ -76,10 +76,15 @@ The app deploys to **Cloudflare Workers** from GitHub Actions on pushes to `main
 4. In this GitHub repository’s Actions secrets, set:
    - `CLOUDFLARE_API_TOKEN`
    - `CLOUDFLARE_ACCOUNT_ID`
-   - `NEXT_PUBLIC_API_URL` (public `sombreado-service` base URL including `/v1`)
-   - optional `ALLOW_SKIP_DEPLOY=1` to skip deploy when the Cloudflare secrets are not ready yet
-5. After the first successful deploy, add the Workers origin (for example `https://sombreado-floripa.<account>.workers.dev`) to `CORS_ORIGINS` on the Render-hosted `sombreado-service`.
-6. Verify the deploy path: either wait for the next push to `main`, or run **Actions → CI → Run workflow** on `main` (`workflow_dispatch`). Record the successful run URL in the PR or a follow-up note.
+   - optional `ALLOW_SKIP_DEPLOY=1` to skip deploy when the Cloudflare secrets are not ready yet (skip emits a workflow warning; it is not a silent success)
+5. In this GitHub repository’s Actions variables, set:
+   - `NEXT_PUBLIC_API_URL` (public `sombreado-service` base URL including `/v1`; this is client config, not a secret)
+6. First deploy of `wrangler.jsonc` name `sombreado-floripa` creates a **new** Worker (it does not rename `sombreado-route-review`). Cutover sequence:
+   1. Deploy `sombreado-floripa` from `main` (push or **Actions → CI → Run workflow**).
+   2. Confirm the smoke check passes and note the new `*.workers.dev` URL from the job log.
+   3. Add that origin to `CORS_ORIGINS` on the Render-hosted `sombreado-service`.
+   4. Verify the new URL in a browser, then delete or disable the old `sombreado-route-review` Worker when traffic has moved.
+7. After later pushes to `main`, the deploy job smoke-checks `steps.deploy.outputs.deployment-url` before the run goes green.
 
 ## Not In Scope
 

@@ -1,5 +1,12 @@
 /* global fetch, process */
 
+/**
+ * Local layout/QA harness for the production advice matrix.
+ *
+ * Boots `npm run dev` against `/prototype` for deterministic scenario capture.
+ * This is not Cloudflare Worker / `wrangler deploy` artifact verification.
+ */
+
 import { spawn } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
 

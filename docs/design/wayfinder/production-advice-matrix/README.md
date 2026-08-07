@@ -7,7 +7,9 @@ This directory records browser evidence for the production
 npm run test:advice-matrix
 ```
 
-The runner opens deterministic `/prototype?scenario=<id>` URLs and validates
+The runner is a local layout harness: it boots `npm run dev` and opens
+deterministic `/prototype?scenario=<id>` URLs. It does not build or smoke-check
+the Cloudflare Worker artifact. It validates
 five recommendation areas (`left`, `right`, `front`, `back`, and `neutral`) in
 onboard, route-preview, and recent-location contexts at 360 × 640 and
 390 × 844 pixels.
