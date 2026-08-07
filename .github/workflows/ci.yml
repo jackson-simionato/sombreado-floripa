@@ -113,4 +113,18 @@ jobs:
           DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
         run: |
           test -n "$DEPLOYMENT_URL"
-          curl -fsS --retry 5 --retry-delay 2 "$DEPLOYMENT_URL" -o /dev/null
+          # Workers can briefly 404 while the new version propagates; curl --retry
+          # does not retry HTTP 404, so poll for a 2xx ourselves.
+          for attempt in $(seq 1 12); do
+            status="$(curl -sS -o /dev/null -w '%{http_code}' "$DEPLOYMENT_URL" || echo 000)"
+            case "$status" in
+              2??)
+                echo "Smoke check passed (HTTP $status) on attempt $attempt: $DEPLOYMENT_URL"
+                exit 0
+                ;;
+            esac
+            echo "Attempt $attempt: HTTP $status from $DEPLOYMENT_URL; retrying in 2s..."
+            sleep 2
+          done
+          echo "Smoke check failed: $DEPLOYMENT_URL never returned 2xx"
+          exit 1
