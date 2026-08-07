@@ -21,6 +21,7 @@ This document records current product and design decisions for Sombreado Floripa
 - The v1 scope is core-only: locate or search, choose route, choose direction, confirm, receive advice, and handle empty/error/preview/withheld states.
 - The frontend calls `sombreado-service` directly from the browser with `NEXT_PUBLIC_API_URL`.
 - `sombreado-floripa` should become frontend-only; the scraper and advisory backend remain separate projects.
+- The frontend deploys to Cloudflare Workers from GitHub Actions on `main` after CI passes.
 
 ## Design References
 
@@ -33,7 +34,6 @@ This document records current product and design decisions for Sombreado Floripa
 - Final icon/illustration style beyond the current bus diagrams.
 - Exact wireframes for each rider state.
 - Final Mapbox style and interaction details.
-- Deployment target for the frontend.
 - Whether saved routes, feedback reporting, sharing, or bilingual support belong after v1.
 
 ## Not V1
