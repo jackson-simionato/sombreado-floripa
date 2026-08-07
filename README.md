@@ -64,6 +64,23 @@ npm run build
 
 See [docs/engineering-standards.md](docs/engineering-standards.md) for branch, commit, hook, and pull request expectations.
 
+## Production deploy
+
+The app deploys to **Cloudflare Workers** from GitHub Actions on pushes to `main`, after the CI job passes.
+
+### One-time setup
+
+1. Create a free Cloudflare account if needed.
+2. Create an API token with **Edit Cloudflare Workers**.
+3. Copy the Cloudflare Account ID from the dashboard.
+4. In this GitHub repository’s Actions secrets, set:
+   - `CLOUDFLARE_API_TOKEN`
+   - `CLOUDFLARE_ACCOUNT_ID`
+   - `NEXT_PUBLIC_API_URL` (public `sombreado-service` base URL including `/v1`)
+   - optional `ALLOW_SKIP_DEPLOY=1` to skip deploy when the Cloudflare secrets are not ready yet
+5. After the first successful deploy, add the Workers origin (for example `https://sombreado-floripa.<account>.workers.dev`) to `CORS_ORIGINS` on the Render-hosted `sombreado-service`.
+6. Verify the deploy path: either wait for the next push to `main`, or run **Actions → CI → Run workflow** on `main` (`workflow_dispatch`). Record the successful run URL in the PR or a follow-up note.
+
 ## Not In Scope
 
 - backend service implementation
