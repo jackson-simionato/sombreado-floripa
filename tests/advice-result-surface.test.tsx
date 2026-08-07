@@ -82,7 +82,7 @@ describe("AdviceResultSurface", () => {
       render(
         <AdviceResultSurface
           advice={advice as Exclude<UiAdviceState, { mode: "withheld" }>}
-          directionLabel="Ida"
+          directionLabel="TICEN para Lagoa · Ida"
           onChangeRoute={vi.fn()}
           onRefresh={vi.fn()}
           route={route}
@@ -93,7 +93,7 @@ describe("AdviceResultSurface", () => {
       const routeReceipt = screen.getByTestId("advice-route-receipt");
       expect(routeReceipt).toHaveTextContent("124");
       expect(routeReceipt).toHaveTextContent("TICEN - Lagoa");
-      expect(routeReceipt).toHaveTextContent("sentido Ida");
+      expect(routeReceipt).toHaveTextContent("sentido TICEN para Lagoa · Ida");
       expect(screen.getByTestId("advice-result-header")).toHaveTextContent(
         status
       );
@@ -105,7 +105,7 @@ describe("AdviceResultSurface", () => {
         )
       ).toBeInTheDocument();
       expect(screen.getByTestId("advice-trust-row")).toHaveTextContent(
-        "Estimativa pela incidência de sol. Pode variar no caminho."
+        "Estimativa pela incidência de sol. Não considera prédios, nuvens, películas ou cortinas."
       );
 
       if (status === "Última localização conhecida") {
@@ -234,7 +234,7 @@ describe("AdviceResultSurface", () => {
       );
 
       expect(screen.getByTestId("advice-trust-row")).toHaveTextContent(
-        "Estimativa pela incidência de sol. Pode variar no caminho."
+        "Estimativa pela incidência de sol. Não considera prédios, nuvens, películas ou cortinas."
       );
 
       const trigger = screen.getByRole("button", {
@@ -253,6 +253,76 @@ describe("AdviceResultSurface", () => {
       requestAnimationFrame.mockRestore();
     }
   });
+
+  test.each([
+    [
+      "onboard",
+      {
+        mode: "onboard",
+        directSunExposure: "right",
+        recommendedSeatArea: "left",
+      },
+      "onboard",
+      "Comparamos o sentido da linha, sua localização atual e a posição do sol para indicar a área com menor incidência de sol.",
+    ],
+    [
+      "preview",
+      {
+        mode: "preview",
+        directSunExposure: "left",
+        recommendedSeatArea: "right",
+        previewSource: "estimated_route_point",
+        distanceFromRouteMeters: 280,
+      },
+      "preview",
+      "Esta prévia usa um ponto estimado da linha, não sua localização ao vivo. Comparamos esse ponto, o sentido da linha e a posição do sol.",
+    ],
+    [
+      "recent",
+      {
+        mode: "onboard",
+        directSunExposure: "right",
+        recommendedSeatArea: "left",
+        freshnessNotice: "recentFallback",
+      },
+      "recent",
+      "Usamos sua última localização conhecida, que pode estar desatualizada. Comparamos essa posição, o sentido da linha e a posição do sol.",
+    ],
+  ] as const)(
+    "opens estimate-sheet copy for %s advice without claiming the wrong location",
+    async (_name, advice, context, opening) => {
+      const user = userEvent.setup();
+
+      render(
+        <AdviceResultSurface
+          advice={advice as Exclude<UiAdviceState, { mode: "withheld" }>}
+          context={context}
+          onChangeRoute={vi.fn()}
+          onRefresh={vi.fn()}
+          route={route}
+        />
+      );
+
+      if (context === "preview") {
+        expect(screen.getByTestId("advice-trust-row")).toHaveTextContent(
+          "Cerca de 280 m fora da rota."
+        );
+      }
+
+      await user.click(
+        screen.getByRole("button", { name: "Entenda a estimativa" })
+      );
+
+      expect(screen.getByText(opening)).toBeInTheDocument();
+      if (context !== "onboard") {
+        expect(
+          screen.queryByText(
+            "Comparamos o sentido da linha, sua localização atual e a posição do sol para indicar a área com menor incidência de sol."
+          )
+        ).not.toBeInTheDocument();
+      }
+    }
+  );
 
   test("isolates the result and traps focus while an estimate sheet is open", async () => {
     const user = userEvent.setup();

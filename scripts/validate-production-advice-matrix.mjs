@@ -522,7 +522,7 @@ function validateResultMetrics(metrics, { area, context, stateName }) {
   );
   assert.match(
     metrics.trustText ?? "",
-    /Estimativa pela incidência de sol\. Pode variar no caminho\./,
+    /Estimativa pela incidência de sol\. Não considera prédios, nuvens, películas ou cortinas\./,
     `${stateName}: concise estimate copy is missing`
   );
   assert.ok(

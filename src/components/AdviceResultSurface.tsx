@@ -28,7 +28,7 @@ type AdviceResultSurfaceProps = {
 };
 
 const ESTIMATE_NOTICE =
-  "Estimativa pela incidência de sol. Pode variar no caminho.";
+  "Estimativa pela incidência de sol. Não considera prédios, nuvens, películas ou cortinas.";
 const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -43,6 +43,8 @@ export function AdviceResultSurface({
 }: AdviceResultSurfaceProps) {
   const variant = adviceVariantCopy(advice);
   const modeLabel = resultModeLabel(advice, context);
+  const estimateContext = resolveEstimateContext(advice, context);
+  const trustNotice = estimateNoticeCopy(advice);
   const [activeSheet, setActiveSheet] = useState<"estimate" | "options" | null>(
     null
   );
@@ -204,7 +206,7 @@ export function AdviceResultSurface({
               className={styles.estimateNotice}
               data-testid="advice-trust-row"
             >
-              <p>{ESTIMATE_NOTICE}</p>
+              <p>{trustNotice}</p>
               <button
                 ref={estimateTriggerRef}
                 onClick={() => setActiveSheet("estimate")}
@@ -231,6 +233,7 @@ export function AdviceResultSurface({
       </div>
       {activeSheet !== null ? (
         <AdviceResultSheet
+          context={estimateContext}
           dialogRef={dialogRef}
           headingRef={sheetHeadingRef}
           kind={activeSheet}
@@ -297,6 +300,33 @@ function resultModeLabel(
   }
 
   return "Agora no ônibus";
+}
+
+function resolveEstimateContext(
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>,
+  context?: AdviceResultSurfaceProps["context"]
+): NonNullable<AdviceResultSurfaceProps["context"]> {
+  if (context === "preview" || advice.mode === "preview") {
+    return "preview";
+  }
+  if (context === "recent" || advice.freshnessNotice === "recentFallback") {
+    return "recent";
+  }
+
+  return "onboard";
+}
+
+function estimateNoticeCopy(
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>
+): string {
+  if (
+    advice.mode === "preview" &&
+    advice.distanceFromRouteMeters !== undefined
+  ) {
+    return `Cerca de ${Math.round(advice.distanceFromRouteMeters)} m fora da rota. ${ESTIMATE_NOTICE}`;
+  }
+
+  return ESTIMATE_NOTICE;
 }
 
 function directionalAdviceCopy(recommendedSeatArea: DirectionalExposure) {

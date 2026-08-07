@@ -586,12 +586,15 @@ function DirectionCard({
   direction: DirectionChoice;
   onSelect(): void;
 }) {
-  const directionContext = formatDirectionContext(direction);
+  const directionKindLabel = formatRouteDirectionKind(direction.directionKind);
 
   return (
     <ChoiceCard
-      ariaLabel={`Selecionar sentido ${directionContext}`}
-      label={directionContext}
+      ariaLabel={`Selecionar sentido ${direction.name}${
+        directionKindLabel === undefined ? "" : `, ${directionKindLabel}`
+      }`}
+      eyebrow={directionKindLabel}
+      label={direction.name}
       meta={direction.departureLabels.join(" · ")}
       onSelect={onSelect}
     />
@@ -601,7 +604,12 @@ function DirectionCard({
 function formatDirectionContext(
   direction: Pick<DirectionChoice, "directionKind" | "name">
 ): string {
-  return formatRouteDirectionKind(direction.directionKind) ?? direction.name;
+  const directionKindLabel = formatRouteDirectionKind(direction.directionKind);
+  if (directionKindLabel === undefined) {
+    return direction.name;
+  }
+
+  return `${direction.name} · ${directionKindLabel}`;
 }
 
 function formatRouteDirectionKind(

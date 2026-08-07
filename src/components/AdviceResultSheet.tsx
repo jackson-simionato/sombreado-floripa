@@ -3,7 +3,10 @@ import { useId } from "react";
 
 import styles from "./AdviceResultSheet.module.css";
 
+type AdviceResultContext = "onboard" | "preview" | "recent";
+
 type AdviceResultSheetProps = {
+  context?: AdviceResultContext;
   dialogRef: RefObject<HTMLElement | null>;
   headingRef: RefObject<HTMLHeadingElement | null>;
   kind: "estimate" | "options";
@@ -12,7 +15,17 @@ type AdviceResultSheetProps = {
   onClose: () => void;
 };
 
+const ESTIMATE_OPENING: Record<AdviceResultContext, string> = {
+  onboard:
+    "Comparamos o sentido da linha, sua localização atual e a posição do sol para indicar a área com menor incidência de sol.",
+  preview:
+    "Esta prévia usa um ponto estimado da linha, não sua localização ao vivo. Comparamos esse ponto, o sentido da linha e a posição do sol.",
+  recent:
+    "Usamos sua última localização conhecida, que pode estar desatualizada. Comparamos essa posição, o sentido da linha e a posição do sol.",
+};
+
 export function AdviceResultSheet({
+  context = "onboard",
   dialogRef,
   headingRef,
   kind,
@@ -53,10 +66,7 @@ export function AdviceResultSheet({
         </header>
         {isEstimate ? (
           <div className={styles.body}>
-            <p>
-              Comparamos o sentido da linha, sua localização atual e a posição
-              do sol para indicar a área com menor incidência de sol.
-            </p>
+            <p>{ESTIMATE_OPENING[context]}</p>
             <p>
               Não consideramos prédios, nuvens, películas, cortinas nem
               diferenças de sombra entre veículos.

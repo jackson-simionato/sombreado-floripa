@@ -339,9 +339,9 @@ describe("prototype scenarios", () => {
   });
 
   test.each([
-    ["advice-computing", "124 TICEN - Lagoa", "Ida"],
-    ["error-geometry", "124 TICEN - Lagoa", "Ida"],
-    ["error-advice", "124 TICEN - Lagoa", "Ida"],
+    ["advice-computing", "124 TICEN - Lagoa", "TICEN para Lagoa · Ida"],
+    ["error-geometry", "124 TICEN - Lagoa", "TICEN para Lagoa · Ida"],
+    ["error-advice", "124 TICEN - Lagoa", "TICEN para Lagoa · Ida"],
   ] as const)(
     "preserves post-selection context in %s",
     async (prototypeScenarioId, routeLabel, directionLabel) => {
@@ -450,18 +450,18 @@ describe("prototype scenarios", () => {
     );
     expect(routeCode).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
-    expect(screen.getByText("sentido Ida")).toBeInTheDocument();
+    expect(
+      screen.getByText("sentido TICEN para Lagoa · Ida")
+    ).toBeInTheDocument();
     expect(screen.queryByText("Recomendação")).not.toBeInTheDocument();
     expect(
       screen.getByLabelText(
         "Recomendação: sente à esquerda. O sol direto aparece do lado direito do ônibus."
       )
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Estimativa pela incidência de sol. Pode variar no caminho."
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("advice-trust-row")).toHaveTextContent(
+      "Estimativa pela incidência de sol. Não considera prédios, nuvens, películas ou cortinas."
+    );
   });
 
   test("preview advice uses text distinction and one compact trust notice", async () => {
@@ -484,12 +484,12 @@ describe("prototype scenarios", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("124")).toBeInTheDocument();
     expect(screen.getByText("TICEN - Lagoa")).toBeInTheDocument();
-    expect(screen.getByText("sentido Ida")).toBeInTheDocument();
     expect(
-      screen.getByText(
-        "Estimativa pela incidência de sol. Pode variar no caminho."
-      )
+      screen.getByText("sentido TICEN para Lagoa · Ida")
     ).toBeInTheDocument();
+    expect(screen.getByTestId("advice-trust-row")).toHaveTextContent(
+      "Estimativa pela incidência de sol. Não considera prédios, nuvens, películas ou cortinas."
+    );
     expect(
       screen.queryByText(/Prévia estimada para linha confirmada/i)
     ).not.toBeInTheDocument();
