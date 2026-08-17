@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 const flooredViewport = { height: 640, width: 360 };
+const primaryActionLabel = "Usar minha localização";
+const locationNoticePattern = /Sua localização é usada apenas/;
 
 test.use({ viewport: flooredViewport });
 
@@ -9,6 +11,9 @@ test("location request screen fits the floored viewport without scroll", async (
 }) => {
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
+
+  const primaryAction = page.getByRole("button", { name: primaryActionLabel });
+  await expect(primaryAction).toBeVisible();
 
   const overflow = await page.evaluate(
     () => document.documentElement.scrollHeight - window.innerHeight
@@ -21,12 +26,8 @@ test("location notice stays clear of the primary action", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
 
-  const notice = page.getByText(
-    "Sua localização é usada apenas para identificar as linhas próximas de você."
-  );
-  const primaryAction = page.getByRole("button", {
-    name: "Usar minha localização",
-  });
+  const notice = page.getByText(locationNoticePattern);
+  const primaryAction = page.getByRole("button", { name: primaryActionLabel });
 
   await expect(notice).toBeVisible();
   await expect(primaryAction).toBeVisible();
@@ -37,11 +38,7 @@ test("location notice stays clear of the primary action", async ({ page }) => {
   expect(noticeBox).not.toBeNull();
   expect(primaryActionBox).not.toBeNull();
 
-  if (noticeBox === null || primaryActionBox === null) {
-    return;
-  }
-
-  expect(noticeBox.y + noticeBox.height).toBeLessThanOrEqual(
-    primaryActionBox.y
+  expect(noticeBox!.y + noticeBox!.height).toBeLessThanOrEqual(
+    primaryActionBox!.y
   );
 });
