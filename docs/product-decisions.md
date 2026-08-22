@@ -22,7 +22,7 @@ This document records current product and design decisions for Sombreado Floripa
 - The v1 scope is core-only: locate or search, choose route, choose direction, confirm, receive advice, and handle empty/error/preview/withheld states.
 - The frontend calls `sombreado-service` directly from the browser with `NEXT_PUBLIC_API_URL`.
 - `sombreado-floripa` should become frontend-only; the scraper and advisory backend remain separate projects.
-- The frontend deploys to Cloudflare Workers from GitHub Actions on `main` after CI passes.
+- The frontend deploys to Cloudflare Workers from GitHub Actions on `main` after CI passes. `main` advances via **Production Promote** (ADR 0002), not a human-reviewed `develop`→`main` release PR.
 
 ## Design References
 

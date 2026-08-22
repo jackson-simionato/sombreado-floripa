@@ -66,7 +66,17 @@ See [docs/engineering-standards.md](docs/engineering-standards.md) for branch, c
 
 ## Production deploy
 
-The app deploys to **Cloudflare Workers** from GitHub Actions on pushes to `main`, after the CI job passes.
+The app deploys to **Cloudflare Workers** from GitHub Actions on pushes to `main`, after the CI job passes. Intentional advances of `main` use **Production Promote** (ADR 0002), not a human-reviewed `develop`→`main` release PR.
+
+### Promote to production
+
+When `develop` should become production:
+
+1. Actions → **Production Promote** → **Run workflow**.
+2. Approve the `production` Environment deployment when prompted.
+3. The workflow creates or reuses the audit PR `develop`→`main`, waits for CI, and merges it. That push re-runs CI and deploys to Cloudflare.
+
+Requires repository secret `PROMOTE_GITHUB_TOKEN` (classic PAT or fine-grained token with Contents read/write and Pull requests read/write). Do not use a human-reviewed `develop`→`main` PR as the release gate.
 
 ### One-time setup
 
@@ -76,15 +86,18 @@ The app deploys to **Cloudflare Workers** from GitHub Actions on pushes to `main
 4. In this GitHub repository’s Actions secrets, set:
    - `CLOUDFLARE_API_TOKEN`
    - `CLOUDFLARE_ACCOUNT_ID`
+   - `PROMOTE_GITHUB_TOKEN` (for **Production Promote**; Contents + Pull requests)
    - optional `ALLOW_SKIP_DEPLOY=1` to skip deploy when the Cloudflare secrets are not ready yet (skip emits a workflow warning; it is not a silent success)
-5. In this GitHub repository’s Actions variables, set:
+5. Create Environment `production` with required reviewers (the human gate for promote). Turn off **Allow administrators to bypass configured protection rules** so the gate always applies.
+6. Protect `main`: require a pull request, require status check `Format, lint, typecheck, test, and build`, do **not** require human PR review (so promote can merge after checks). Set repository secret `PROMOTE_GITHUB_TOKEN` before the first promote.
+7. In this GitHub repository’s Actions variables, set:
    - `NEXT_PUBLIC_API_URL` (public `sombreado-service` base URL including `/v1`; this is client config, not a secret)
-6. First deploy of `wrangler.jsonc` name `sombreado-floripa` creates a **new** Worker (it does not rename `sombreado-route-review`). Cutover sequence:
-   1. Deploy `sombreado-floripa` from `main` (push or **Actions → CI → Run workflow**).
+8. First deploy of `wrangler.jsonc` name `sombreado-floripa` creates a **new** Worker (it does not rename `sombreado-route-review`). Cutover sequence:
+   1. Deploy `sombreado-floripa` from `main` (**Production Promote**, or **Actions → CI → Run workflow** on `main` for a one-off).
    2. Confirm the smoke check passes and note the new `*.workers.dev` URL from the job log.
    3. Add that origin to `CORS_ORIGINS` on the Render-hosted `sombreado-service`.
    4. Verify the new URL in a browser, then delete or disable the old `sombreado-route-review` Worker when traffic has moved.
-7. After later pushes to `main`, the deploy job smoke-checks `steps.deploy.outputs.deployment-url` before the run goes green.
+9. After later pushes to `main`, the deploy job smoke-checks `steps.deploy.outputs.deployment-url` before the run goes green.
 
 ## Not In Scope
 
