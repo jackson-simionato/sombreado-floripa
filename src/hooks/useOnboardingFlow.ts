@@ -65,6 +65,8 @@ type UseOnboardingFlowOptions =
   | PrototypeOnboardingFlowOptions
   | LiveOnboardingFlowOptions;
 
+export const MANUAL_SEARCH_DEBOUNCE_MS = 350;
+
 export type OnboardingFlowController = {
   manualQueryDraft: string;
   state: FlowState;
@@ -646,7 +648,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
           limit: 8,
         });
       }
-    }, 180);
+    }, MANUAL_SEARCH_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timerId);
