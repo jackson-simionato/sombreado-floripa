@@ -11,6 +11,7 @@ import {
 } from "../src/api/riderFlowClient";
 import { HomePageApp } from "../src/app/HomePageApp";
 import type { HomePageAppProps } from "../src/app/HomePageApp";
+import { FRESH_LOCATION_MAX_AGE_MS } from "../src/location/adviceLocation";
 
 describe("home screen flow", () => {
   afterEach(() => {
@@ -663,6 +664,7 @@ describe("home screen flow", () => {
         name: "Prefira sentar mais à frente",
       })
     ).toBeInTheDocument();
+    expect(getCurrentLocation).toHaveBeenCalledTimes(1);
     expect(requestAdvice).toHaveBeenCalledWith(
       {
         routeId: "route-124",
@@ -679,6 +681,122 @@ describe("home screen flow", () => {
           observedAt,
         },
       },
+      expect.any(Object)
+    );
+  });
+
+  test("reuses a fresh nearby location for advice without a second GPS wait", async () => {
+    const user = userEvent.setup();
+    const observedAt = new Date().toISOString();
+    const getCurrentLocation = vi.fn().mockResolvedValue({
+      kind: "granted",
+      lat: -27.5969,
+      lng: -48.5488,
+      accuracyMeters: 25,
+      observedAt,
+    });
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "onboard",
+      horizon: "upcoming",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "right",
+      recommendedSeatArea: "left",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    });
+    renderLiveHomePageApp({
+      locationProvider: { getCurrentLocation },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
+
+    await completeNearbyFlow(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Sente à esquerda" })
+    ).toBeInTheDocument();
+    expect(getCurrentLocation).toHaveBeenCalledTimes(1);
+    expect(requestAdvice).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: "onboard",
+        horizon: "upcoming",
+        location: {
+          lat: -27.5969,
+          lng: -48.5488,
+          accuracyMeters: 25,
+          observedAt,
+        },
+      }),
+      expect.any(Object)
+    );
+    expect(
+      screen.queryByText("Última localização conhecida")
+    ).not.toBeInTheDocument();
+  });
+
+  test("refetches GPS when the cached nearby location is stale before advice", async () => {
+    const user = userEvent.setup();
+    const staleObservedAt = new Date(
+      Date.now() - (FRESH_LOCATION_MAX_AGE_MS + 5_000)
+    ).toISOString();
+    const freshObservedAt = new Date().toISOString();
+    const getCurrentLocation = vi
+      .fn()
+      .mockResolvedValueOnce({
+        kind: "granted",
+        lat: -27.5969,
+        lng: -48.5488,
+        accuracyMeters: 25,
+        observedAt: staleObservedAt,
+      })
+      .mockResolvedValueOnce({
+        kind: "granted",
+        lat: -27.6012,
+        lng: -48.5421,
+        accuracyMeters: 20,
+        observedAt: freshObservedAt,
+      });
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "onboard",
+      horizon: "upcoming",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "right",
+      recommendedSeatArea: "left",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    });
+    renderLiveHomePageApp({
+      locationProvider: { getCurrentLocation },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
+
+    await completeNearbyFlow(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Sente à esquerda" })
+    ).toBeInTheDocument();
+    expect(getCurrentLocation).toHaveBeenCalledTimes(2);
+    expect(requestAdvice).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: "onboard",
+        location: {
+          lat: -27.6012,
+          lng: -48.5421,
+          accuracyMeters: 20,
+          observedAt: freshObservedAt,
+        },
+      }),
       expect.any(Object)
     );
   });
@@ -727,7 +845,10 @@ describe("home screen flow", () => {
 
   test("uses a recent fallback location with visible rider copy", async () => {
     const user = userEvent.setup();
-    const fallbackObservedAt = new Date().toISOString();
+    // Older than the fresh reuse window so advice still attempts GPS, then falls back.
+    const fallbackObservedAt = new Date(
+      Date.now() - (FRESH_LOCATION_MAX_AGE_MS + 5_000)
+    ).toISOString();
     const getCurrentLocation = vi
       .fn()
       .mockResolvedValueOnce({
