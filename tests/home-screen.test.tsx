@@ -20,6 +20,7 @@ import { HomePageApp } from "../src/app/HomePageApp";
 import type { HomePageAppProps } from "../src/app/HomePageApp";
 
 import { MANUAL_SEARCH_DEBOUNCE_MS } from "../src/hooks/useOnboardingFlow";
+import { FRESH_LOCATION_MAX_AGE_MS } from "../src/location/adviceLocation";
 
 describe("home screen flow", () => {
   afterEach(() => {
