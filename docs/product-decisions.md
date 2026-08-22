@@ -14,6 +14,7 @@ This document records current product and design decisions for Sombreado Floripa
 - Route selection happens before direction selection. Direction must be chosen explicitly before confirmation.
 - Direction selection may show the backend-provided Route Direction Kind as a concise `Ida` or `Volta` cue. The frontend does not infer it from the raw direction name, and a missing kind preserves the existing name-and-label presentation.
 - The app includes a compact route confirmation map after route selection and direction choice, not a map-led home screen.
+- The onboarding decision states (location request, route choice, direction choice) must fit a 360x640 viewport without scrolling, and supporting text such as the location notice must stay clear of the persistent actions.
 - Off-route or exploratory usage can show preview advice with a clear warning when the app can estimate a useful point near the selected route; true withheld states are reserved for cases where useful advice cannot be computed.
 - Mapbox GL JS is the preferred v1 map provider, lazy-loaded only when the confirmation map is shown.
 - Branding should combine Airbnb-like warmth with Anthropic/Claude Code-like restraint: clean, joyful, spacious, human, polished, and calm.
@@ -21,7 +22,7 @@ This document records current product and design decisions for Sombreado Floripa
 - The v1 scope is core-only: locate or search, choose route, choose direction, confirm, receive advice, and handle empty/error/preview/withheld states.
 - The frontend calls `sombreado-service` directly from the browser with `NEXT_PUBLIC_API_URL`.
 - `sombreado-floripa` should become frontend-only; the scraper and advisory backend remain separate projects.
-- The frontend deploys to Cloudflare Workers from GitHub Actions on `main` after CI passes.
+- The frontend deploys to Cloudflare Workers from GitHub Actions on `main` after CI passes. `main` advances via **Production Promote** (ADR 0002), not a human-reviewed `develop`→`main` release PR.
 
 ## Design References
 

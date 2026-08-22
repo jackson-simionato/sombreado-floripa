@@ -8,6 +8,11 @@ repository.
 
 Branch from `develop` unless the task explicitly targets another base.
 
+Production advances only through **Production Promote** (ADR 0002): run the
+`Production Promote` workflow, approve Environment `production`, and let the
+agent open/merge the audit PR `develop`→`main`. Do not open a human-reviewed
+release PR to `main` as the release gate, and do not push to `main` directly.
+
 Use an issue number when one exists:
 
 ```text

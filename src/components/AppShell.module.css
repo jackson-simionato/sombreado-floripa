@@ -26,7 +26,7 @@
 }
 
 @media (max-width: 640px) and (max-height: 700px) {
-  .shell:has([data-testid="advice-result-screen"]) {
+  .shell {
     padding-top: var(--space-2);
   }
 }
