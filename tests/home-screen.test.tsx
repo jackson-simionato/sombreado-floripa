@@ -318,6 +318,239 @@ describe("home screen flow", () => {
     );
   });
 
+  test("prefetches directions for the first nearby route after nearby succeeds", async () => {
+    const user = userEvent.setup();
+    const firstRoute = {
+      ...liveRoute,
+      routeId: "route-first",
+      routeVersionId: "version-first",
+      code: "100",
+      name: "Primeira",
+    };
+    const secondRoute = {
+      ...liveRoute,
+      routeId: "route-second",
+      routeVersionId: "version-second",
+      code: "200",
+      name: "Segunda",
+    };
+    const listRouteDirections = vi.fn().mockResolvedValue([
+      {
+        routeDirectionId: "direction-first",
+        sequence: 1,
+        name: "Primeira ida",
+        directionKind: null,
+        departureLabels: ["A", "B"],
+      },
+    ]);
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        listNearbyRouteCandidates: vi
+          .fn()
+          .mockResolvedValue([firstRoute, secondRoute]),
+        listRouteDirections,
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha sua linha" })
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(listRouteDirections).toHaveBeenCalledTimes(1);
+    });
+    expect(listRouteDirections).toHaveBeenCalledWith(
+      {
+        routeId: "route-first",
+        routeVersionId: "version-first",
+      },
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    );
+  });
+
+  test("selecting the prefetched nearby route reuses the directions prefetch", async () => {
+    const user = userEvent.setup();
+    const directions = [
+      {
+        routeDirectionId: "direction-124",
+        sequence: 1,
+        name: "TICEN para Lagoa",
+        directionKind: null,
+        departureLabels: ["TICEN", "Lagoa"],
+      },
+    ];
+    let resolveDirections: ((value: typeof directions) => void) | undefined;
+    const listRouteDirections = vi.fn(
+      () =>
+        new Promise<typeof directions>((resolve) => {
+          resolveDirections = resolve;
+        })
+    );
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        listRouteDirections,
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha sua linha" })
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(listRouteDirections).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    expect(listRouteDirections).toHaveBeenCalledTimes(1);
+    expect(
+      screen.queryByRole("heading", { name: "Escolha o sentido" })
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      resolveDirections?.(directions);
+    });
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha o sentido" })
+    ).toBeInTheDocument();
+    expect(listRouteDirections).toHaveBeenCalledTimes(1);
+  });
+
+  test("keeps prefetch failures silent and fetches directions on select", async () => {
+    const user = userEvent.setup();
+    const listRouteDirections = vi
+      .fn()
+      .mockRejectedValueOnce(
+        new LiveRiderFlowClientError({
+          kind: "api",
+          message: "prefetch failed",
+        })
+      )
+      .mockResolvedValue([
+        {
+          routeDirectionId: "direction-124",
+          sequence: 1,
+          name: "TICEN para Lagoa",
+          directionKind: null,
+          departureLabels: ["TICEN", "Lagoa"],
+        },
+      ]);
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        listRouteDirections,
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha sua linha" })
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(listRouteDirections).toHaveBeenCalledTimes(1);
+    });
+
+    expect(
+      screen.queryByRole("heading", { name: "Algo deu errado" })
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha o sentido" })
+    ).toBeInTheDocument();
+    expect(listRouteDirections).toHaveBeenCalledTimes(2);
+    expect(
+      screen.queryByRole("heading", { name: "Algo deu errado" })
+    ).not.toBeInTheDocument();
+  });
+
+  test("cancels the directions prefetch when the rider opens manual search", async () => {
+    const user = userEvent.setup();
+    const listRouteDirections = vi.fn().mockResolvedValue([
+      {
+        routeDirectionId: "direction-124",
+        sequence: 1,
+        name: "TICEN para Lagoa",
+        directionKind: null,
+        departureLabels: ["TICEN", "Lagoa"],
+      },
+    ]);
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        listRouteDirections,
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha sua linha" })
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(listRouteDirections).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Procurar outra linha" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Procurar linha" })
+    ).toBeInTheDocument();
+
+    await user.type(
+      await screen.findByRole("searchbox", { name: "Linha" }),
+      "124"
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", {
+          name: "Selecionar linha 124 TICEN - Lagoa",
+        })
+      ).toBeInTheDocument();
+    });
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha o sentido" })
+    ).toBeInTheDocument();
+    expect(listRouteDirections).toHaveBeenCalledTimes(2);
+  });
+
   test("uses fallback confirmation for matching empty live geometry", async () => {
     const user = userEvent.setup();
     renderPrototypeHomePageApp({
