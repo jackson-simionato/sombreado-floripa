@@ -1,5 +1,12 @@
 import React from "react";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
@@ -12,8 +19,12 @@ import {
 import { HomePageApp } from "../src/app/HomePageApp";
 import type { HomePageAppProps } from "../src/app/HomePageApp";
 
+import { MANUAL_SEARCH_DEBOUNCE_MS } from "../src/hooks/useOnboardingFlow";
+import { FRESH_LOCATION_MAX_AGE_MS } from "../src/location/adviceLocation";
+
 describe("home screen flow", () => {
   afterEach(() => {
+    vi.useRealTimers();
     vi.unstubAllGlobals();
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
@@ -305,6 +316,239 @@ describe("home screen flow", () => {
       "http://localhost:8000/v1/route-candidates/nearby?lat=-27.5969&lng=-48.5488&radiusMeters=1200&limit=5",
       { credentials: "omit", method: "GET" }
     );
+  });
+
+  test("prefetches directions for the first nearby route after nearby succeeds", async () => {
+    const user = userEvent.setup();
+    const firstRoute = {
+      ...liveRoute,
+      routeId: "route-first",
+      routeVersionId: "version-first",
+      code: "100",
+      name: "Primeira",
+    };
+    const secondRoute = {
+      ...liveRoute,
+      routeId: "route-second",
+      routeVersionId: "version-second",
+      code: "200",
+      name: "Segunda",
+    };
+    const listRouteDirections = vi.fn().mockResolvedValue([
+      {
+        routeDirectionId: "direction-first",
+        sequence: 1,
+        name: "Primeira ida",
+        directionKind: null,
+        departureLabels: ["A", "B"],
+      },
+    ]);
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        listNearbyRouteCandidates: vi
+          .fn()
+          .mockResolvedValue([firstRoute, secondRoute]),
+        listRouteDirections,
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha sua linha" })
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(listRouteDirections).toHaveBeenCalledTimes(1);
+    });
+    expect(listRouteDirections).toHaveBeenCalledWith(
+      {
+        routeId: "route-first",
+        routeVersionId: "version-first",
+      },
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    );
+  });
+
+  test("selecting the prefetched nearby route reuses the directions prefetch", async () => {
+    const user = userEvent.setup();
+    const directions = [
+      {
+        routeDirectionId: "direction-124",
+        sequence: 1,
+        name: "TICEN para Lagoa",
+        directionKind: null,
+        departureLabels: ["TICEN", "Lagoa"],
+      },
+    ];
+    let resolveDirections: ((value: typeof directions) => void) | undefined;
+    const listRouteDirections = vi.fn(
+      () =>
+        new Promise<typeof directions>((resolve) => {
+          resolveDirections = resolve;
+        })
+    );
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        listRouteDirections,
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha sua linha" })
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(listRouteDirections).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    expect(listRouteDirections).toHaveBeenCalledTimes(1);
+    expect(
+      screen.queryByRole("heading", { name: "Escolha o sentido" })
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      resolveDirections?.(directions);
+    });
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha o sentido" })
+    ).toBeInTheDocument();
+    expect(listRouteDirections).toHaveBeenCalledTimes(1);
+  });
+
+  test("keeps prefetch failures silent and fetches directions on select", async () => {
+    const user = userEvent.setup();
+    const listRouteDirections = vi
+      .fn()
+      .mockRejectedValueOnce(
+        new LiveRiderFlowClientError({
+          kind: "api",
+          message: "prefetch failed",
+        })
+      )
+      .mockResolvedValue([
+        {
+          routeDirectionId: "direction-124",
+          sequence: 1,
+          name: "TICEN para Lagoa",
+          directionKind: null,
+          departureLabels: ["TICEN", "Lagoa"],
+        },
+      ]);
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        listRouteDirections,
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha sua linha" })
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(listRouteDirections).toHaveBeenCalledTimes(1);
+    });
+
+    expect(
+      screen.queryByRole("heading", { name: "Algo deu errado" })
+    ).not.toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha o sentido" })
+    ).toBeInTheDocument();
+    expect(listRouteDirections).toHaveBeenCalledTimes(2);
+    expect(
+      screen.queryByRole("heading", { name: "Algo deu errado" })
+    ).not.toBeInTheDocument();
+  });
+
+  test("cancels the directions prefetch when the rider opens manual search", async () => {
+    const user = userEvent.setup();
+    const listRouteDirections = vi.fn().mockResolvedValue([
+      {
+        routeDirectionId: "direction-124",
+        sequence: 1,
+        name: "TICEN para Lagoa",
+        directionKind: null,
+        departureLabels: ["TICEN", "Lagoa"],
+      },
+    ]);
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        listRouteDirections,
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha sua linha" })
+    ).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(listRouteDirections).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Procurar outra linha" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Procurar linha" })
+    ).toBeInTheDocument();
+
+    await user.type(
+      await screen.findByRole("searchbox", { name: "Linha" }),
+      "124"
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("button", {
+          name: "Selecionar linha 124 TICEN - Lagoa",
+        })
+      ).toBeInTheDocument();
+    });
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa",
+      })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Escolha o sentido" })
+    ).toBeInTheDocument();
+    expect(listRouteDirections).toHaveBeenCalledTimes(2);
   });
 
   test("uses fallback confirmation for matching empty live geometry", async () => {
@@ -663,6 +907,7 @@ describe("home screen flow", () => {
         name: "Prefira sentar mais à frente",
       })
     ).toBeInTheDocument();
+    expect(getCurrentLocation).toHaveBeenCalledTimes(1);
     expect(requestAdvice).toHaveBeenCalledWith(
       {
         routeId: "route-124",
@@ -679,6 +924,122 @@ describe("home screen flow", () => {
           observedAt,
         },
       },
+      expect.any(Object)
+    );
+  });
+
+  test("reuses a fresh nearby location for advice without a second GPS wait", async () => {
+    const user = userEvent.setup();
+    const observedAt = new Date().toISOString();
+    const getCurrentLocation = vi.fn().mockResolvedValue({
+      kind: "granted",
+      lat: -27.5969,
+      lng: -48.5488,
+      accuracyMeters: 25,
+      observedAt,
+    });
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "onboard",
+      horizon: "upcoming",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "right",
+      recommendedSeatArea: "left",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    });
+    renderLiveHomePageApp({
+      locationProvider: { getCurrentLocation },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
+
+    await completeNearbyFlow(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Sente à esquerda" })
+    ).toBeInTheDocument();
+    expect(getCurrentLocation).toHaveBeenCalledTimes(1);
+    expect(requestAdvice).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: "onboard",
+        horizon: "upcoming",
+        location: {
+          lat: -27.5969,
+          lng: -48.5488,
+          accuracyMeters: 25,
+          observedAt,
+        },
+      }),
+      expect.any(Object)
+    );
+    expect(
+      screen.queryByText("Última localização conhecida")
+    ).not.toBeInTheDocument();
+  });
+
+  test("refetches GPS when the cached nearby location is stale before advice", async () => {
+    const user = userEvent.setup();
+    const staleObservedAt = new Date(
+      Date.now() - (FRESH_LOCATION_MAX_AGE_MS + 5_000)
+    ).toISOString();
+    const freshObservedAt = new Date().toISOString();
+    const getCurrentLocation = vi
+      .fn()
+      .mockResolvedValueOnce({
+        kind: "granted",
+        lat: -27.5969,
+        lng: -48.5488,
+        accuracyMeters: 25,
+        observedAt: staleObservedAt,
+      })
+      .mockResolvedValueOnce({
+        kind: "granted",
+        lat: -27.6012,
+        lng: -48.5421,
+        accuracyMeters: 20,
+        observedAt: freshObservedAt,
+      });
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "onboard",
+      horizon: "upcoming",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "right",
+      recommendedSeatArea: "left",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    });
+    renderLiveHomePageApp({
+      locationProvider: { getCurrentLocation },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
+
+    await completeNearbyFlow(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(
+      await screen.findByRole("heading", { name: "Sente à esquerda" })
+    ).toBeInTheDocument();
+    expect(getCurrentLocation).toHaveBeenCalledTimes(2);
+    expect(requestAdvice).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: "onboard",
+        location: {
+          lat: -27.6012,
+          lng: -48.5421,
+          accuracyMeters: 20,
+          observedAt: freshObservedAt,
+        },
+      }),
       expect.any(Object)
     );
   });
@@ -727,7 +1088,10 @@ describe("home screen flow", () => {
 
   test("uses a recent fallback location with visible rider copy", async () => {
     const user = userEvent.setup();
-    const fallbackObservedAt = new Date().toISOString();
+    // Older than the fresh reuse window so advice still attempts GPS, then falls back.
+    const fallbackObservedAt = new Date(
+      Date.now() - (FRESH_LOCATION_MAX_AGE_MS + 5_000)
+    ).toISOString();
     const getCurrentLocation = vi
       .fn()
       .mockResolvedValueOnce({
@@ -941,6 +1305,43 @@ describe("home screen flow", () => {
     expect(
       screen.queryByRole("heading", { name: "Sente à esquerda" })
     ).not.toBeInTheDocument();
+  });
+
+  test("debounces manual search until the delay elapses after rapid keystrokes", async () => {
+    const user = userEvent.setup();
+    const searchRouteCandidates = vi.fn().mockResolvedValue([liveRoute]);
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({ searchRouteCandidates }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Procurar linha manualmente" })
+    );
+    const searchInput = await screen.findByRole("searchbox", { name: "Linha" });
+
+    vi.useFakeTimers();
+
+    fireEvent.change(searchInput, { target: { value: "cam" } });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(MANUAL_SEARCH_DEBOUNCE_MS - 50);
+    });
+    expect(searchRouteCandidates).not.toHaveBeenCalled();
+
+    fireEvent.change(searchInput, { target: { value: "campeche" } });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(MANUAL_SEARCH_DEBOUNCE_MS - 1);
+    });
+    expect(searchRouteCandidates).not.toHaveBeenCalled();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1);
+    });
+    expect(searchRouteCandidates).toHaveBeenCalledTimes(1);
+    expect(searchRouteCandidates).toHaveBeenCalledWith(
+      { query: "campeche", limit: 8 },
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    );
   });
 
   test("silently aborts manual search when the query is cleared", async () => {

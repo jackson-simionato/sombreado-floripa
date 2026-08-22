@@ -20,6 +20,11 @@ import {
   initialFlowState,
   normalizeFlowError,
 } from "../domain/flow";
+import {
+  chooseAdviceLocation,
+  chooseNearbyRecoveryLocation,
+  resolveCachedAdviceLocation,
+} from "../location/adviceLocation";
 import type { LocationProvider } from "../location/locationProvider";
 import type {
   DirectionChoice,
@@ -64,6 +69,8 @@ type LiveOnboardingFlowOptions = {
 type UseOnboardingFlowOptions =
   | PrototypeOnboardingFlowOptions
   | LiveOnboardingFlowOptions;
+
+export const MANUAL_SEARCH_DEBOUNCE_MS = 350;
 
 export type OnboardingFlowController = {
   manualQueryDraft: string;
@@ -115,6 +122,9 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   const requestSequenceRef = useRef(0);
   const manualSearchAbortRef = useRef<AbortController | undefined>(undefined);
   const directionsAbortRef = useRef<AbortController | undefined>(undefined);
+  const directionsPrefetchRef = useRef<DirectionsPrefetch | undefined>(
+    undefined
+  );
   const geometryAbortRef = useRef<AbortController | undefined>(undefined);
   const advisoryAbortRef = useRef<AbortController | undefined>(undefined);
   const nearbySlowTimeoutRef = useRef<number | undefined>(undefined);
@@ -174,6 +184,48 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
     ]
   );
 
+  const clearDirectionsPrefetch = useCallback(() => {
+    directionsPrefetchRef.current?.controller.abort();
+    directionsPrefetchRef.current = undefined;
+  }, []);
+
+  const prefetchTopNearbyDirections = useCallback(
+    (candidates: RouteCandidate[]) => {
+      clearDirectionsPrefetch();
+      const topCandidate = candidates[0];
+      if (topCandidate === undefined) {
+        return;
+      }
+
+      const controller = new AbortController();
+      const promise = riderFlowClient
+        .listRouteDirections(
+          {
+            routeId: topCandidate.routeId,
+            routeVersionId: topCandidate.routeVersionId,
+          },
+          { signal: controller.signal }
+        )
+        .catch((error: unknown) => {
+          if (directionsPrefetchRef.current?.controller === controller) {
+            directionsPrefetchRef.current = undefined;
+          }
+          throw error;
+        });
+
+      // Keep unused prefetch rejections from becoming unhandled; awaiters still see the error.
+      void promise.catch(() => undefined);
+
+      directionsPrefetchRef.current = {
+        routeId: topCandidate.routeId,
+        routeVersionId: topCandidate.routeVersionId,
+        promise,
+        controller,
+      };
+    },
+    [clearDirectionsPrefetch, riderFlowClient]
+  );
+
   const nextRequestId = useCallback((prefix: string): RequestId => {
     requestSequenceRef.current += 1;
     return `${prefix}-${requestSequenceRef.current}`;
@@ -198,6 +250,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
 
   const requestNearbyCandidates = useCallback(
     async (location: LocationFix) => {
+      clearDirectionsPrefetch();
       const requestId = nextRequestId("nearby");
       if (nearbySlowTimeoutRef.current !== undefined) {
         window.clearTimeout(nearbySlowTimeoutRef.current);
@@ -227,6 +280,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
           requestId,
           candidates,
         });
+        prefetchTopNearbyDirections(candidates);
       } catch (error) {
         failOperation(requestId, error, {
           kind: "nearbyRoutes",
@@ -242,7 +296,13 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
         }
       }
     },
-    [failOperation, nextRequestId, riderFlowClient]
+    [
+      clearDirectionsPrefetch,
+      failOperation,
+      nextRequestId,
+      prefetchTopNearbyDirections,
+      riderFlowClient,
+    ]
   );
 
   const requestLocation = useCallback(async () => {
@@ -309,10 +369,11 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       routeVersionId: string;
     }) => {
       const requestId = nextRequestId("advisory");
-      const locationResult = await locationProvider.getCurrentLocation();
-      const decision = chooseAdviceLocation(locationResult, {
-        fallbackLocation: input.fallbackLocation,
-      });
+      const decision =
+        resolveCachedAdviceLocation(input.fallbackLocation) ??
+        chooseAdviceLocation(await locationProvider.getCurrentLocation(), {
+          fallbackLocation: input.fallbackLocation,
+        });
       const observedAt = new Date().toISOString();
       const advisoryRequest =
         decision.location === undefined
@@ -386,22 +447,38 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   );
 
   const openManualSearch = useCallback(() => {
+    clearDirectionsPrefetch();
     dispatch({ type: "manualSearchOpened" });
-  }, []);
+  }, [clearDirectionsPrefetch]);
 
   const selectRoute = useCallback(
     async (route: RouteCandidate, source: "nearby" | "manual") => {
       const requestId = nextRequestId("directions");
+      const matchingPrefetch = takeMatchingDirectionsPrefetch(
+        directionsPrefetchRef,
+        route
+      );
+
+      let controller: AbortController;
+      let directionsPromise: Promise<DirectionChoice[]>;
+      if (matchingPrefetch !== undefined) {
+        controller = matchingPrefetch.controller;
+        directionsPromise = matchingPrefetch.promise;
+      } else {
+        clearDirectionsPrefetch();
+        controller = new AbortController();
+        directionsPromise = riderFlowClient.listRouteDirections(
+          { routeId: route.routeId, routeVersionId: route.routeVersionId },
+          { signal: controller.signal }
+        );
+      }
+
       directionsAbortRef.current?.abort();
-      const controller = new AbortController();
       directionsAbortRef.current = controller;
       dispatch({ type: "routeSelected", route, source, requestId });
 
       try {
-        const directions = await riderFlowClient.listRouteDirections(
-          { routeId: route.routeId, routeVersionId: route.routeVersionId },
-          { signal: controller.signal }
-        );
+        const directions = await directionsPromise;
         dispatch({
           type: "directionsSucceeded",
           requestId,
@@ -427,7 +504,13 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
         });
       }
     },
-    [failOperation, nextRequestId, recoverStaleRouteVersion, riderFlowClient]
+    [
+      clearDirectionsPrefetch,
+      failOperation,
+      nextRequestId,
+      recoverStaleRouteVersion,
+      riderFlowClient,
+    ]
   );
 
   const selectDirection = useCallback(
@@ -646,7 +729,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
           limit: 8,
         });
       }
-    }, 180);
+    }, MANUAL_SEARCH_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timerId);
@@ -669,6 +752,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
     () => () => {
       manualSearchAbortRef.current?.abort();
       directionsAbortRef.current?.abort();
+      clearDirectionsPrefetch();
       geometryAbortRef.current?.abort();
       advisoryAbortRef.current?.abort();
       if (nearbySlowTimeoutRef.current !== undefined) {
@@ -676,7 +760,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
         nearbySlowTimeoutRef.current = undefined;
       }
     },
-    []
+    [clearDirectionsPrefetch]
   );
 
   return {
@@ -699,6 +783,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       refreshAdvice,
       retry,
       searchManually(query: string) {
+        clearDirectionsPrefetch();
         if (
           state.screen !== "manualRouteSearch" &&
           state.screen !== "noManualResults"
@@ -721,115 +806,36 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   };
 }
 
+type DirectionsPrefetch = {
+  routeId: string;
+  routeVersionId: string;
+  promise: Promise<DirectionChoice[]>;
+  controller: AbortController;
+};
+
+function takeMatchingDirectionsPrefetch(
+  prefetchRef: { current: DirectionsPrefetch | undefined },
+  route: Pick<RouteCandidate, "routeId" | "routeVersionId">
+): DirectionsPrefetch | undefined {
+  const prefetch = prefetchRef.current;
+  if (
+    prefetch === undefined ||
+    prefetch.routeId !== route.routeId ||
+    prefetch.routeVersionId !== route.routeVersionId
+  ) {
+    return undefined;
+  }
+
+  prefetchRef.current = undefined;
+  return prefetch;
+}
+
 function mapAvailabilityForScenario(
   scenarioId: MockScenarioId
 ): MapAvailability {
   return scenarioId === "confirmation-fallback-map-unavailable"
     ? "unavailable"
     : "available";
-}
-
-const MAX_USABLE_LOCATION_ACCURACY_METERS = 100;
-const FRESH_LOCATION_MAX_AGE_MS = 30_000;
-const RECENT_FALLBACK_LOCATION_MAX_AGE_MS = 120_000;
-
-function chooseAdviceLocation(
-  result: MockLocationResult,
-  options: { fallbackLocation?: LocationFix; now?: () => Date }
-): {
-  location?: LocationFix & { observedAt: string };
-  freshnessNotice?: "recentFallback";
-} {
-  const now = options.now?.() ?? new Date();
-  const freshLocation =
-    result.kind === "granted" ? normalizeLocationFix(result) : undefined;
-
-  if (
-    freshLocation !== undefined &&
-    isUsableLocation(freshLocation, now, FRESH_LOCATION_MAX_AGE_MS)
-  ) {
-    return { location: freshLocation };
-  }
-
-  if (
-    options.fallbackLocation !== undefined &&
-    isUsableLocation(
-      options.fallbackLocation,
-      now,
-      RECENT_FALLBACK_LOCATION_MAX_AGE_MS
-    )
-  ) {
-    return {
-      location: normalizeLocationFix(options.fallbackLocation),
-      freshnessNotice: "recentFallback",
-    };
-  }
-
-  return {};
-}
-
-function chooseNearbyRecoveryLocation(
-  result: MockLocationResult,
-  options: { fallbackLocation?: LocationFix; now?: () => Date }
-): LocationFix | undefined {
-  const now = options.now?.() ?? new Date();
-  const freshLocation =
-    result.kind === "granted" ? normalizeLocationFix(result) : undefined;
-
-  if (
-    freshLocation !== undefined &&
-    isUsableLocation(freshLocation, now, FRESH_LOCATION_MAX_AGE_MS)
-  ) {
-    return freshLocation;
-  }
-
-  if (
-    options.fallbackLocation !== undefined &&
-    isUsableLocation(
-      options.fallbackLocation,
-      now,
-      RECENT_FALLBACK_LOCATION_MAX_AGE_MS
-    )
-  ) {
-    return normalizeLocationFix(options.fallbackLocation);
-  }
-
-  return undefined;
-}
-
-function normalizeLocationFix(
-  location: LocationFix
-): LocationFix & { observedAt: string } {
-  return {
-    lat: location.lat,
-    lng: location.lng,
-    ...(location.accuracyMeters === undefined
-      ? {}
-      : { accuracyMeters: location.accuracyMeters }),
-    observedAt: location.observedAt ?? new Date().toISOString(),
-  };
-}
-
-function isUsableLocation(
-  location: LocationFix,
-  now: Date,
-  maxAgeMs: number
-): boolean {
-  if (
-    location.accuracyMeters !== undefined &&
-    location.accuracyMeters > MAX_USABLE_LOCATION_ACCURACY_METERS
-  ) {
-    return false;
-  }
-
-  if (location.observedAt === undefined) {
-    return false;
-  }
-
-  const observedAtMs = Date.parse(location.observedAt);
-  return (
-    Number.isFinite(observedAtMs) && now.getTime() - observedAtMs <= maxAgeMs
-  );
 }
 
 function routeIdForAdviceRequest(request: FlowAdvisoryRequest): string {

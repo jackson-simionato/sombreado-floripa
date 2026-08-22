@@ -208,6 +208,41 @@ describe("rider-flow route candidate client", () => {
     );
   });
 
+  test("reuses cached live directions for the same route version without refetching", async () => {
+    const fetchMock = vi.fn().mockImplementation(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            directions: [
+              {
+                routeDirectionId: "direction-124",
+                sequence: 1,
+                name: "TICEN para Lagoa",
+                directionKind: "ida",
+                departureLabels: ["TICEN", "Lagoa"],
+              },
+            ],
+          }),
+          { headers: { "content-type": "application/json" }, status: 200 }
+        )
+      )
+    );
+    const client = createLiveRiderFlowClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+    const input = {
+      routeId: "route-124",
+      routeVersionId: "version-124",
+    };
+
+    const first = await client.listRouteDirections(input);
+    const second = await client.listRouteDirections(input);
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(second).toEqual(first);
+  });
+
   test("normalizes stale route versions distinctly", async () => {
     const fetchMock = vi.fn().mockResolvedValue(
       new Response(
@@ -250,6 +285,195 @@ describe("rider-flow route candidate client", () => {
     await expect(client.getRouteGeometry(geometryInput)).resolves.toEqual(
       validGeometry
     );
+  });
+
+  test("reuses cached live geometry for the same route direction without refetching", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve(new Response(JSON.stringify(validGeometry)))
+      );
+    const client = createLiveRiderFlowClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+
+    const first = await client.getRouteGeometry(geometryInput);
+    const second = await client.getRouteGeometry(geometryInput);
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(second).toEqual(first);
+  });
+
+  test("does not cache live directions after an API error", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            error: { code: "upstream", message: "fail" },
+          }),
+          { headers: { "content-type": "application/json" }, status: 500 }
+        )
+      )
+      .mockImplementation(() =>
+        Promise.resolve(
+          new Response(
+            JSON.stringify({
+              directions: [
+                {
+                  routeDirectionId: "direction-124",
+                  sequence: 1,
+                  name: "TICEN para Lagoa",
+                  directionKind: "ida",
+                  departureLabels: ["TICEN", "Lagoa"],
+                },
+              ],
+            }),
+            { headers: { "content-type": "application/json" }, status: 200 }
+          )
+        )
+      );
+    const client = createLiveRiderFlowClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+    const input = {
+      routeId: "route-124",
+      routeVersionId: "version-124",
+    };
+
+    await expect(client.listRouteDirections(input)).rejects.toMatchObject({
+      flowError: { kind: "api" },
+    });
+    await client.listRouteDirections(input);
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  test("does not cache live directions after an aborted request", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(
+        (_url: string, init?: RequestInit) =>
+          new Promise<Response>((_resolve, reject) => {
+            init?.signal?.addEventListener("abort", () => {
+              const error = new Error("aborted");
+              error.name = "AbortError";
+              reject(error);
+            });
+          })
+      )
+      .mockImplementation(() =>
+        Promise.resolve(
+          new Response(
+            JSON.stringify({
+              directions: [
+                {
+                  routeDirectionId: "direction-124",
+                  sequence: 1,
+                  name: "TICEN para Lagoa",
+                  directionKind: "ida",
+                  departureLabels: ["TICEN", "Lagoa"],
+                },
+              ],
+            }),
+            { headers: { "content-type": "application/json" }, status: 200 }
+          )
+        )
+      );
+    const client = createLiveRiderFlowClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+    const input = {
+      routeId: "route-124",
+      routeVersionId: "version-124",
+    };
+    const controller = new AbortController();
+
+    const pending = client.listRouteDirections(input, {
+      signal: controller.signal,
+    });
+    controller.abort();
+    await expect(pending).rejects.toMatchObject({ kind: "aborted" });
+    await client.listRouteDirections(input);
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  test("invalidates cached directions and geometry after routeVersionStale", async () => {
+    const directionsBody = {
+      directions: [
+        {
+          routeDirectionId: geometryInput.routeDirectionId,
+          sequence: 1,
+          name: "TICEN para Lagoa",
+          directionKind: "ida",
+          departureLabels: ["TICEN", "Lagoa"],
+        },
+      ],
+    };
+    const fetchMock = vi.fn().mockImplementation((url: string) => {
+      if (String(url).includes("/geometry")) {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              error: {
+                code: "routeVersionStale",
+                message: "internal diagnostic",
+              },
+            }),
+            { headers: { "content-type": "application/json" }, status: 409 }
+          )
+        );
+      }
+
+      return Promise.resolve(
+        new Response(JSON.stringify(directionsBody), {
+          headers: { "content-type": "application/json" },
+          status: 200,
+        })
+      );
+    });
+    const client = createLiveRiderFlowClient({
+      baseUrl: "http://localhost:8000/v1",
+      fetchImpl: fetchMock,
+    });
+
+    await client.listRouteDirections({
+      routeId: geometryInput.routeId,
+      routeVersionId: geometryInput.routeVersionId,
+    });
+    await expect(client.getRouteGeometry(geometryInput)).rejects.toMatchObject({
+      flowError: { kind: "routeVersionStale" },
+    });
+
+    fetchMock.mockImplementation((url: string) => {
+      if (String(url).includes("/geometry")) {
+        return Promise.resolve(new Response(JSON.stringify(validGeometry)));
+      }
+
+      return Promise.resolve(
+        new Response(JSON.stringify(directionsBody), {
+          headers: { "content-type": "application/json" },
+          status: 200,
+        })
+      );
+    });
+
+    await client.listRouteDirections({
+      routeId: geometryInput.routeId,
+      routeVersionId: geometryInput.routeVersionId,
+    });
+    await client.getRouteGeometry(geometryInput);
+
+    expect(
+      fetchMock.mock.calls.filter(([url]) => /\/directions\?/.test(String(url)))
+    ).toHaveLength(2);
+    expect(
+      fetchMock.mock.calls.filter(([url]) => String(url).includes("/geometry"))
+    ).toHaveLength(2);
   });
 
   test("returns live advice without deriving backend recommendation", async () => {

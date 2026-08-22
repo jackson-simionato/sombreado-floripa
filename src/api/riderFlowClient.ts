@@ -131,6 +131,9 @@ function createRiderFlowClientFromTransportClients(
   routeDirectionsClient: RouteDirectionsClient,
   routeGeometryClient: RouteGeometryClient
 ): RiderFlowClient {
+  const directionsCache = new Map<string, DirectionChoice[]>();
+  const geometryCache = new Map<string, RouteGeometry>();
+
   return {
     async listNearbyRouteCandidates(input, options) {
       try {
@@ -151,31 +154,113 @@ function createRiderFlowClientFromTransportClients(
       }
     },
     async listRouteDirections(input, options) {
+      const cacheKey = directionsCacheKey(input);
+      const cached = directionsCache.get(cacheKey);
+      if (cached !== undefined) {
+        return cached;
+      }
+
       try {
-        return toLiveDirectionChoices(
+        const directions = toLiveDirectionChoices(
           await routeDirectionsClient.listRouteDirections(input, options)
         );
+        directionsCache.set(cacheKey, directions);
+        return directions;
       } catch (error) {
-        throw normalizeLiveRiderFlowError(error);
+        throw normalizeLiveErrorAndInvalidateCaches(
+          error,
+          directionsCache,
+          geometryCache,
+          input.routeId,
+          input.routeVersionId
+        );
       }
     },
     async getRouteGeometry(input, options) {
+      const cacheKey = geometryCacheKey(input);
+      const cached = geometryCache.get(cacheKey);
+      if (cached !== undefined) {
+        return cached;
+      }
+
       try {
-        return toLiveRouteGeometry(
+        const geometry = toLiveRouteGeometry(
           await routeGeometryClient.getRouteGeometry(input, options)
         );
+        geometryCache.set(cacheKey, geometry);
+        return geometry;
       } catch (error) {
-        throw normalizeLiveRiderFlowError(error);
+        throw normalizeLiveErrorAndInvalidateCaches(
+          error,
+          directionsCache,
+          geometryCache,
+          input.routeId,
+          input.routeVersionId
+        );
       }
     },
     async requestAdvice(input, options) {
       try {
         return await adviceClient.requestAdvice(input, options);
       } catch (error) {
-        throw normalizeLiveRiderFlowError(error);
+        throw normalizeLiveErrorAndInvalidateCaches(
+          error,
+          directionsCache,
+          geometryCache,
+          input.routeId,
+          input.routeVersionId
+        );
       }
     },
   };
+}
+
+function directionsCacheKey(input: {
+  routeId: string;
+  routeVersionId: string;
+}): string {
+  return `${input.routeId}\0${input.routeVersionId}`;
+}
+
+function geometryCacheKey(input: RouteGeometryInput): string {
+  return `${input.routeId}\0${input.routeVersionId}\0${input.routeDirectionId}`;
+}
+
+function invalidateRouteVersionCaches(
+  directionsCache: Map<string, DirectionChoice[]>,
+  geometryCache: Map<string, RouteGeometry>,
+  routeId: string,
+  routeVersionId: string
+): void {
+  directionsCache.delete(directionsCacheKey({ routeId, routeVersionId }));
+  const geometryPrefix = `${routeId}\0${routeVersionId}\0`;
+  for (const key of geometryCache.keys()) {
+    if (key.startsWith(geometryPrefix)) {
+      geometryCache.delete(key);
+    }
+  }
+}
+
+function normalizeLiveErrorAndInvalidateCaches(
+  error: unknown,
+  directionsCache: Map<string, DirectionChoice[]>,
+  geometryCache: Map<string, RouteGeometry>,
+  routeId: string,
+  routeVersionId: string
+): Error {
+  const normalized = normalizeLiveRiderFlowError(error);
+  if (
+    normalized instanceof LiveRiderFlowClientError &&
+    normalized.flowError.kind === "routeVersionStale"
+  ) {
+    invalidateRouteVersionCaches(
+      directionsCache,
+      geometryCache,
+      routeId,
+      routeVersionId
+    );
+  }
+  return normalized;
 }
 
 function toLiveRouteCandidates(
