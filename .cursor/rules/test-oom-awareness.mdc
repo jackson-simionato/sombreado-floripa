@@ -1,0 +1,14 @@
+---
+description: Watch for OOM and memory pressure when running or changing tests
+alwaysApply: true
+---
+
+# Test OOM awareness
+
+Always pay attention to out-of-memory (OOM) and memory-pressure risks when writing, editing, or running tests.
+
+- Prefer focused test runs while iterating; use the full suite as a completion gate, not a tight loop.
+- Avoid patterns that bloat heap across cases: unbounded fake-timer loops, leaking mounts, global stubs left active, giant fixtures duplicated per test.
+- After `afterEach` / `afterAll`, restore timers, unstub globals/envs, and drop large mocks so cases do not accumulate memory.
+- If a suite or CI job dies with OOM, SIGKILL, or unexplained hangs under load, treat memory as a first suspect—shrink scope, serialize heavy files, or split work before adding more coverage.
+- Do not ignore rising RSS, worker crashes, or “JavaScript heap out of memory” when verifying changes.

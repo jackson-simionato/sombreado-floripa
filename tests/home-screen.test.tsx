@@ -1,5 +1,12 @@
 import React from "react";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
@@ -11,10 +18,12 @@ import {
 } from "../src/api/riderFlowClient";
 import { HomePageApp } from "../src/app/HomePageApp";
 import type { HomePageAppProps } from "../src/app/HomePageApp";
-import { FRESH_LOCATION_MAX_AGE_MS } from "../src/location/adviceLocation";
+
+import { MANUAL_SEARCH_DEBOUNCE_MS } from "../src/hooks/useOnboardingFlow";
 
 describe("home screen flow", () => {
   afterEach(() => {
+    vi.useRealTimers();
     vi.unstubAllGlobals();
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
@@ -1062,6 +1071,43 @@ describe("home screen flow", () => {
     expect(
       screen.queryByRole("heading", { name: "Sente à esquerda" })
     ).not.toBeInTheDocument();
+  });
+
+  test("debounces manual search until the delay elapses after rapid keystrokes", async () => {
+    const user = userEvent.setup();
+    const searchRouteCandidates = vi.fn().mockResolvedValue([liveRoute]);
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({ searchRouteCandidates }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: "Procurar linha manualmente" })
+    );
+    const searchInput = await screen.findByRole("searchbox", { name: "Linha" });
+
+    vi.useFakeTimers();
+
+    fireEvent.change(searchInput, { target: { value: "cam" } });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(MANUAL_SEARCH_DEBOUNCE_MS - 50);
+    });
+    expect(searchRouteCandidates).not.toHaveBeenCalled();
+
+    fireEvent.change(searchInput, { target: { value: "campeche" } });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(MANUAL_SEARCH_DEBOUNCE_MS - 1);
+    });
+    expect(searchRouteCandidates).not.toHaveBeenCalled();
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1);
+    });
+    expect(searchRouteCandidates).toHaveBeenCalledTimes(1);
+    expect(searchRouteCandidates).toHaveBeenCalledWith(
+      { query: "campeche", limit: 8 },
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    );
   });
 
   test("silently aborts manual search when the query is cleared", async () => {
