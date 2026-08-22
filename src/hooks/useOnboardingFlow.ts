@@ -122,6 +122,9 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   const requestSequenceRef = useRef(0);
   const manualSearchAbortRef = useRef<AbortController | undefined>(undefined);
   const directionsAbortRef = useRef<AbortController | undefined>(undefined);
+  const directionsPrefetchRef = useRef<DirectionsPrefetch | undefined>(
+    undefined
+  );
   const geometryAbortRef = useRef<AbortController | undefined>(undefined);
   const advisoryAbortRef = useRef<AbortController | undefined>(undefined);
   const nearbySlowTimeoutRef = useRef<number | undefined>(undefined);
@@ -181,6 +184,48 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
     ]
   );
 
+  const clearDirectionsPrefetch = useCallback(() => {
+    directionsPrefetchRef.current?.controller.abort();
+    directionsPrefetchRef.current = undefined;
+  }, []);
+
+  const prefetchTopNearbyDirections = useCallback(
+    (candidates: RouteCandidate[]) => {
+      clearDirectionsPrefetch();
+      const topCandidate = candidates[0];
+      if (topCandidate === undefined) {
+        return;
+      }
+
+      const controller = new AbortController();
+      const promise = riderFlowClient
+        .listRouteDirections(
+          {
+            routeId: topCandidate.routeId,
+            routeVersionId: topCandidate.routeVersionId,
+          },
+          { signal: controller.signal }
+        )
+        .catch((error: unknown) => {
+          if (directionsPrefetchRef.current?.controller === controller) {
+            directionsPrefetchRef.current = undefined;
+          }
+          throw error;
+        });
+
+      // Keep unused prefetch rejections from becoming unhandled; awaiters still see the error.
+      void promise.catch(() => undefined);
+
+      directionsPrefetchRef.current = {
+        routeId: topCandidate.routeId,
+        routeVersionId: topCandidate.routeVersionId,
+        promise,
+        controller,
+      };
+    },
+    [clearDirectionsPrefetch, riderFlowClient]
+  );
+
   const nextRequestId = useCallback((prefix: string): RequestId => {
     requestSequenceRef.current += 1;
     return `${prefix}-${requestSequenceRef.current}`;
@@ -205,6 +250,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
 
   const requestNearbyCandidates = useCallback(
     async (location: LocationFix) => {
+      clearDirectionsPrefetch();
       const requestId = nextRequestId("nearby");
       if (nearbySlowTimeoutRef.current !== undefined) {
         window.clearTimeout(nearbySlowTimeoutRef.current);
@@ -234,6 +280,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
           requestId,
           candidates,
         });
+        prefetchTopNearbyDirections(candidates);
       } catch (error) {
         failOperation(requestId, error, {
           kind: "nearbyRoutes",
@@ -249,7 +296,13 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
         }
       }
     },
-    [failOperation, nextRequestId, riderFlowClient]
+    [
+      clearDirectionsPrefetch,
+      failOperation,
+      nextRequestId,
+      prefetchTopNearbyDirections,
+      riderFlowClient,
+    ]
   );
 
   const requestLocation = useCallback(async () => {
@@ -394,22 +447,38 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   );
 
   const openManualSearch = useCallback(() => {
+    clearDirectionsPrefetch();
     dispatch({ type: "manualSearchOpened" });
-  }, []);
+  }, [clearDirectionsPrefetch]);
 
   const selectRoute = useCallback(
     async (route: RouteCandidate, source: "nearby" | "manual") => {
       const requestId = nextRequestId("directions");
+      const matchingPrefetch = takeMatchingDirectionsPrefetch(
+        directionsPrefetchRef,
+        route
+      );
+
+      let controller: AbortController;
+      let directionsPromise: Promise<DirectionChoice[]>;
+      if (matchingPrefetch !== undefined) {
+        controller = matchingPrefetch.controller;
+        directionsPromise = matchingPrefetch.promise;
+      } else {
+        clearDirectionsPrefetch();
+        controller = new AbortController();
+        directionsPromise = riderFlowClient.listRouteDirections(
+          { routeId: route.routeId, routeVersionId: route.routeVersionId },
+          { signal: controller.signal }
+        );
+      }
+
       directionsAbortRef.current?.abort();
-      const controller = new AbortController();
       directionsAbortRef.current = controller;
       dispatch({ type: "routeSelected", route, source, requestId });
 
       try {
-        const directions = await riderFlowClient.listRouteDirections(
-          { routeId: route.routeId, routeVersionId: route.routeVersionId },
-          { signal: controller.signal }
-        );
+        const directions = await directionsPromise;
         dispatch({
           type: "directionsSucceeded",
           requestId,
@@ -435,7 +504,13 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
         });
       }
     },
-    [failOperation, nextRequestId, recoverStaleRouteVersion, riderFlowClient]
+    [
+      clearDirectionsPrefetch,
+      failOperation,
+      nextRequestId,
+      recoverStaleRouteVersion,
+      riderFlowClient,
+    ]
   );
 
   const selectDirection = useCallback(
@@ -677,6 +752,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
     () => () => {
       manualSearchAbortRef.current?.abort();
       directionsAbortRef.current?.abort();
+      clearDirectionsPrefetch();
       geometryAbortRef.current?.abort();
       advisoryAbortRef.current?.abort();
       if (nearbySlowTimeoutRef.current !== undefined) {
@@ -684,7 +760,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
         nearbySlowTimeoutRef.current = undefined;
       }
     },
-    []
+    [clearDirectionsPrefetch]
   );
 
   return {
@@ -707,6 +783,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       refreshAdvice,
       retry,
       searchManually(query: string) {
+        clearDirectionsPrefetch();
         if (
           state.screen !== "manualRouteSearch" &&
           state.screen !== "noManualResults"
@@ -727,6 +804,30 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       },
     },
   };
+}
+
+type DirectionsPrefetch = {
+  routeId: string;
+  routeVersionId: string;
+  promise: Promise<DirectionChoice[]>;
+  controller: AbortController;
+};
+
+function takeMatchingDirectionsPrefetch(
+  prefetchRef: { current: DirectionsPrefetch | undefined },
+  route: Pick<RouteCandidate, "routeId" | "routeVersionId">
+): DirectionsPrefetch | undefined {
+  const prefetch = prefetchRef.current;
+  if (
+    prefetch === undefined ||
+    prefetch.routeId !== route.routeId ||
+    prefetch.routeVersionId !== route.routeVersionId
+  ) {
+    return undefined;
+  }
+
+  prefetchRef.current = undefined;
+  return prefetch;
 }
 
 function mapAvailabilityForScenario(
