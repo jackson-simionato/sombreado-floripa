@@ -7,6 +7,12 @@ export const ADVICE_TIME_CHIPS = [
 export type AdviceTimeOffsetMinutes =
   (typeof ADVICE_TIME_CHIPS)[number]["offsetMinutes"];
 
+export function adviceTimeQualifier(
+  offsetMinutes: AdviceTimeOffsetMinutes
+): "agora" | "neste horário" {
+  return offsetMinutes === 0 ? "agora" : "neste horário";
+}
+
 export function observedAtForTimeChip(
   offsetMinutes: AdviceTimeOffsetMinutes,
   now: Date

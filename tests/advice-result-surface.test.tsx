@@ -222,6 +222,57 @@ describe("AdviceResultSurface", () => {
     expect(document.querySelector("input[type='datetime-local']")).toBeNull();
   });
 
+  test("uses neste horário in night and overhead copy when a future chip is active", () => {
+    const { rerender } = render(
+      <AdviceResultSurface
+        advice={{
+          mode: "neutralComputed",
+          directSunExposure: "none",
+        }}
+        context="preview"
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        selectedTimeOffsetMinutes={30}
+        route={route}
+      />
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Sem sol direto relevante neste horário",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", {
+        name: "Sem sol direto relevante agora",
+      })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Nenhum lado do ônibus aparece como melhor área neste horário"
+    );
+
+    rerender(
+      <AdviceResultSurface
+        advice={{
+          mode: "neutralComputed",
+          directSunExposure: "overhead",
+        }}
+        context="preview"
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        selectedTimeOffsetMinutes={15}
+        route={route}
+      />
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Sem lado melhor neste horário" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("O sol está alto; não há lado melhor neste horário.")
+    ).toBeInTheDocument();
+  });
+
   test("marks the selected time chip as active", () => {
     render(
       <AdviceResultSurface

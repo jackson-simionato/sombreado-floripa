@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import {
   ADVICE_TIME_CHIPS,
+  adviceTimeQualifier,
   observedAtForTimeChip,
 } from "../../src/advice/timeChips";
 
@@ -20,5 +21,11 @@ describe("advice time chips", () => {
     expect(observedAtForTimeChip(0, now)).toBe("2026-08-29T15:00:00.000Z");
     expect(observedAtForTimeChip(15, now)).toBe("2026-08-29T15:15:00.000Z");
     expect(observedAtForTimeChip(30, now)).toBe("2026-08-29T15:30:00.000Z");
+  });
+
+  test("keeps agora for the now chip and neste horário for near-now chips", () => {
+    expect(adviceTimeQualifier(0)).toBe("agora");
+    expect(adviceTimeQualifier(15)).toBe("neste horário");
+    expect(adviceTimeQualifier(30)).toBe("neste horário");
   });
 });

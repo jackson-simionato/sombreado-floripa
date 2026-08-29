@@ -1206,8 +1206,13 @@ describe("home screen flow", () => {
 
     await user.click(screen.getByRole("radio", { name: "+15 min" }));
     expect(
-      await screen.findByRole("heading", { name: "Sem lado melhor agora" })
+      await screen.findByRole("heading", {
+        name: "Sem lado melhor neste horário",
+      })
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Sem lado melhor agora" })
+    ).not.toBeInTheDocument();
     expect(
       screen.getByText(
         "O sol está alto e não há uma diferença relevante entre os lados."
@@ -1217,7 +1222,7 @@ describe("home screen flow", () => {
     await user.click(screen.getByRole("radio", { name: "+30 min" }));
     expect(
       await screen.findByRole("heading", {
-        name: "Sem sol direto relevante agora",
+        name: "Sem sol direto relevante neste horário",
       })
     ).toBeInTheDocument();
     expect(

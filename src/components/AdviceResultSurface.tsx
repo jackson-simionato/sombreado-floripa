@@ -8,6 +8,7 @@ import {
 
 import {
   ADVICE_TIME_CHIPS,
+  adviceTimeQualifier,
   type AdviceTimeOffsetMinutes,
 } from "../advice/timeChips";
 import type { DirectionalExposure, UiAdviceState } from "../domain/types";
@@ -49,7 +50,7 @@ export function AdviceResultSurface({
   route,
   selectedTimeOffsetMinutes = 0,
 }: AdviceResultSurfaceProps) {
-  const variant = adviceVariantCopy(advice);
+  const variant = adviceVariantCopy(advice, selectedTimeOffsetMinutes);
   const modeLabel = resultModeLabel(advice, context);
   const estimateContext = resolveEstimateContext(advice, context);
   const trustNotice = estimateNoticeCopy(advice);
@@ -294,7 +295,8 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 function adviceVariantCopy(
-  advice: Exclude<UiAdviceState, { mode: "withheld" }>
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>,
+  timeOffsetMinutes: AdviceTimeOffsetMinutes
 ): {
   accessibleSummary: string;
   body: string;
@@ -305,19 +307,20 @@ function adviceVariantCopy(
   }
 
   if (advice.mode === "neutralComputed") {
+    const timeQualifier = adviceTimeQualifier(timeOffsetMinutes);
+
     if (advice.directSunExposure === "overhead") {
       return {
-        title: "Sem lado melhor agora",
+        title: `Sem lado melhor ${timeQualifier}`,
         body: "O sol está alto e não há uma diferença relevante entre os lados.",
-        accessibleSummary: "O sol está alto; não há lado melhor agora.",
+        accessibleSummary: `O sol está alto; não há lado melhor ${timeQualifier}.`,
       };
     }
 
     return {
-      title: "Sem sol direto relevante agora",
+      title: `Sem sol direto relevante ${timeQualifier}`,
       body: "Não há sol direto suficiente para recomendar uma lateral neste trecho.",
-      accessibleSummary:
-        "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora.",
+      accessibleSummary: `Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área ${timeQualifier}.`,
     };
   }
 
