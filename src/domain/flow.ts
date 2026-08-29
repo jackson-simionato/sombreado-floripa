@@ -74,6 +74,11 @@ export type FlowEvent =
       direction: DirectionChoice;
       requestId: RequestId;
     }
+  | {
+      type: "recentSelected";
+      route: SelectedRoute;
+      direction: SelectedDirection;
+    }
   | { type: "routeVersionStaleDetected" }
   | {
       type: "geometrySucceeded";
@@ -282,8 +287,12 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         clearError({
           ...state,
           screen:
-            source === "manual" ? "manualRouteSearch" : "findingNearbyRoutes",
-          requestStatus: "loading",
+            source === "manual"
+              ? "manualRouteSearch"
+              : source === "recent"
+                ? "locationRequest"
+                : "findingNearbyRoutes",
+          requestStatus: source === "recent" ? "idle" : "loading",
           manualCandidates: source === "manual" ? [] : state.manualCandidates,
           nearbyCandidates: source === "nearby" ? [] : state.nearbyCandidates,
           selectedRoute: undefined,
@@ -308,6 +317,18 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
           pendingRequests: {
             ...state.pendingRequests,
             geometry: event.requestId,
+          },
+        })
+      );
+
+    case "recentSelected":
+      return clearAdviceAndGeometry(
+        clearError({
+          ...state,
+          selectedRoute: { ...event.route },
+          selectedDirection: {
+            ...event.direction,
+            departureLabels: [...event.direction.departureLabels],
           },
         })
       );
@@ -424,7 +445,9 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         screen:
           state.selectedRoute?.source === "manual"
             ? "manualRouteSearch"
-            : "routeCandidateSelection",
+            : state.selectedRoute?.source === "recent"
+              ? "locationRequest"
+              : "routeCandidateSelection",
         requestStatus: "idle",
         selectedRoute: undefined,
         selectedDirection: undefined,
@@ -443,7 +466,9 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
         screen:
           state.directionChoices.length > 0
             ? "directionChoice"
-            : "findingNearbyRoutes",
+            : state.selectedRoute.source === "recent"
+              ? "locationRequest"
+              : "findingNearbyRoutes",
         requestStatus: "idle",
         selectedDirection: undefined,
         error: undefined,
