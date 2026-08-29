@@ -1,10 +1,10 @@
 # Wireframes V1
 
-Low-fidelity mobile wireframes for the Sombreado Floripa v1 onboard-first flow. These sketches target a narrow mobile viewport around 360-390px wide and assume one-handed use while standing or sitting on a moving bus.
+Low-fidelity mobile wireframes for the default **Onboard Flow** (v1 screen-state contract). The product is the Advice Triple ([ADR 0003](adr/0003-one-job-evolution-rule.md)), not this wizard. These sketches target a narrow mobile viewport around 360-390px wide and assume one-handed use while standing or sitting on a moving bus.
 
 ## Scope
 
-V1 helps a rider locate or search for a route, choose the route, choose the direction, confirm it, and receive sun-side advice. The flow may produce either onboard advice or route preview advice. It does not include timetable planning, stop planning, saved trips, accounts, feedback, or map-led navigation.
+V1 helps a rider locate or search for a route, choose the route, choose the direction, confirm it, and receive sun-side advice. The flow may produce either onboard advice or route preview advice. Durable non-goals (trip planning, map-home, accounts, and the rest) live in [ADR 0003](adr/0003-one-job-evolution-rule.md), not as “not v1.”
 
 ## Flow Diagram
 
