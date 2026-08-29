@@ -38,7 +38,8 @@ type OnboardingFlowScreenProps = {
 export function OnboardingFlowScreen({
   controller,
 }: OnboardingFlowScreenProps) {
-  const { actions, manualQueryDraft, recents, state } = controller;
+  const { actions, adviceTimeOffsetMinutes, manualQueryDraft, recents, state } =
+    controller;
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const selectedRouteLabel =
@@ -491,7 +492,9 @@ export function OnboardingFlowScreen({
             onChangeDirection={actions.changeDirection}
             onChangeRoute={actions.changeRoute}
             onRefresh={actions.refreshAdvice}
+            onSelectTimeOffset={actions.selectAdviceTimeOffset}
             route={state.selectedRoute}
+            selectedTimeOffsetMinutes={adviceTimeOffsetMinutes}
           />
         );
       } else {

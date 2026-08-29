@@ -16,6 +16,10 @@ import {
 } from "../api/riderFlowClient";
 import type { RiderFlowClient } from "../api/riderFlowClient";
 import {
+  observedAtForTimeChip,
+  type AdviceTimeOffsetMinutes,
+} from "../advice/timeChips";
+import {
   flowReducer,
   initialFlowState,
   normalizeFlowError,
@@ -81,6 +85,7 @@ type UseOnboardingFlowOptions =
 export const MANUAL_SEARCH_DEBOUNCE_MS = 350;
 
 export type OnboardingFlowController = {
+  adviceTimeOffsetMinutes: AdviceTimeOffsetMinutes;
   manualQueryDraft: string;
   recents: AdviceRecent[];
   state: FlowState;
@@ -93,6 +98,7 @@ export type OnboardingFlowController = {
     refreshAdvice(): void;
     retry(): void;
     searchManually(query: string): void;
+    selectAdviceTimeOffset(offsetMinutes: AdviceTimeOffsetMinutes): void;
     selectDirection(direction: DirectionChoice): void;
     selectRecent(recent: AdviceRecent): void;
     selectRoute(route: RouteCandidate, source: RouteSelectionSource): void;
@@ -132,6 +138,8 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   const [recents, setRecents] = useState<AdviceRecent[]>(() =>
     typeof window === "undefined" ? [] : readAdviceRecents()
   );
+  const [adviceTimeOffsetMinutes, setAdviceTimeOffsetMinutes] =
+    useState<AdviceTimeOffsetMinutes>(0);
 
   useEffect(() => {
     setRecents(readAdviceRecents());
@@ -387,6 +395,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       fallbackLocation?: LocationFix;
       recent: AdviceRecent;
       routeSource: RouteSelectionSource;
+      timeOffsetMinutes?: AdviceTimeOffsetMinutes;
     }) => {
       const requestId = nextRequestId("advisory");
       const decision =
@@ -394,7 +403,10 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
         chooseAdviceLocation(await locationProvider.getCurrentLocation(), {
           fallbackLocation: input.fallbackLocation,
         });
-      const observedAt = new Date().toISOString();
+      const observedAt = observedAtForTimeChip(
+        input.timeOffsetMinutes ?? adviceTimeOffsetMinutes,
+        new Date()
+      );
       const advisoryRequest =
         decision.location === undefined
           ? {
@@ -474,6 +486,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       }
     },
     [
+      adviceTimeOffsetMinutes,
       failOperation,
       locationProvider,
       nextRequestId,
@@ -636,6 +649,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
 
   const selectRecent = useCallback(
     (recent: AdviceRecent) => {
+      setAdviceTimeOffsetMinutes(0);
       dispatch({
         type: "recentSelected",
         route: {
@@ -656,30 +670,47 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       void requestAdvisory({
         recent,
         routeSource: "recent",
+        timeOffsetMinutes: 0,
       });
     },
     [requestAdvisory]
   );
 
-  const refreshAdvice = useCallback(() => {
-    if (
-      state.selectedRoute === undefined ||
-      state.selectedDirection === undefined
-    ) {
-      return;
-    }
+  const requestSelectedAdvisory = useCallback(
+    (timeOffsetMinutes: AdviceTimeOffsetMinutes) => {
+      if (
+        state.selectedRoute === undefined ||
+        state.selectedDirection === undefined
+      ) {
+        return;
+      }
 
-    void requestAdvisory({
-      fallbackLocation: state.latestLocation,
-      recent: toAdviceRecent(state.selectedRoute, state.selectedDirection),
-      routeSource: state.selectedRoute.source,
-    });
-  }, [
-    requestAdvisory,
-    state.latestLocation,
-    state.selectedDirection,
-    state.selectedRoute,
-  ]);
+      void requestAdvisory({
+        fallbackLocation: state.latestLocation,
+        recent: toAdviceRecent(state.selectedRoute, state.selectedDirection),
+        routeSource: state.selectedRoute.source,
+        timeOffsetMinutes,
+      });
+    },
+    [
+      requestAdvisory,
+      state.latestLocation,
+      state.selectedDirection,
+      state.selectedRoute,
+    ]
+  );
+
+  const refreshAdvice = useCallback(() => {
+    requestSelectedAdvisory(adviceTimeOffsetMinutes);
+  }, [adviceTimeOffsetMinutes, requestSelectedAdvisory]);
+
+  const selectAdviceTimeOffset = useCallback(
+    (offsetMinutes: AdviceTimeOffsetMinutes) => {
+      setAdviceTimeOffsetMinutes(offsetMinutes);
+      requestSelectedAdvisory(offsetMinutes);
+    },
+    [requestSelectedAdvisory]
+  );
 
   const retry = useCallback(() => {
     const retryTarget = state.error?.retryTarget;
@@ -743,9 +774,17 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
                 directionLabel: direction?.name ?? "",
               },
         routeSource: route?.source ?? "manual",
+        timeOffsetMinutes: adviceTimeOffsetMinutes,
       });
     }
-  }, [requestAdvisory, requestLocation, selectDirection, selectRoute, state]);
+  }, [
+    adviceTimeOffsetMinutes,
+    requestAdvisory,
+    requestLocation,
+    selectDirection,
+    selectRoute,
+    state,
+  ]);
 
   const manualSearchScreenActive =
     state.screen === "manualRouteSearch" || state.screen === "noManualResults";
@@ -829,16 +868,19 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   );
 
   return {
+    adviceTimeOffsetMinutes,
     manualQueryDraft,
     recents,
     state,
     actions: {
       changeDirection() {
         geometryAbortRef.current?.abort();
+        setAdviceTimeOffsetMinutes(0);
         dispatch({ type: "changeDirection" });
       },
       changeRoute() {
         geometryAbortRef.current?.abort();
+        setAdviceTimeOffsetMinutes(0);
         dispatch({ type: "changeRoute" });
       },
       continueWaiting() {
@@ -848,6 +890,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       openManualSearch,
       refreshAdvice,
       retry,
+      selectAdviceTimeOffset,
       searchManually(query: string) {
         clearDirectionsPrefetch();
         if (

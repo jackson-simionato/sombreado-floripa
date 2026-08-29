@@ -44,6 +44,33 @@
   inset: 0 0 auto;
 }
 
+.timeChips {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.timeChip {
+  flex: 1;
+  min-height: 3rem;
+  padding: 0 var(--space-2);
+  border: 1px solid
+    color-mix(in srgb, var(--color-outline-variant) 82%, transparent);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-container-low);
+  color: var(--color-ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.timeChip[aria-checked="true"] {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
 .diagramFocus {
   display: grid;
   place-items: center;
@@ -116,6 +143,15 @@
     margin: 0;
   }
 
+  .timeChips {
+    gap: var(--space-1);
+  }
+
+  .timeChip {
+    min-height: 2.75rem;
+    font-size: 0.78rem;
+  }
+
   .estimateNotice {
     padding-top: var(--space-1);
   }
@@ -139,6 +175,11 @@
     gap: 2px;
     padding: var(--space-1) var(--space-2);
     border-radius: var(--radius-lg);
+  }
+
+  .timeChip {
+    min-height: 2.5rem;
+    font-size: 0.72rem;
   }
 
   .estimateNotice {
