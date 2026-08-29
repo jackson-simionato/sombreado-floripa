@@ -5,6 +5,7 @@ This repository is the Sombreado Floripa frontend. Treat it as a browser app rep
 ## Canonical Context
 
 - Use [CONTEXT.md](CONTEXT.md) for domain terms and relationship rules.
+- Use [docs/adr/0003-one-job-evolution-rule.md](docs/adr/0003-one-job-evolution-rule.md) before adding product surface: the one-job filter (choose / explain / reach the Advice Triple).
 - Use [docs/product-decisions.md](docs/product-decisions.md) for current product decisions.
 - Use [docs/wireframes-v1.md](docs/wireframes-v1.md) as the v1 screen-state contract.
 - Use [docs/brand-guide.md](docs/brand-guide.md) for UI, copy, and visual direction.
@@ -19,7 +20,7 @@ This repository is the Sombreado Floripa frontend. Treat it as a browser app rep
 
 ## Product Guardrails
 
-- Preserve the onboard-first flow: locate or search, choose route, choose direction, confirm, then show advice.
+- The product is the Advice Triple (ADR 0003): new work must choose that triple, explain that advice, or make that one job reachable. Onboard Flow is the default instantiation when there is no recent or share-link.
 - Keep manual search as a secondary path that returns route-only choices before direction selection.
 - Keep route confirmation compact and supporting; the app is not map-led navigation.
 - Distinguish onboard advice from route preview advice without relying on color alone.

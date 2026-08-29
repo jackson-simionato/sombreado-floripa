@@ -1,20 +1,24 @@
 # Sombreado Floripa
 
-This context describes the passenger-facing web app that helps onboard bus riders in Florianopolis choose where to sit with less direct sun exposure.
+This context describes the passenger-facing web app that helps riders in Florianopolis choose where to sit with less direct sun exposure.
 
 ## Language
 
 **Sombreado Floripa**:
-The passenger-facing mobile web app for onboard sun-side guidance on Florianopolis buses.
+The passenger-facing mobile web app for sun-side guidance on Florianopolis buses.
 _Avoid_: Scraper, backend service, bus stop planner
 
 **Rider**:
 A person using Sombreado Floripa while riding, boarding, or previewing a bus route.
 _Avoid_: User, account, driver
 
+**Advice Triple**:
+The core product entity: a **Route Candidate**, a **Direction Choice**, and a datetime of now or near-now, yielding **Sun-side Advice** as a **Seat-area Recommendation**. Location is not a fourth field; it may help instantiate nearby candidates and choose onboard vs preview. The evolution rule is ADR 0003.
+_Avoid_: line as a glossary term, trip or destination pair, leave-at calendar, location as part of the entity
+
 **Onboard Flow**:
-The primary rider journey for someone already on a bus who wants immediate sun-side guidance.
-_Avoid_: Timetable planning, stop planning
+The default rider journey that instantiates the **Advice Triple** when there is no recent or share-link: someone already on a bus who wants immediate sun-side guidance.
+_Avoid_: Timetable planning, stop planning, the product identity (the identity is the **Advice Triple**)
 
 **Sun-side Advice**:
 The rider-facing instruction that says where to sit or which bus side is less exposed to direct sun.
@@ -33,8 +37,8 @@ The signature visual idea derived from the left and right sides of a bus cabin, 
 _Avoid_: Generic seating map, four-zone heatmap, standalone logo mark
 
 **Route Candidate**:
-A nearby route the rider can select before choosing direction and requesting sun-side advice.
-_Avoid_: Automatically confirmed route direction, timetable row
+A route the rider can select before choosing direction and requesting sun-side advice, from nearby, manual search, recents, or a share-link.
+_Avoid_: Automatically confirmed route direction, timetable row, destination search
 
 **Direction Choice**:
 The rider-facing step where a selected route is narrowed to a direction using destination or neighborhood labels.
@@ -46,7 +50,7 @@ _Avoid_: Frontend name parsing, inferred complementary direction, replacement di
 
 **Route Confirmation Map**:
 A compact map used to help the rider confirm the selected route direction.
-_Avoid_: Map-first navigation, route editor
+_Avoid_: Map-first navigation, nearby-stop map as home, route editor
 
 **Route Preview**:
 A clearly labeled preview of sun-side advice when the rider is not currently onboard or near the selected route, using an estimated point on or near the route.
@@ -63,7 +67,8 @@ _Avoid_: Legal disclaimer wall, hidden limitation
 ## Relationships
 
 - **Sombreado Floripa** is designed for **Riders**.
-- The first version of **Sombreado Floripa** prioritizes the **Onboard Flow**.
+- The product of **Sombreado Floripa** is the **Advice Triple** (ADR 0003).
+- **Onboard Flow** is the default way to instantiate the **Advice Triple** when there is no recent or share-link. Preview, recents, time chips, and share-links are the same job.
 - The **Onboard Flow** starts with rider location or manual route search, presents **Route Candidates**, asks for a **Direction Choice**, and ends with **Sun-side Advice**.
 - A **Direction Choice** may show a **Route Direction Kind** as supporting context.
 - A missing **Route Direction Kind** does not prevent a **Rider** from selecting the **Direction Choice**.
@@ -78,10 +83,13 @@ _Avoid_: Legal disclaimer wall, hidden limitation
 ## Example Dialogue
 
 > **Dev:** "Should the home screen ask riders to search a timetable?"
-> **Domain expert:** "No. The first version starts with the **Onboard Flow**: find where the rider is, help them choose the nearby route and direction, then show **Sun-side Advice**."
+> **Domain expert:** "No. Default instantiation is the **Onboard Flow**: find where the rider is, help them choose the nearby **Route Candidate** and **Direction Choice**, then show **Sun-side Advice**. Recents and share-links may skip that wizard; they still produce the same **Advice Triple**."
 >
 > **Dev:** "Can we say the app finds guaranteed shade?"
 > **Domain expert:** "No. It gives a **Seat-area Recommendation** from direct sun geometry, with a **Geometric Estimate Notice** explaining the limits."
+>
+> **Dev:** "Should we add ETAs and a map of nearby stops on home?"
+> **Domain expert:** "No. That is a second job. New work must choose the **Advice Triple**, explain the advice, or make that one job reachable (ADR 0003)."
 
 ## Flagged Ambiguities
 
@@ -89,3 +97,5 @@ _Avoid_: Legal disclaimer wall, hidden limitation
 - "Left", "right", "front", and "back" mean rider-facing bus areas, clarified by the **Bus Orientation Diagram**.
 - "Map" means a compact **Route Confirmation Map**, not a map-led transit navigation app.
 - "Frontend" means **Sombreado Floripa** only; scraper ingestion and advisory computation live in separate projects.
+- In tickets, "line" means **Route Candidate** and "time" means now or near-now; neither is a glossary term.
+- "Destination" on a **Direction Choice** is a direction label, not A→B destination search.

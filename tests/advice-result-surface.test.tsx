@@ -185,6 +185,147 @@ describe("AdviceResultSurface", () => {
     );
   });
 
+  test("shows Agora, +15 min, and +30 min chips with Agora selected by default", () => {
+    render(
+      <AdviceResultSurface
+        advice={{
+          mode: "preview",
+          directSunExposure: "left",
+          recommendedSeatArea: "right",
+          previewSource: "estimated_route_point",
+        }}
+        context="preview"
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        onSelectTimeOffset={vi.fn()}
+        route={route}
+      />
+    );
+
+    const chips = screen.getByRole("radiogroup", {
+      name: "Horário da recomendação",
+    });
+    expect(within(chips).getByRole("radio", { name: "Agora" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+    expect(
+      within(chips).getByRole("radio", { name: "+15 min" })
+    ).toHaveAttribute("aria-checked", "false");
+    expect(
+      within(chips).getByRole("radio", { name: "+30 min" })
+    ).toHaveAttribute("aria-checked", "false");
+    expect(
+      screen.queryByLabelText(/data|calendário|leave-at/i)
+    ).not.toBeInTheDocument();
+    expect(document.querySelector("input[type='date']")).toBeNull();
+    expect(document.querySelector("input[type='datetime-local']")).toBeNull();
+  });
+
+  test("uses neste horário in night and overhead copy when a future chip is active", () => {
+    const { rerender } = render(
+      <AdviceResultSurface
+        advice={{
+          mode: "neutralComputed",
+          directSunExposure: "none",
+        }}
+        context="preview"
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        selectedTimeOffsetMinutes={30}
+        route={route}
+      />
+    );
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Sem sol direto relevante neste horário",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", {
+        name: "Sem sol direto relevante agora",
+      })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Nenhum lado do ônibus aparece como melhor área neste horário"
+    );
+
+    rerender(
+      <AdviceResultSurface
+        advice={{
+          mode: "neutralComputed",
+          directSunExposure: "overhead",
+        }}
+        context="preview"
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        selectedTimeOffsetMinutes={15}
+        route={route}
+      />
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Sem lado melhor neste horário" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("O sol está alto; não há lado melhor neste horário.")
+    ).toBeInTheDocument();
+  });
+
+  test("marks the selected time chip as active", () => {
+    render(
+      <AdviceResultSurface
+        advice={{
+          mode: "preview",
+          directSunExposure: "left",
+          recommendedSeatArea: "right",
+          previewSource: "estimated_route_point",
+        }}
+        context="preview"
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        onSelectTimeOffset={vi.fn()}
+        selectedTimeOffsetMinutes={30}
+        route={route}
+      />
+    );
+
+    expect(screen.getByRole("radio", { name: "+30 min" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+    expect(screen.getByRole("radio", { name: "Agora" })).toHaveAttribute(
+      "aria-checked",
+      "false"
+    );
+  });
+
+  test("selecting a time chip asks to recompute advice for that offset", async () => {
+    const user = userEvent.setup();
+    const onSelectTimeOffset = vi.fn();
+
+    render(
+      <AdviceResultSurface
+        advice={{
+          mode: "preview",
+          directSunExposure: "left",
+          recommendedSeatArea: "right",
+          previewSource: "estimated_route_point",
+        }}
+        context="preview"
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        onSelectTimeOffset={onSelectTimeOffset}
+        route={route}
+      />
+    );
+
+    await user.click(screen.getByRole("radio", { name: "+15 min" }));
+
+    expect(onSelectTimeOffset).toHaveBeenCalledExactlyOnceWith(15);
+  });
+
   test("refreshes advice and keeps route changes behind options", async () => {
     const user = userEvent.setup();
     const onRefresh = vi.fn();

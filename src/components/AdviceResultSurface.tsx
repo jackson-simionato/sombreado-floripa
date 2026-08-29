@@ -6,6 +6,12 @@ import {
   useState,
 } from "react";
 
+import {
+  ADVICE_TIME_CHIPS,
+  adviceTimeQualifier,
+  type AdviceTimeOffsetMinutes,
+} from "../advice/timeChips";
+import type { DirectionalExposure, UiAdviceState } from "../domain/types";
 import { AdviceBusDiagram } from "./AdviceBusDiagram";
 import { AdviceResultSheet } from "./AdviceResultSheet";
 import { Button } from "./Button";
@@ -13,7 +19,6 @@ import { Notice } from "./Notice";
 import { RouteSummaryCard } from "./RouteSummaryCard";
 import { ScreenHeader } from "./ScreenHeader";
 import { StickyActions } from "./StickyActions";
-import type { DirectionalExposure, UiAdviceState } from "../domain/types";
 
 import styles from "./AdviceResultSurface.module.css";
 
@@ -24,7 +29,9 @@ type AdviceResultSurfaceProps = {
   onChangeDirection?: () => void;
   onChangeRoute(): void;
   onRefresh(): void;
+  onSelectTimeOffset?(offsetMinutes: AdviceTimeOffsetMinutes): void;
   route?: { code: string; name: string };
+  selectedTimeOffsetMinutes?: AdviceTimeOffsetMinutes;
 };
 
 const ESTIMATE_NOTICE =
@@ -39,9 +46,11 @@ export function AdviceResultSurface({
   onChangeDirection,
   onChangeRoute,
   onRefresh,
+  onSelectTimeOffset,
   route,
+  selectedTimeOffsetMinutes = 0,
 }: AdviceResultSurfaceProps) {
-  const variant = adviceVariantCopy(advice);
+  const variant = adviceVariantCopy(advice, selectedTimeOffsetMinutes);
   const modeLabel = resultModeLabel(advice, context);
   const estimateContext = resolveEstimateContext(advice, context);
   const trustNotice = estimateNoticeCopy(advice);
@@ -191,6 +200,34 @@ export function AdviceResultSurface({
               </Notice>
             ) : null}
             <div
+              className={styles.timeChips}
+              role="radiogroup"
+              aria-label="Horário da recomendação"
+            >
+              {ADVICE_TIME_CHIPS.map((chip) => {
+                const selected =
+                  chip.offsetMinutes === selectedTimeOffsetMinutes;
+
+                return (
+                  <button
+                    key={chip.offsetMinutes}
+                    aria-checked={selected}
+                    className={styles.timeChip}
+                    onClick={() => {
+                      if (selected) {
+                        return;
+                      }
+                      onSelectTimeOffset?.(chip.offsetMinutes);
+                    }}
+                    role="radio"
+                    type="button"
+                  >
+                    {chip.label}
+                  </button>
+                );
+              })}
+            </div>
+            <div
               className={styles.diagramFocus}
               data-diagram-density="compact"
               data-result-focus="diagram"
@@ -258,7 +295,8 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 function adviceVariantCopy(
-  advice: Exclude<UiAdviceState, { mode: "withheld" }>
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>,
+  timeOffsetMinutes: AdviceTimeOffsetMinutes
 ): {
   accessibleSummary: string;
   body: string;
@@ -269,19 +307,20 @@ function adviceVariantCopy(
   }
 
   if (advice.mode === "neutralComputed") {
+    const timeQualifier = adviceTimeQualifier(timeOffsetMinutes);
+
     if (advice.directSunExposure === "overhead") {
       return {
-        title: "Sem lado melhor agora",
+        title: `Sem lado melhor ${timeQualifier}`,
         body: "O sol está alto e não há uma diferença relevante entre os lados.",
-        accessibleSummary: "O sol está alto; não há lado melhor agora.",
+        accessibleSummary: `O sol está alto; não há lado melhor ${timeQualifier}.`,
       };
     }
 
     return {
-      title: "Sem sol direto relevante agora",
+      title: `Sem sol direto relevante ${timeQualifier}`,
       body: "Não há sol direto suficiente para recomendar uma lateral neste trecho.",
-      accessibleSummary:
-        "Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área agora.",
+      accessibleSummary: `Diagrama neutro do ônibus. Nenhum lado do ônibus aparece como melhor área ${timeQualifier}.`,
     };
   }
 

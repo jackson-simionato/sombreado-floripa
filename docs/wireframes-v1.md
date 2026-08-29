@@ -1,10 +1,10 @@
 # Wireframes V1
 
-Low-fidelity mobile wireframes for the Sombreado Floripa v1 onboard-first flow. These sketches target a narrow mobile viewport around 360-390px wide and assume one-handed use while standing or sitting on a moving bus.
+Low-fidelity mobile wireframes for the default **Onboard Flow** (v1 screen-state contract). The product is the Advice Triple ([ADR 0003](adr/0003-one-job-evolution-rule.md)), not this wizard. These sketches target a narrow mobile viewport around 360-390px wide and assume one-handed use while standing or sitting on a moving bus.
 
 ## Scope
 
-V1 helps a rider locate or search for a route, choose the route, choose the direction, confirm it, and receive sun-side advice. The flow may produce either onboard advice or route preview advice. It does not include timetable planning, stop planning, saved trips, accounts, feedback, or map-led navigation.
+V1 helps a rider locate or search for a route, choose the route, choose the direction, confirm it, and receive sun-side advice. The flow may produce either onboard advice or route preview advice. Durable non-goals (trip planning, map-home, accounts, and the rest) live in [ADR 0003](adr/0003-one-job-evolution-rule.md), not as “not v1.”
 
 ## Flow Diagram
 
@@ -493,6 +493,7 @@ Minimum copy:
 ┌──────────────────────────────┐
 │ 4 de 4                       │
 │ Agora no ônibus              │
+│ [ Agora ] [+15 min] [+30 min]│
 │                              │
 │ Sente à esquerda             │
 │ Esse lado deve pegar menos   │
@@ -521,6 +522,7 @@ Minimum copy:
 Minimum copy:
 
 - Mode label: "Agora no ônibus"
+- Time chips: "Agora" (default), "+15 min", "+30 min"
 - Recommendation: "Sente à esquerda" or "Melhor sentar à direita"
 - Body: "Esse lado deve pegar menos sol direto."
 - Route metadata: "Linha 124 · Sentido Lagoa"
@@ -535,6 +537,7 @@ Diagram text equivalent:
 Notes:
 
 - Recommendation must be visually obvious within a few seconds.
+- Near-now time chips recompute advice with a shifted `observedAt`. Do not add a date or leave-at picker.
 - Use color plus labels, check mark, hatching, and "sol direto" text. Do not rely on color alone.
 - The same diagram structure is reused for preview mode.
 
@@ -544,6 +547,7 @@ Notes:
 ┌──────────────────────────────┐
 │ 4 de 4                       │
 │ Prévia da linha              │
+│ [ Agora ] [+15 min] [+30 min]│
 │                              │
 │ Sente à esquerda             │
 │ Esse lado tende a pegar      │
@@ -572,6 +576,7 @@ Notes:
 Minimum copy:
 
 - Mode label: "Prévia da linha"
+- Time chips: "Agora" (default), "+15 min", "+30 min"
 - Recommendation: "Sente à esquerda" or "Melhor sentar à direita"
 - Body: "Esse lado tende a pegar menos sol direto nesse ponto estimado do trajeto."
 - Notice: "Prévia, não orientação ao vivo. Não considera prédios, nuvens, películas ou cortinas. Atualize a localização quando estiver na linha."
@@ -582,6 +587,7 @@ Notes:
 
 - Keep selected route and direction visible.
 - Location refresh is the primary recovery action.
+- Near-now time chips recompute advice with a shifted `observedAt`. Do not add a date or leave-at picker.
 - Diagram structure matches onboard advice; only labels and notice copy distinguish preview.
 - This state is shown directly after advice computation when the rider appears off route but preview advice can be computed. Do not add a separate preview-warning step.
 - Preview advice depends on `sombreado-service` returning advice for an automatic estimated point on or near the selected route. V1 does not expose stop, segment, or point picking to riders.

@@ -16,6 +16,10 @@ import {
 } from "../api/riderFlowClient";
 import type { RiderFlowClient } from "../api/riderFlowClient";
 import {
+  observedAtForTimeChip,
+  type AdviceTimeOffsetMinutes,
+} from "../advice/timeChips";
+import {
   flowReducer,
   initialFlowState,
   normalizeFlowError,
@@ -39,6 +43,7 @@ import type {
   RequestId,
   RetryTarget,
   RouteCandidate,
+  RouteSelectionSource,
 } from "../domain/types";
 import {
   MockApiError,
@@ -46,6 +51,13 @@ import {
   createMockLocationProvider,
 } from "../mocks/mockApi";
 import { getPrototypeScenario } from "../mocks/scenarioStates";
+import {
+  dropAdviceRecent,
+  readAdviceRecents,
+  recordAdviceRecent,
+  toAdviceRecent,
+  type AdviceRecent,
+} from "../recents/adviceRecents";
 
 type PrototypeOnboardingFlowOptions = {
   runtime: "prototype";
@@ -73,7 +85,9 @@ type UseOnboardingFlowOptions =
 export const MANUAL_SEARCH_DEBOUNCE_MS = 350;
 
 export type OnboardingFlowController = {
+  adviceTimeOffsetMinutes: AdviceTimeOffsetMinutes;
   manualQueryDraft: string;
+  recents: AdviceRecent[];
   state: FlowState;
   actions: {
     changeDirection(): void;
@@ -84,8 +98,10 @@ export type OnboardingFlowController = {
     refreshAdvice(): void;
     retry(): void;
     searchManually(query: string): void;
+    selectAdviceTimeOffset(offsetMinutes: AdviceTimeOffsetMinutes): void;
     selectDirection(direction: DirectionChoice): void;
-    selectRoute(route: RouteCandidate, source: "nearby" | "manual"): void;
+    selectRecent(recent: AdviceRecent): void;
+    selectRoute(route: RouteCandidate, source: RouteSelectionSource): void;
     useLocation(): void;
   };
 };
@@ -119,6 +135,16 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
     seededScenario === undefined
   );
   const [manualSearchRequestNonce, setManualSearchRequestNonce] = useState(0);
+  const [recents, setRecents] = useState<AdviceRecent[]>(() =>
+    typeof window === "undefined" ? [] : readAdviceRecents()
+  );
+  const [adviceTimeOffsetMinutes, setAdviceTimeOffsetMinutes] =
+    useState<AdviceTimeOffsetMinutes>(0);
+
+  useEffect(() => {
+    setRecents(readAdviceRecents());
+  }, []);
+
   const requestSequenceRef = useRef(0);
   const manualSearchAbortRef = useRef<AbortController | undefined>(undefined);
   const directionsAbortRef = useRef<AbortController | undefined>(undefined);
@@ -322,8 +348,12 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   }, [locationProvider, nextRequestId, requestNearbyCandidates]);
 
   const recoverStaleRouteVersion = useCallback(
-    async (source: "nearby" | "manual") => {
+    async (source: RouteSelectionSource) => {
       dispatch({ type: "routeVersionStaleDetected" });
+
+      if (source === "recent") {
+        return;
+      }
 
       if (source === "manual") {
         setManualQueryDraft(state.manualQuery);
@@ -363,10 +393,9 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   const requestAdvisory = useCallback(
     async (input: {
       fallbackLocation?: LocationFix;
-      routeId: string;
-      routeDirectionId: string;
-      routeSource: "nearby" | "manual";
-      routeVersionId: string;
+      recent: AdviceRecent;
+      routeSource: RouteSelectionSource;
+      timeOffsetMinutes?: AdviceTimeOffsetMinutes;
     }) => {
       const requestId = nextRequestId("advisory");
       const decision =
@@ -374,21 +403,24 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
         chooseAdviceLocation(await locationProvider.getCurrentLocation(), {
           fallbackLocation: input.fallbackLocation,
         });
-      const observedAt = new Date().toISOString();
+      const observedAt = observedAtForTimeChip(
+        input.timeOffsetMinutes ?? adviceTimeOffsetMinutes,
+        new Date()
+      );
       const advisoryRequest =
         decision.location === undefined
           ? {
-              routeId: input.routeId,
-              routeVersionId: input.routeVersionId,
-              routeDirectionId: input.routeDirectionId,
+              routeId: input.recent.routeId,
+              routeVersionId: input.recent.routeVersionId,
+              routeDirectionId: input.recent.routeDirectionId,
               mode: "preview" as const,
               horizon: "remainingRoute" as const,
               observedAt,
             }
           : {
-              routeId: input.routeId,
-              routeVersionId: input.routeVersionId,
-              routeDirectionId: input.routeDirectionId,
+              routeId: input.recent.routeId,
+              routeVersionId: input.recent.routeVersionId,
+              routeDirectionId: input.recent.routeDirectionId,
               mode: "onboard" as const,
               horizon: "upcoming" as const,
               observedAt,
@@ -418,6 +450,14 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
           advice,
           freshnessNotice: decision.freshnessNotice,
         });
+        if (advice.status === "advice" && input.recent.routeCode.length > 0) {
+          setRecents(
+            recordAdviceRecent({
+              ...input.recent,
+              routeVersionId: advice.routeVersionId,
+            })
+          );
+        }
       } catch (error) {
         if (isAbortedApiError(error)) {
           return;
@@ -427,6 +467,14 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
           error instanceof LiveRiderFlowClientError &&
           error.flowError.kind === "routeVersionStale"
         ) {
+          if (input.routeSource === "recent") {
+            setRecents(
+              dropAdviceRecent({
+                routeId: input.recent.routeId,
+                routeDirectionId: input.recent.routeDirectionId,
+              })
+            );
+          }
           void recoverStaleRouteVersion(input.routeSource);
           return;
         }
@@ -438,6 +486,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       }
     },
     [
+      adviceTimeOffsetMinutes,
       failOperation,
       locationProvider,
       nextRequestId,
@@ -452,7 +501,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   }, [clearDirectionsPrefetch]);
 
   const selectRoute = useCallback(
-    async (route: RouteCandidate, source: "nearby" | "manual") => {
+    async (route: RouteCandidate, source: RouteSelectionSource) => {
       const requestId = nextRequestId("directions");
       const matchingPrefetch = takeMatchingDirectionsPrefetch(
         directionsPrefetchRef,
@@ -587,10 +636,8 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
 
     void requestAdvisory({
       fallbackLocation: state.latestLocation,
-      routeId: state.selectedRoute.routeId,
-      routeDirectionId: state.selectedDirection.routeDirectionId,
+      recent: toAdviceRecent(state.selectedRoute, state.selectedDirection),
       routeSource: state.selectedRoute.source,
-      routeVersionId: state.selectedRoute.routeVersionId,
     });
   }, [
     requestAdvisory,
@@ -600,27 +647,70 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
     stopAfterRouteConfirmation,
   ]);
 
-  const refreshAdvice = useCallback(() => {
-    if (
-      state.selectedRoute === undefined ||
-      state.selectedDirection === undefined
-    ) {
-      return;
-    }
+  const selectRecent = useCallback(
+    (recent: AdviceRecent) => {
+      setAdviceTimeOffsetMinutes(0);
+      dispatch({
+        type: "recentSelected",
+        route: {
+          routeId: recent.routeId,
+          routeVersionId: recent.routeVersionId,
+          code: recent.routeCode,
+          name: recent.routeName,
+          source: "recent",
+        },
+        direction: {
+          routeDirectionId: recent.routeDirectionId,
+          sequence: 0,
+          name: recent.directionLabel,
+          directionKind: null,
+          departureLabels: [],
+        },
+      });
+      void requestAdvisory({
+        recent,
+        routeSource: "recent",
+        timeOffsetMinutes: 0,
+      });
+    },
+    [requestAdvisory]
+  );
 
-    void requestAdvisory({
-      fallbackLocation: state.latestLocation,
-      routeId: state.selectedRoute.routeId,
-      routeDirectionId: state.selectedDirection.routeDirectionId,
-      routeSource: state.selectedRoute.source,
-      routeVersionId: state.selectedRoute.routeVersionId,
-    });
-  }, [
-    requestAdvisory,
-    state.latestLocation,
-    state.selectedDirection,
-    state.selectedRoute,
-  ]);
+  const requestSelectedAdvisory = useCallback(
+    (timeOffsetMinutes: AdviceTimeOffsetMinutes) => {
+      if (
+        state.selectedRoute === undefined ||
+        state.selectedDirection === undefined
+      ) {
+        return;
+      }
+
+      void requestAdvisory({
+        fallbackLocation: state.latestLocation,
+        recent: toAdviceRecent(state.selectedRoute, state.selectedDirection),
+        routeSource: state.selectedRoute.source,
+        timeOffsetMinutes,
+      });
+    },
+    [
+      requestAdvisory,
+      state.latestLocation,
+      state.selectedDirection,
+      state.selectedRoute,
+    ]
+  );
+
+  const refreshAdvice = useCallback(() => {
+    requestSelectedAdvisory(adviceTimeOffsetMinutes);
+  }, [adviceTimeOffsetMinutes, requestSelectedAdvisory]);
+
+  const selectAdviceTimeOffset = useCallback(
+    (offsetMinutes: AdviceTimeOffsetMinutes) => {
+      setAdviceTimeOffsetMinutes(offsetMinutes);
+      requestSelectedAdvisory(offsetMinutes);
+    },
+    [requestSelectedAdvisory]
+  );
 
   const retry = useCallback(() => {
     const retryTarget = state.error?.retryTarget;
@@ -664,23 +754,37 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
     }
 
     if (retryTarget.kind === "advisory") {
-      const routeVersionId =
-        state.selectedRoute?.routeVersionId ??
-        routeVersionIdForAdviceRequest(retryTarget.request);
-      const routeDirectionId =
-        state.selectedDirection?.routeDirectionId ??
-        routeDirectionIdForAdviceRequest(retryTarget.request);
+      const route = state.selectedRoute;
+      const direction = state.selectedDirection;
       void requestAdvisory({
         fallbackLocation: state.latestLocation,
-        routeId:
-          state.selectedRoute?.routeId ??
-          routeIdForAdviceRequest(retryTarget.request),
-        routeDirectionId,
-        routeSource: state.selectedRoute?.source ?? "manual",
-        routeVersionId,
+        recent:
+          route !== undefined && direction !== undefined
+            ? toAdviceRecent(route, direction)
+            : {
+                routeId: routeIdForAdviceRequest(retryTarget.request),
+                routeVersionId: routeVersionIdForAdviceRequest(
+                  retryTarget.request
+                ),
+                routeDirectionId: routeDirectionIdForAdviceRequest(
+                  retryTarget.request
+                ),
+                routeCode: route?.code ?? "",
+                routeName: route?.name ?? "",
+                directionLabel: direction?.name ?? "",
+              },
+        routeSource: route?.source ?? "manual",
+        timeOffsetMinutes: adviceTimeOffsetMinutes,
       });
     }
-  }, [requestAdvisory, requestLocation, selectDirection, selectRoute, state]);
+  }, [
+    adviceTimeOffsetMinutes,
+    requestAdvisory,
+    requestLocation,
+    selectDirection,
+    selectRoute,
+    state,
+  ]);
 
   const manualSearchScreenActive =
     state.screen === "manualRouteSearch" || state.screen === "noManualResults";
@@ -764,15 +868,19 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   );
 
   return {
+    adviceTimeOffsetMinutes,
     manualQueryDraft,
+    recents,
     state,
     actions: {
       changeDirection() {
         geometryAbortRef.current?.abort();
+        setAdviceTimeOffsetMinutes(0);
         dispatch({ type: "changeDirection" });
       },
       changeRoute() {
         geometryAbortRef.current?.abort();
+        setAdviceTimeOffsetMinutes(0);
         dispatch({ type: "changeRoute" });
       },
       continueWaiting() {
@@ -782,6 +890,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       openManualSearch,
       refreshAdvice,
       retry,
+      selectAdviceTimeOffset,
       searchManually(query: string) {
         clearDirectionsPrefetch();
         if (
@@ -796,7 +905,8 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
       selectDirection(direction: DirectionChoice) {
         void selectDirection(direction);
       },
-      selectRoute(route: RouteCandidate, source: "nearby" | "manual") {
+      selectRecent,
+      selectRoute(route: RouteCandidate, source: RouteSelectionSource) {
         void selectRoute(route, source);
       },
       useLocation() {

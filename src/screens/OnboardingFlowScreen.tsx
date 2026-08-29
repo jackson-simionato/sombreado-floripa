@@ -21,6 +21,7 @@ import type {
   RouteDirectionKind,
 } from "../domain/types";
 import type { OnboardingFlowController } from "../hooks/useOnboardingFlow";
+import type { AdviceRecent } from "../recents/adviceRecents";
 import { copy } from "../content/copy";
 
 import {
@@ -37,7 +38,8 @@ type OnboardingFlowScreenProps = {
 export function OnboardingFlowScreen({
   controller,
 }: OnboardingFlowScreenProps) {
-  const { actions, manualQueryDraft, state } = controller;
+  const { actions, adviceTimeOffsetMinutes, manualQueryDraft, recents, state } =
+    controller;
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const selectedRouteLabel =
@@ -62,21 +64,60 @@ export function OnboardingFlowScreen({
           <BrandHeader />
           <section className={styles.hero} aria-labelledby="screen-title">
             <ScreenHeader
-              body={copy.locationRequest.body}
+              body={recents.length > 0 ? undefined : copy.locationRequest.body}
               title={
-                <>
-                  Viaje na
-                  <br />
-                  <span className={styles.heroAccent}>sombra.</span>
-                </>
+                recents.length > 0 ? (
+                  <>
+                    Viaje na <span className={styles.heroAccent}>sombra.</span>
+                  </>
+                ) : (
+                  <>
+                    Viaje na
+                    <br />
+                    <span className={styles.heroAccent}>sombra.</span>
+                  </>
+                )
               }
-              variant="hero"
+              variant={recents.length > 0 ? "compact" : "hero"}
             />
             <BusSplitDiagram />
           </section>
           <p className={styles.metaText}>
             {copy.locationRequest.locationNotice}
           </p>
+          {state.routeRefreshNotice === "routeVersionStale" ? (
+            <Notice tone="warning">
+              As opções desta linha foram atualizadas. Escolha a linha e o
+              sentido novamente.
+            </Notice>
+          ) : null}
+          {recents.length > 0 ? (
+            <div className={styles.recents} data-testid="advice-recents">
+              <p className={styles.summaryLabel}>
+                {copy.locationRequest.recents}
+              </p>
+              <div
+                aria-label={copy.locationRequest.recents}
+                className={styles.carousel}
+                data-recents-count={recents.length}
+                data-testid="advice-recents-carousel"
+                role="list"
+              >
+                {recents.map((recent) => (
+                  <div
+                    className={styles.slide}
+                    key={`${recent.routeId}:${recent.routeDirectionId}`}
+                    role="listitem"
+                  >
+                    <RecentCard
+                      onSelect={() => actions.selectRecent(recent)}
+                      recent={recent}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </>
       );
       stickyPrimary = (
@@ -451,7 +492,9 @@ export function OnboardingFlowScreen({
             onChangeDirection={actions.changeDirection}
             onChangeRoute={actions.changeRoute}
             onRefresh={actions.refreshAdvice}
+            onSelectTimeOffset={actions.selectAdviceTimeOffset}
             route={state.selectedRoute}
+            selectedTimeOffsetMinutes={adviceTimeOffsetMinutes}
           />
         );
       } else {
@@ -556,6 +599,26 @@ function renderLoadingScreen(
         <RouteSummary routeLabel={selectedRouteLabel} />
       ) : null}
     </section>
+  );
+}
+
+function RecentCard({
+  onSelect,
+  recent,
+}: {
+  onSelect(): void;
+  recent: AdviceRecent;
+}) {
+  return (
+    <ChoiceCard
+      ariaLabel={`Selecionar linha ${recent.routeCode} ${recent.routeName}, ${recent.directionLabel}`}
+      badge={<RouteCodeBadge code={recent.routeCode} />}
+      className={styles.recentCard}
+      compact
+      label={recent.routeName}
+      meta={recent.directionLabel}
+      onSelect={onSelect}
+    />
   );
 }
 

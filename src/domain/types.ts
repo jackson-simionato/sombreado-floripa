@@ -168,7 +168,7 @@ export type UiAdviceState =
 
 export type RequestStatus = "idle" | "loading" | "success" | "error";
 
-export type RouteSelectionSource = "nearby" | "manual";
+export type RouteSelectionSource = "nearby" | "manual" | "recent";
 
 export type MapAvailability = "available" | "unavailable";
 

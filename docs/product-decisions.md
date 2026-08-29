@@ -1,16 +1,17 @@
 # Product Decisions
 
-This document records current product and design decisions for Sombreado Floripa. It is not a glossary; canonical domain terms live in `CONTEXT.md`.
+This document records current product and design decisions for Sombreado Floripa. It is not a glossary; canonical domain terms live in `CONTEXT.md`. The one-job evolution rule is [ADR 0003](adr/0003-one-job-evolution-rule.md).
 
 ## Current Decisions
 
-- The first version is **onboard-first**: riders are already on a bus and need immediate guidance.
-- The primary audience is **local Florianopolis riders**, with Brazilian Portuguese as the default language.
+- The product is the **Advice Triple** ([ADR 0003](adr/0003-one-job-evolution-rule.md)): **Route Candidate** + **Direction Choice** + now/near-now → **Seat-area Recommendation**. **Onboard Flow** is the default instantiation when there is no recent or share-link; preview, recents, time chips, and share-links are the same job.
+- New work must choose that triple, explain that advice, or make that one job reachable. A second job is default-no until a superseding ADR.
+- The audience is **local Florianopolis riders**, with Brazilian Portuguese as the only language. Bilingual or tourist mode is default-no (ADR 0003), not a later maybe.
 - The core promise is helping riders choose the side with less direct sun exposure, not predicting heat, weather, or guaranteed shade.
 - The main result should be a positive action, such as "Sente à esquerda", rather than making riders mentally invert an exposed-side warning.
 - Left/right orientation should be explained primarily through a bus sun/shade diagram, with accessible text for assistive technology.
-- The app asks riders to tap a location action before triggering browser geolocation permission.
-- Nearby route candidates are the default selection flow; manual route search is also available as a secondary path.
+- The app asks riders to tap a location action before triggering browser geolocation permission. Location is a helper, not a fourth field of the triple.
+- Nearby route candidates are the default selection flow; manual route search is also available as a secondary path. Manual search returns routes, not A→B trips.
 - Route selection happens before direction selection. Direction must be chosen explicitly before confirmation.
 - Direction selection may show the backend-provided Route Direction Kind as a concise `Ida` or `Volta` cue. The frontend does not infer it from the raw direction name, and a missing kind preserves the existing name-and-label presentation.
 - The app includes a compact route confirmation map after route selection and direction choice, not a map-led home screen.
@@ -19,7 +20,8 @@ This document records current product and design decisions for Sombreado Floripa
 - Mapbox GL JS is the preferred v1 map provider, lazy-loaded only when the confirmation map is shown.
 - Branding should combine Airbnb-like warmth with Anthropic/Claude Code-like restraint: clean, joyful, spacious, human, polished, and calm.
 - The accepted visual foundation is Soft Tech Minimalism from `docs/design/DESIGN.md`: Newsreader display type, Hanken Grotesk interface type, warm alabaster surfaces, charcoal primary actions, sun-tan direct-sun accents, and soft-blue recommendation accents.
-- The v1 scope is core-only: locate or search, choose route, choose direction, confirm, receive advice, and handle empty/error/preview/withheld states.
+- Recents of Route Candidate + Direction Choice (no account), near-now time chips, an advice receipt, PWA install, and a share sentence are in-product under ADR 0003. They are not a second job and are not “maybe after v1.”
+- The current shipped flow is locate or search, choose route, choose direction, confirm, receive advice, and handle empty/error/preview/withheld states.
 - The frontend calls `sombreado-service` directly from the browser with `NEXT_PUBLIC_API_URL`.
 - `sombreado-floripa` should become frontend-only; the scraper and advisory backend remain separate projects.
 - The frontend deploys to Cloudflare Workers from GitHub Actions on `main` after CI passes. `main` advances via **Production Promote** (ADR 0002), not a human-reviewed `develop`→`main` release PR.
@@ -32,17 +34,25 @@ This document records current product and design decisions for Sombreado Floripa
 
 ## Deferred Decisions
 
+Craft only; these are not a second job:
+
 - Final icon/illustration style beyond the current bus diagrams.
 - Exact wireframes for each rider state.
 - Final Mapbox style and interaction details.
-- Whether saved routes, feedback reporting, sharing, or bilingual support belong after v1.
 
-## Not V1
+## Default-no (ADR 0003)
 
-- Timetable planning.
-- Bus stop planning as the primary flow.
-- Saved routes.
-- User accounts or authentication.
-- Tourist/bilingual mode.
-- Weather-aware or shadow-aware modeling.
-- Feedback/reporting tools.
+Not “after v1.” Reopen only with a superseding ADR.
+
+- Trip planning and timetable planning.
+- ETAs.
+- Nearby-stop maps or a map-led home screen (the compact Route Confirmation Map stays).
+- A→B destination search (manual route search stays).
+- Accounts or authentication.
+- Payment or recarga.
+- Per-seat pickers.
+- Starred-line library beyond recents.
+- Tourist or bilingual mode.
+- Weather-aware or building-shadow modeling.
+- Feedback or reporting tools.
+- Date or leave-at picker (near-now chips stay allowed).
