@@ -63,15 +63,21 @@ export function OnboardingFlowScreen({
           <BrandHeader />
           <section className={styles.hero} aria-labelledby="screen-title">
             <ScreenHeader
-              body={copy.locationRequest.body}
+              body={recents.length > 0 ? undefined : copy.locationRequest.body}
               title={
-                <>
-                  Viaje na
-                  <br />
-                  <span className={styles.heroAccent}>sombra.</span>
-                </>
+                recents.length > 0 ? (
+                  <>
+                    Viaje na <span className={styles.heroAccent}>sombra.</span>
+                  </>
+                ) : (
+                  <>
+                    Viaje na
+                    <br />
+                    <span className={styles.heroAccent}>sombra.</span>
+                  </>
+                )
               }
-              variant="hero"
+              variant={recents.length > 0 ? "compact" : "hero"}
             />
             <BusSplitDiagram />
           </section>
@@ -85,21 +91,28 @@ export function OnboardingFlowScreen({
             </Notice>
           ) : null}
           {recents.length > 0 ? (
-            <div className={styles.stack}>
+            <div className={styles.recents} data-testid="advice-recents">
               <p className={styles.summaryLabel}>
                 {copy.locationRequest.recents}
               </p>
               <div
                 aria-label={copy.locationRequest.recents}
-                className={styles.list}
+                className={styles.carousel}
+                data-recents-count={recents.length}
+                data-testid="advice-recents-carousel"
                 role="list"
               >
                 {recents.map((recent) => (
-                  <RecentCard
+                  <div
+                    className={styles.slide}
                     key={`${recent.routeId}:${recent.routeDirectionId}`}
-                    onSelect={() => actions.selectRecent(recent)}
-                    recent={recent}
-                  />
+                    role="listitem"
+                  >
+                    <RecentCard
+                      onSelect={() => actions.selectRecent(recent)}
+                      recent={recent}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -597,6 +610,8 @@ function RecentCard({
     <ChoiceCard
       ariaLabel={`Selecionar linha ${recent.routeCode} ${recent.routeName}, ${recent.directionLabel}`}
       badge={<RouteCodeBadge code={recent.routeCode} />}
+      className={styles.recentCard}
+      compact
       label={recent.routeName}
       meta={recent.directionLabel}
       onSelect={onSelect}

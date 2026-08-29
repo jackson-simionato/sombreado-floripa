@@ -2024,6 +2024,11 @@ describe("home screen flow", () => {
         name: "Selecionar linha 124 TICEN - Lagoa, TICEN para Lagoa",
       })
     ).toBeInTheDocument();
+    expect(screen.getByTestId("advice-recents")).toBeInTheDocument();
+    expect(screen.getByLabelText("Sombreado")).toBeInTheDocument();
+    expect(
+      screen.queryByText("Encontre a melhor lateral do ônibus pelo sol direto.")
+    ).not.toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Usar minha localização" })
     ).toBeInTheDocument();
@@ -2032,10 +2037,48 @@ describe("home screen flow", () => {
     ).toBeInTheDocument();
   });
 
+  test("shows multiple recents in a horizontal carousel", () => {
+    window.localStorage.setItem(
+      ADVICE_RECENTS_STORAGE_KEY,
+      JSON.stringify([
+        storedLagoaRecent,
+        {
+          ...storedLagoaRecent,
+          routeId: "route-131",
+          routeCode: "131",
+          routeName: "TICEN - Canasvieiras",
+          routeDirectionId: "direction-131",
+          directionLabel: "TICEN para Canasvieiras",
+        },
+      ])
+    );
+
+    renderLiveHomePageApp({});
+
+    expect(screen.getByTestId("advice-recents-carousel")).toHaveAttribute(
+      "data-recents-count",
+      "2"
+    );
+    expect(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa, TICEN para Lagoa",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Selecionar linha 131 TICEN - Canasvieiras, TICEN para Canasvieiras",
+      })
+    ).toBeInTheDocument();
+  });
+
   test("keeps the location screen without recents on first run", () => {
     renderLiveHomePageApp({});
 
     expect(screen.queryByText("Recentes")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("advice-recents")).not.toBeInTheDocument();
+    expect(
+      screen.getByText("Encontre a melhor lateral do ônibus pelo sol direto.")
+    ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Usar minha localização" })
     ).toBeInTheDocument();

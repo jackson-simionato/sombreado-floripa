@@ -132,6 +132,11 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   const [recents, setRecents] = useState<AdviceRecent[]>(() =>
     typeof window === "undefined" ? [] : readAdviceRecents()
   );
+
+  useEffect(() => {
+    setRecents(readAdviceRecents());
+  }, []);
+
   const requestSequenceRef = useRef(0);
   const manualSearchAbortRef = useRef<AbortController | undefined>(undefined);
   const directionsAbortRef = useRef<AbortController | undefined>(undefined);

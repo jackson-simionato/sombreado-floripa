@@ -5,6 +5,8 @@ import styles from "./ChoiceCard.module.css";
 type ChoiceCardProps = {
   ariaLabel?: string;
   badge?: ReactNode;
+  className?: string;
+  compact?: boolean;
   eyebrow?: ReactNode;
   label: ReactNode;
   meta?: ReactNode;
@@ -14,6 +16,8 @@ type ChoiceCardProps = {
 export function ChoiceCard({
   ariaLabel,
   badge,
+  className,
+  compact = false,
   eyebrow,
   label,
   meta,
@@ -26,7 +30,9 @@ export function ChoiceCard({
   return (
     <button
       aria-label={accessibleName}
-      className={styles.card}
+      className={[styles.card, compact ? styles.compact : undefined, className]
+        .filter(Boolean)
+        .join(" ")}
       onClick={onSelect}
       type="button"
     >
