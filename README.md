@@ -8,7 +8,8 @@ Sombreado Floripa helps riders who are already boarding, onboard, or previewing 
 
 This repository owns the browser app experience:
 
-- onboard-first rider flow
+- Advice Triple: route candidate, direction choice, now/near-now, then seat-area advice ([ADR 0003](docs/adr/0003-one-job-evolution-rule.md))
+- default Onboard Flow plus preview, recents, and share-link instantiations of the same job
 - route candidate selection and manual route search UI
 - explicit direction choice before confirmation
 - compact route confirmation UI
@@ -19,9 +20,10 @@ This repository does not own scraper ingestion, transit-data processing, advisor
 
 ## Current Product Contract
 
-The current v1 flow is defined by:
+The current product contract is defined by:
 
 - [CONTEXT.md](CONTEXT.md) for canonical domain language
+- [docs/adr/0003-one-job-evolution-rule.md](docs/adr/0003-one-job-evolution-rule.md) for the one-job evolution rule
 - [docs/product-decisions.md](docs/product-decisions.md) for product decisions
 - [docs/wireframes-v1.md](docs/wireframes-v1.md) for the screen-state contract and low-fidelity flow
 - [docs/brand-guide.md](docs/brand-guide.md) for visual and voice guidance
@@ -103,6 +105,4 @@ Requires repository secret `PROMOTE_GITHUB_TOKEN` (classic PAT or fine-grained t
 
 - backend service implementation
 - scraper or GTFS ingestion
-- timetable planning
-- bus stop planning as the primary flow
-- accounts, saved routes, or feedback tools for v1
+- second jobs banned by [ADR 0003](docs/adr/0003-one-job-evolution-rule.md), including trip planning, ETAs, map-led nearby stops, accounts, recarga, destination search, and per-seat pickers

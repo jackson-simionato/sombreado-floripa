@@ -9,6 +9,7 @@ This is a single-context frontend repo.
 Before domain-sensitive work, read:
 
 - `CONTEXT.md` for canonical domain terms and relationship rules.
+- `docs/adr/0003-one-job-evolution-rule.md` for the Advice Triple evolution filter.
 - `docs/product-decisions.md` for current product decisions.
 - `docs/wireframes-v1.md` for the v1 screen-state contract.
 - `docs/brand-guide.md` for UI, copy, and visual direction.
@@ -22,6 +23,7 @@ Use the glossary's terms when naming issues, plans, tests, and implementation co
 
 - **Sombreado Floripa**
 - **Rider**
+- **Advice Triple**
 - **Onboard Flow**
 - **Sun-side Advice**
 - **Seat-area Recommendation**
