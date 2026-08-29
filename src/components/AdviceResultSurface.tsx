@@ -6,6 +6,11 @@ import {
   useState,
 } from "react";
 
+import {
+  ADVICE_TIME_CHIPS,
+  type AdviceTimeOffsetMinutes,
+} from "../advice/timeChips";
+import type { DirectionalExposure, UiAdviceState } from "../domain/types";
 import { AdviceBusDiagram } from "./AdviceBusDiagram";
 import { AdviceResultSheet } from "./AdviceResultSheet";
 import { Button } from "./Button";
@@ -13,7 +18,6 @@ import { Notice } from "./Notice";
 import { RouteSummaryCard } from "./RouteSummaryCard";
 import { ScreenHeader } from "./ScreenHeader";
 import { StickyActions } from "./StickyActions";
-import type { DirectionalExposure, UiAdviceState } from "../domain/types";
 
 import styles from "./AdviceResultSurface.module.css";
 
@@ -24,7 +28,9 @@ type AdviceResultSurfaceProps = {
   onChangeDirection?: () => void;
   onChangeRoute(): void;
   onRefresh(): void;
+  onSelectTimeOffset?(offsetMinutes: AdviceTimeOffsetMinutes): void;
   route?: { code: string; name: string };
+  selectedTimeOffsetMinutes?: AdviceTimeOffsetMinutes;
 };
 
 const ESTIMATE_NOTICE =
@@ -39,7 +45,9 @@ export function AdviceResultSurface({
   onChangeDirection,
   onChangeRoute,
   onRefresh,
+  onSelectTimeOffset,
   route,
+  selectedTimeOffsetMinutes = 0,
 }: AdviceResultSurfaceProps) {
   const variant = adviceVariantCopy(advice);
   const modeLabel = resultModeLabel(advice, context);
@@ -190,6 +198,34 @@ export function AdviceResultSurface({
                 no ônibus.
               </Notice>
             ) : null}
+            <div
+              className={styles.timeChips}
+              role="radiogroup"
+              aria-label="Horário da recomendação"
+            >
+              {ADVICE_TIME_CHIPS.map((chip) => {
+                const selected =
+                  chip.offsetMinutes === selectedTimeOffsetMinutes;
+
+                return (
+                  <button
+                    key={chip.offsetMinutes}
+                    aria-checked={selected}
+                    className={styles.timeChip}
+                    onClick={() => {
+                      if (selected) {
+                        return;
+                      }
+                      onSelectTimeOffset?.(chip.offsetMinutes);
+                    }}
+                    role="radio"
+                    type="button"
+                  >
+                    {chip.label}
+                  </button>
+                );
+              })}
+            </div>
             <div
               className={styles.diagramFocus}
               data-diagram-density="compact"

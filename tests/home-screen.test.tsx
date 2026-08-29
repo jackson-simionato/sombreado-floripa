@@ -1088,6 +1088,145 @@ describe("home screen flow", () => {
     expect(requestAdvice.mock.calls[0]?.[0]).not.toHaveProperty("location");
   });
 
+  test("selecting a preview time chip recomputes advice with shifted observedAt", async () => {
+    vi.useFakeTimers({
+      now: new Date("2026-08-29T15:00:00.000Z"),
+      toFake: ["Date"],
+    });
+    const user = userEvent.setup();
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "preview",
+      horizon: "remainingRoute",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "left",
+      recommendedSeatArea: "right",
+      sunCondition: "daylight",
+      computedAt: "2026-08-29T15:00:00.000Z",
+    });
+    renderLiveHomePageApp({
+      locationProvider: {
+        getCurrentLocation: vi.fn().mockResolvedValue({ kind: "denied" }),
+      },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
+
+    await completeLiveManualSelection(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+    expect(
+      await screen.findByText("Prévia da linha · ponto estimado")
+    ).toBeInTheDocument();
+    expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
+      observedAt: "2026-08-29T15:00:00.000Z",
+    });
+
+    await user.click(screen.getByRole("radio", { name: "+15 min" }));
+
+    await waitFor(() => expect(requestAdvice).toHaveBeenCalledTimes(2));
+    expect(requestAdvice.mock.calls[1]?.[0]).toMatchObject({
+      mode: "preview",
+      observedAt: "2026-08-29T15:15:00.000Z",
+    });
+    expect(screen.getByRole("radio", { name: "+15 min" })).toHaveAttribute(
+      "aria-checked",
+      "true"
+    );
+  });
+
+  test("keeps night and overhead advice neutral for a shifted timestamp", async () => {
+    vi.useFakeTimers({
+      now: new Date("2026-08-29T15:00:00.000Z"),
+      toFake: ["Date"],
+    });
+    const user = userEvent.setup();
+    const requestAdvice = vi
+      .fn()
+      .mockImplementation((input: { observedAt: string }) => {
+        if (input.observedAt === "2026-08-29T15:30:00.000Z") {
+          return Promise.resolve({
+            status: "advice",
+            mode: "preview",
+            horizon: "remainingRoute",
+            routeId: "route-124",
+            routeVersionId: "version-124",
+            routeDirectionId: "direction-124",
+            directSunExposure: "none",
+            recommendedSeatArea: "neutral",
+            sunCondition: "night",
+            computedAt: "2026-08-29T15:30:00.000Z",
+          });
+        }
+
+        if (input.observedAt === "2026-08-29T15:15:00.000Z") {
+          return Promise.resolve({
+            status: "advice",
+            mode: "preview",
+            horizon: "remainingRoute",
+            routeId: "route-124",
+            routeVersionId: "version-124",
+            routeDirectionId: "direction-124",
+            directSunExposure: "overhead",
+            recommendedSeatArea: "neutral",
+            sunCondition: "overhead",
+            computedAt: "2026-08-29T15:15:00.000Z",
+          });
+        }
+
+        return Promise.resolve({
+          status: "advice",
+          mode: "preview",
+          horizon: "remainingRoute",
+          routeId: "route-124",
+          routeVersionId: "version-124",
+          routeDirectionId: "direction-124",
+          directSunExposure: "left",
+          recommendedSeatArea: "right",
+          sunCondition: "daylight",
+          computedAt: "2026-08-29T15:00:00.000Z",
+        });
+      });
+    renderLiveHomePageApp({
+      locationProvider: {
+        getCurrentLocation: vi.fn().mockResolvedValue({ kind: "denied" }),
+      },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
+
+    await completeLiveManualSelection(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+    expect(
+      await screen.findByRole("heading", { name: "Melhor sentar à direita" })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("radio", { name: "+15 min" }));
+    expect(
+      await screen.findByRole("heading", { name: "Sem lado melhor agora" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "O sol está alto e não há uma diferença relevante entre os lados."
+      )
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("radio", { name: "+30 min" }));
+    expect(
+      await screen.findByRole("heading", {
+        name: "Sem sol direto relevante agora",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Não há sol direto suficiente para recomendar uma lateral neste trecho."
+      )
+    ).toBeInTheDocument();
+  });
+
   test("uses a recent fallback location with visible rider copy", async () => {
     const user = userEvent.setup();
     // Older than the fresh reuse window so advice still attempts GPS, then falls back.
