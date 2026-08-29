@@ -5,6 +5,7 @@ export const copy = {
     body: "Encontre a melhor lateral do ônibus pelo sol direto.",
     primaryAction: "Usar minha localização",
     secondaryAction: "Procurar linha manualmente",
+    recents: "Recentes",
     locationNotice:
       "Sua localização é usada apenas para identificar as linhas próximas de você.",
     manualUnavailable: "A busca manual entra no próximo passo do protótipo.",

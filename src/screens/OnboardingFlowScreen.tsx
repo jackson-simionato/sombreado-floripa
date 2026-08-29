@@ -21,6 +21,7 @@ import type {
   RouteDirectionKind,
 } from "../domain/types";
 import type { OnboardingFlowController } from "../hooks/useOnboardingFlow";
+import type { AdviceRecent } from "../recents/adviceRecents";
 import { copy } from "../content/copy";
 
 import {
@@ -37,7 +38,7 @@ type OnboardingFlowScreenProps = {
 export function OnboardingFlowScreen({
   controller,
 }: OnboardingFlowScreenProps) {
-  const { actions, manualQueryDraft, state } = controller;
+  const { actions, manualQueryDraft, recents, state } = controller;
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const selectedRouteLabel =
@@ -77,6 +78,32 @@ export function OnboardingFlowScreen({
           <p className={styles.metaText}>
             {copy.locationRequest.locationNotice}
           </p>
+          {state.routeRefreshNotice === "routeVersionStale" ? (
+            <Notice tone="warning">
+              As opções desta linha foram atualizadas. Escolha a linha e o
+              sentido novamente.
+            </Notice>
+          ) : null}
+          {recents.length > 0 ? (
+            <div className={styles.stack}>
+              <p className={styles.summaryLabel}>
+                {copy.locationRequest.recents}
+              </p>
+              <div
+                aria-label={copy.locationRequest.recents}
+                className={styles.list}
+                role="list"
+              >
+                {recents.map((recent) => (
+                  <RecentCard
+                    key={`${recent.routeId}:${recent.routeDirectionId}`}
+                    onSelect={() => actions.selectRecent(recent)}
+                    recent={recent}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : null}
         </>
       );
       stickyPrimary = (
@@ -556,6 +583,24 @@ function renderLoadingScreen(
         <RouteSummary routeLabel={selectedRouteLabel} />
       ) : null}
     </section>
+  );
+}
+
+function RecentCard({
+  onSelect,
+  recent,
+}: {
+  onSelect(): void;
+  recent: AdviceRecent;
+}) {
+  return (
+    <ChoiceCard
+      ariaLabel={`Selecionar linha ${recent.routeCode} ${recent.routeName}, ${recent.directionLabel}`}
+      badge={<RouteCodeBadge code={recent.routeCode} />}
+      label={recent.routeName}
+      meta={recent.directionLabel}
+      onSelect={onSelect}
+    />
   );
 }
 

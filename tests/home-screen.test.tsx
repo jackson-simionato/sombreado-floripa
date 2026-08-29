@@ -21,6 +21,7 @@ import type { HomePageAppProps } from "../src/app/HomePageApp";
 
 import { MANUAL_SEARCH_DEBOUNCE_MS } from "../src/hooks/useOnboardingFlow";
 import { FRESH_LOCATION_MAX_AGE_MS } from "../src/location/adviceLocation";
+import { ADVICE_RECENTS_STORAGE_KEY } from "../src/recents/adviceRecents";
 
 describe("home screen flow", () => {
   afterEach(() => {
@@ -28,6 +29,7 @@ describe("home screen flow", () => {
     vi.unstubAllGlobals();
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
+    window.localStorage.clear();
   });
 
   test("renders missing API configuration before the live rider flow", () => {
@@ -1953,6 +1955,273 @@ describe("home screen flow", () => {
     ).toBeInTheDocument();
   });
 
+  test("persists a route candidate and direction after successful advice", async () => {
+    const user = userEvent.setup();
+
+    renderLiveHomePageApp({});
+    await completeNearbyFlow(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(
+      JSON.parse(
+        window.localStorage.getItem(ADVICE_RECENTS_STORAGE_KEY) ?? "[]"
+      )
+    ).toEqual([
+      {
+        routeId: "route-124",
+        routeVersionId: "version-124",
+        routeCode: "124",
+        routeName: "TICEN - Lagoa",
+        routeDirectionId: "direction-124",
+        directionLabel: "TICEN para Lagoa",
+      },
+    ]);
+  });
+
+  test("does not persist a withheld advice query", async () => {
+    const user = userEvent.setup();
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        requestAdvice: vi.fn().mockResolvedValue({
+          status: "withheld",
+          mode: "unavailable",
+          routeId: "route-124",
+          routeVersionId: "version-124",
+          routeDirectionId: "direction-124",
+          reasonCode: "missingRouteGeometry",
+          computedAt: "2026-06-23T12:00:00.000Z",
+        }),
+      }),
+    });
+    await completeNearbyFlow(user);
+    await user.click(
+      screen.getByRole("button", { name: "Confirmar esta linha" })
+    );
+
+    expect(
+      await screen.findByRole("heading", {
+        name: "Não é possível recomendar agora",
+      })
+    ).toBeInTheDocument();
+    expect(window.localStorage.getItem(ADVICE_RECENTS_STORAGE_KEY)).toBeNull();
+  });
+
+  test("shows stored recents on the location screen", () => {
+    window.localStorage.setItem(
+      ADVICE_RECENTS_STORAGE_KEY,
+      JSON.stringify([storedLagoaRecent])
+    );
+
+    renderLiveHomePageApp({});
+
+    expect(screen.getByText("Recentes")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa, TICEN para Lagoa",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Procurar linha manualmente" })
+    ).toBeInTheDocument();
+  });
+
+  test("keeps the location screen without recents on first run", () => {
+    renderLiveHomePageApp({});
+
+    expect(screen.queryByText("Recentes")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    ).toBeInTheDocument();
+  });
+
+  test("tapping a recent requests advice for now and skips the wizard", async () => {
+    const user = userEvent.setup();
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "onboard",
+      horizon: "upcoming",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "right",
+      recommendedSeatArea: "left",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    });
+    const listRouteDirections = vi.fn();
+    const getRouteGeometry = vi.fn();
+    window.localStorage.setItem(
+      ADVICE_RECENTS_STORAGE_KEY,
+      JSON.stringify([storedLagoaRecent])
+    );
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        getRouteGeometry,
+        listRouteDirections,
+        requestAdvice,
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa, TICEN para Lagoa",
+      })
+    );
+
+    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Escolha o sentido" })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Confirme sua linha" })
+    ).not.toBeInTheDocument();
+    expect(listRouteDirections).not.toHaveBeenCalled();
+    expect(getRouteGeometry).not.toHaveBeenCalled();
+    expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      mode: "onboard",
+      horizon: "upcoming",
+    });
+  });
+
+  test("tapping a recent uses preview advice when location is unavailable", async () => {
+    const user = userEvent.setup();
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "preview",
+      horizon: "remainingRoute",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "left",
+      recommendedSeatArea: "right",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    });
+    window.localStorage.setItem(
+      ADVICE_RECENTS_STORAGE_KEY,
+      JSON.stringify([storedLagoaRecent])
+    );
+
+    renderLiveHomePageApp({
+      locationProvider: {
+        getCurrentLocation: vi.fn().mockResolvedValue({ kind: "denied" }),
+      },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa, TICEN para Lagoa",
+      })
+    );
+
+    expect(
+      await screen.findByText("Prévia da linha · ponto estimado")
+    ).toBeInTheDocument();
+    expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
+      mode: "preview",
+      horizon: "remainingRoute",
+    });
+    expect(requestAdvice.mock.calls[0]?.[0]).not.toHaveProperty("location");
+  });
+
+  test("drops a stale recent and returns home with a refresh notice", async () => {
+    const user = userEvent.setup();
+    const otherRecent = {
+      routeId: "route-133",
+      routeVersionId: "version-133",
+      routeCode: "133",
+      routeName: "TITRI - Centro",
+      routeDirectionId: "direction-133",
+      directionLabel: "TITRI para Centro",
+    };
+    window.localStorage.setItem(
+      ADVICE_RECENTS_STORAGE_KEY,
+      JSON.stringify([storedLagoaRecent, otherRecent])
+    );
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        requestAdvice: vi.fn().mockRejectedValue(
+          new LiveRiderFlowClientError({
+            kind: "routeVersionStale",
+            message: "stale",
+          })
+        ),
+      }),
+    });
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa, TICEN para Lagoa",
+      })
+    );
+
+    expect(
+      await screen.findByText(
+        "As opções desta linha foram atualizadas. Escolha a linha e o sentido novamente."
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByText("Recentes")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa, TICEN para Lagoa",
+      })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: "Selecionar linha 133 TITRI - Centro, TITRI para Centro",
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    ).toBeInTheDocument();
+    expect(
+      JSON.parse(
+        window.localStorage.getItem(ADVICE_RECENTS_STORAGE_KEY) ?? "[]"
+      )
+    ).toEqual([otherRecent]);
+  });
+
+  test("changing route after a recent returns to the location screen", async () => {
+    const user = userEvent.setup();
+    window.localStorage.setItem(
+      ADVICE_RECENTS_STORAGE_KEY,
+      JSON.stringify([storedLagoaRecent])
+    );
+
+    renderLiveHomePageApp({});
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Selecionar linha 124 TICEN - Lagoa, TICEN para Lagoa",
+      })
+    );
+    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Opções" }));
+    await user.click(screen.getByRole("button", { name: /^Trocar linha/ }));
+
+    expect(screen.getByText("Recentes")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Usar minha localização" })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Escolha sua linha" })
+    ).not.toBeInTheDocument();
+  });
+
   test("shows the prototype scenario switcher on the page and can jump to the slow loading state", async () => {
     const user = userEvent.setup();
 
@@ -2201,6 +2470,15 @@ const liveRoute = {
   code: "124",
   name: "TICEN - Lagoa",
   directionHints: ["TICEN", "Lagoa"],
+};
+
+const storedLagoaRecent = {
+  routeId: "route-124",
+  routeVersionId: "version-124",
+  routeCode: "124",
+  routeName: "TICEN - Lagoa",
+  routeDirectionId: "direction-124",
+  directionLabel: "TICEN para Lagoa",
 };
 
 function renderLiveHomePageApp(
