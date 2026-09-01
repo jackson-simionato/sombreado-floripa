@@ -6,14 +6,28 @@ import {
   within,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { AdviceResultSurface } from "../src/components/AdviceResultSurface";
 import type { UiAdviceState } from "../src/domain/types";
 
 const route = { code: "124", name: "TICEN - Lagoa" };
+const shareTarget = {
+  routeId: "route-136",
+  routeVersionId: "version-136",
+  routeCode: "136",
+  routeName: "TITRI - Centro",
+  routeDirectionId: "direction-136-volta",
+  directionLabel: "TITRI para Centro",
+  directionKind: "volta" as const,
+};
 
 describe("AdviceResultSurface", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
   test.each([
     [
       "onboard advice",
@@ -353,6 +367,75 @@ describe("AdviceResultSurface", () => {
     expect(onRefresh).toHaveBeenCalledOnce();
     expect(onChangeRoute).toHaveBeenCalledOnce();
     expect(screen.getByTestId("advice-result-actions")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Compartilhar" })
+    ).not.toBeInTheDocument();
+  });
+
+  test("shares a PT-BR sentence and deep link from the advice result", async () => {
+    const user = userEvent.setup();
+    const share = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal("navigator", { ...window.navigator, share });
+
+    render(
+      <AdviceResultSurface
+        advice={{
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+        }}
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        route={route}
+        shareTarget={shareTarget}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: "Compartilhar" }));
+
+    expect(share).toHaveBeenCalledOnce();
+    expect(share.mock.calls[0]?.[0]).toEqual({
+      text: expect.stringContaining(
+        "Linha 136 volta (TITRI → Centro), senta à esquerda — Sombreado"
+      ),
+    });
+    expect(share.mock.calls[0]?.[0]?.text).toContain("linha=route-136");
+    expect(share.mock.calls[0]?.[0]?.text).toContain(
+      "sentido=direction-136-volta"
+    );
+  });
+
+  test("copies the share sentence when the system share sheet is missing", async () => {
+    const user = userEvent.setup();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal("navigator", {
+      ...window.navigator,
+      clipboard: { writeText },
+    });
+
+    render(
+      <AdviceResultSurface
+        advice={{
+          mode: "onboard",
+          directSunExposure: "right",
+          recommendedSeatArea: "left",
+        }}
+        onChangeRoute={vi.fn()}
+        onRefresh={vi.fn()}
+        route={route}
+        shareTarget={shareTarget}
+      />
+    );
+
+    await user.click(screen.getByRole("button", { name: "Compartilhar" }));
+
+    expect(writeText).toHaveBeenCalledOnce();
+    expect(writeText.mock.calls[0]?.[0]).toContain(
+      "Linha 136 volta (TITRI → Centro), senta à esquerda — Sombreado"
+    );
+    expect(await screen.findByTestId("advice-share-status")).toHaveTextContent(
+      "Copiado para colar no WhatsApp."
+    );
   });
 
   test("focuses the estimate heading synchronously before isolating the result", () => {

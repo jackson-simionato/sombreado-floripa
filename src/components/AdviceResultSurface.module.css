@@ -112,6 +112,13 @@
   justify-self: center;
 }
 
+.secondaryActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2) var(--space-5);
+}
+
 .actions {
   display: grid;
   gap: var(--space-3);

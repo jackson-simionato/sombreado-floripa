@@ -515,7 +515,7 @@ Minimum copy:
 │ ┌──────────────────────────┐ │
 │ │ Atualizar localização    │ │
 │ └──────────────────────────┘ │
-│ Trocar linha                 │
+│ Compartilhar          Opções │
 └──────────────────────────────┘
 ```
 
@@ -540,6 +540,7 @@ Notes:
 - Near-now time chips recompute advice with a shifted `observedAt`. Do not add a date or leave-at picker.
 - Use color plus labels, check mark, hatching, and "sol direto" text. Do not rely on color alone.
 - The same diagram structure is reused for preview mode.
+- "Compartilhar" sends a PT-BR sentence plus a deep link (`?linha=` / `sentido=`), not a screenshot.
 
 ### 14. Route Preview Advice Result
 
@@ -569,7 +570,7 @@ Notes:
 │ ┌──────────────────────────┐ │
 │ │ Atualizar localização    │ │
 │ └──────────────────────────┘ │
-│ Trocar linha                 │
+│ Compartilhar          Opções │
 └──────────────────────────────┘
 ```
 
@@ -589,6 +590,7 @@ Notes:
 - Location refresh is the primary recovery action.
 - Near-now time chips recompute advice with a shifted `observedAt`. Do not add a date or leave-at picker.
 - Diagram structure matches onboard advice; only labels and notice copy distinguish preview.
+- "Compartilhar" uses the same sentence-plus-deep-link action as onboard advice.
 - This state is shown directly after advice computation when the rider appears off route but preview advice can be computed. Do not add a separate preview-warning step.
 - Preview advice depends on `sombreado-service` returning advice for an automatic estimated point on or near the selected route. V1 does not expose stop, segment, or point picking to riders.
 
