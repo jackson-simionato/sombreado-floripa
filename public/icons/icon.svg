@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Sombreado">
+  <rect width="32" height="32" fill="#faf9f5" />
+  <g transform="translate(16 16)">
+    <circle r="12.2" fill="#faf9f5" stroke="#1e1e1c" stroke-opacity="0.2" stroke-width="0.4" />
+    <path d="M-12.2 0 A12.2 12.2 0 0 1 12.2 0 Z" fill="#1e1e1c" transform="rotate(45)" />
+    <circle r="3.4" fill="none" stroke="#fdfcf8" stroke-width="0.9" />
+    <g fill="#fdfcf8">
+      <rect x="-0.55" y="-8.2" width="1.1" height="2.4" rx="0.55" />
+      <rect x="-0.55" y="5.8" width="1.1" height="2.4" rx="0.55" />
+      <rect x="-8.2" y="-0.55" width="2.4" height="1.1" rx="0.55" />
+      <rect x="5.8" y="-0.55" width="2.4" height="1.1" rx="0.55" />
+      <g transform="rotate(45)">
+        <rect x="-0.55" y="-8.2" width="1.1" height="2.4" rx="0.55" />
+        <rect x="-0.55" y="5.8" width="1.1" height="2.4" rx="0.55" />
+        <rect x="-8.2" y="-0.55" width="2.4" height="1.1" rx="0.55" />
+        <rect x="5.8" y="-0.55" width="2.4" height="1.1" rx="0.55" />
+      </g>
+    </g>
+  </g>
+</svg>
