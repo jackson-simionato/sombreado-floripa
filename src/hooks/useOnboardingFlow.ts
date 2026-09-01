@@ -58,6 +58,10 @@ import {
   toAdviceRecent,
   type AdviceRecent,
 } from "../recents/adviceRecents";
+import {
+  parseAdviceShareLink,
+  type AdviceShareTarget,
+} from "../share/adviceShare";
 
 type PrototypeOnboardingFlowOptions = {
   runtime: "prototype";
@@ -100,7 +104,7 @@ export type OnboardingFlowController = {
     searchManually(query: string): void;
     selectAdviceTimeOffset(offsetMinutes: AdviceTimeOffsetMinutes): void;
     selectDirection(direction: DirectionChoice): void;
-    selectRecent(recent: AdviceRecent): void;
+    selectRecent(recent: AdviceRecent | AdviceShareTarget): void;
     selectRoute(route: RouteCandidate, source: RouteSelectionSource): void;
     useLocation(): void;
   };
@@ -154,6 +158,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   const geometryAbortRef = useRef<AbortController | undefined>(undefined);
   const advisoryAbortRef = useRef<AbortController | undefined>(undefined);
   const nearbySlowTimeoutRef = useRef<number | undefined>(undefined);
+  const shareLinkConsumedRef = useRef(false);
 
   const scenarioId =
     (options.runtime === "prototype" ? options.mockScenarioId : undefined) ??
@@ -648,7 +653,7 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
   ]);
 
   const selectRecent = useCallback(
-    (recent: AdviceRecent) => {
+    (recent: AdviceRecent | AdviceShareTarget) => {
       setAdviceTimeOffsetMinutes(0);
       dispatch({
         type: "recentSelected",
@@ -663,7 +668,8 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
           routeDirectionId: recent.routeDirectionId,
           sequence: 0,
           name: recent.directionLabel,
-          directionKind: null,
+          directionKind:
+            "directionKind" in recent ? recent.directionKind : null,
           departureLabels: [],
         },
       });
@@ -675,6 +681,20 @@ export function useOnboardingFlow(options: UseOnboardingFlowOptions) {
     },
     [requestAdvisory]
   );
+
+  useEffect(() => {
+    if (options.runtime !== "live" || shareLinkConsumedRef.current) {
+      return;
+    }
+
+    const target = parseAdviceShareLink(window.location.href);
+    if (target === undefined) {
+      return;
+    }
+
+    shareLinkConsumedRef.current = true;
+    selectRecent(target);
+  }, [options.runtime, selectRecent]);
 
   const requestSelectedAdvisory = useCallback(
     (timeOffsetMinutes: AdviceTimeOffsetMinutes) => {

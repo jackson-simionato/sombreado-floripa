@@ -30,6 +30,7 @@ describe("home screen flow", () => {
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
     window.localStorage.clear();
+    window.history.replaceState(null, "", "/");
   });
 
   test("renders missing API configuration before the live rider flow", () => {
@@ -237,7 +238,7 @@ describe("home screen flow", () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId("advice-result-screen")).toBeInTheDocument();
     expect(screen.getByTestId("advice-result-actions")).toHaveTextContent(
-      "Atualizar localizaçãoOpções"
+      "Atualizar localizaçãoCompartilharOpções"
     );
     expect(
       fetchMock.mock.calls.some(
@@ -2004,6 +2005,9 @@ describe("home screen flow", () => {
         screen.getByRole("button", { name: "Atualizar localização" })
       ).toBeInTheDocument();
       expect(
+        screen.getByRole("button", { name: "Compartilhar" })
+      ).toBeInTheDocument();
+      expect(
         screen.getByRole("button", { name: "Opções" })
       ).toBeInTheDocument();
     }
@@ -2279,6 +2283,9 @@ describe("home screen flow", () => {
       mode: "onboard",
       horizon: "upcoming",
     });
+    expect(
+      screen.getByRole("button", { name: "Compartilhar" })
+    ).toBeInTheDocument();
   });
 
   test("tapping a recent uses preview advice when location is unavailable", async () => {
@@ -2407,6 +2414,98 @@ describe("home screen flow", () => {
     expect(
       screen.queryByRole("heading", { name: "Escolha sua linha" })
     ).not.toBeInTheDocument();
+  });
+
+  test("opening a share link requests advice and skips the wizard", async () => {
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "onboard",
+      horizon: "upcoming",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "right",
+      recommendedSeatArea: "left",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    });
+    const listRouteDirections = vi.fn();
+    const getRouteGeometry = vi.fn();
+    window.history.replaceState(
+      null,
+      "",
+      "/?linha=route-124&sentido=direction-124&v=version-124&codigo=124&nome=TICEN+-+Lagoa&destino=TICEN+para+Lagoa&k=ida"
+    );
+
+    renderLiveHomePageApp({
+      riderFlowClient: createLiveFlowClient({
+        getRouteGeometry,
+        listRouteDirections,
+        requestAdvice,
+      }),
+    });
+
+    expect(await screen.findByText("Agora no ônibus")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Sente à esquerda" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("sentido TICEN para Lagoa · Ida")
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Escolha o sentido" })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Confirme sua linha" })
+    ).not.toBeInTheDocument();
+    expect(listRouteDirections).not.toHaveBeenCalled();
+    expect(getRouteGeometry).not.toHaveBeenCalled();
+    expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      mode: "onboard",
+      horizon: "upcoming",
+    });
+    expect(
+      screen.getByRole("button", { name: "Compartilhar" })
+    ).toBeInTheDocument();
+  });
+
+  test("opening a share link uses preview advice when location is unavailable", async () => {
+    const requestAdvice = vi.fn().mockResolvedValue({
+      status: "advice",
+      mode: "preview",
+      horizon: "remainingRoute",
+      routeId: "route-124",
+      routeVersionId: "version-124",
+      routeDirectionId: "direction-124",
+      directSunExposure: "left",
+      recommendedSeatArea: "right",
+      sunCondition: "daylight",
+      computedAt: "2026-06-23T12:00:00.000Z",
+    });
+    window.history.replaceState(
+      null,
+      "",
+      "/?linha=route-124&sentido=direction-124&v=version-124&codigo=124&nome=TICEN+-+Lagoa&destino=TICEN+para+Lagoa"
+    );
+
+    renderLiveHomePageApp({
+      locationProvider: {
+        getCurrentLocation: vi.fn().mockResolvedValue({ kind: "denied" }),
+      },
+      riderFlowClient: createLiveFlowClient({ requestAdvice }),
+    });
+
+    expect(
+      await screen.findByText("Prévia da linha · ponto estimado")
+    ).toBeInTheDocument();
+    expect(requestAdvice.mock.calls[0]?.[0]).toMatchObject({
+      mode: "preview",
+      horizon: "remainingRoute",
+    });
+    expect(requestAdvice.mock.calls[0]?.[0]).not.toHaveProperty("location");
   });
 
   test("shows the prototype scenario switcher on the page and can jump to the slow loading state", async () => {

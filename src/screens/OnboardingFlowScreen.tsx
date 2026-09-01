@@ -23,6 +23,7 @@ import type {
 import type { OnboardingFlowController } from "../hooks/useOnboardingFlow";
 import type { AdviceRecent } from "../recents/adviceRecents";
 import { copy } from "../content/copy";
+import { toAdviceShareTarget } from "../share/adviceShare";
 
 import {
   formatNearbyRouteDistance,
@@ -495,6 +496,15 @@ export function OnboardingFlowScreen({
             onSelectTimeOffset={actions.selectAdviceTimeOffset}
             route={state.selectedRoute}
             selectedTimeOffsetMinutes={adviceTimeOffsetMinutes}
+            shareTarget={
+              state.selectedRoute === undefined ||
+              state.selectedDirection === undefined
+                ? undefined
+                : toAdviceShareTarget(
+                    state.selectedRoute,
+                    state.selectedDirection
+                  )
+            }
           />
         );
       } else {

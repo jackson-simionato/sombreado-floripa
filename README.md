@@ -10,6 +10,7 @@ This repository owns the browser app experience:
 
 - Advice Triple: route candidate, direction choice, now/near-now, then seat-area advice ([ADR 0003](docs/adr/0003-one-job-evolution-rule.md))
 - default Onboard Flow plus preview, recents, and share-link instantiations of the same job
+- Add to Home Screen PWA install and a WhatsApp-friendly share sentence on the advice result
 - route candidate selection and manual route search UI
 - explicit direction choice before confirmation
 - compact route confirmation UI

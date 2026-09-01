@@ -12,6 +12,12 @@ import {
   type AdviceTimeOffsetMinutes,
 } from "../advice/timeChips";
 import type { DirectionalExposure, UiAdviceState } from "../domain/types";
+import {
+  buildAdviceSharePayload,
+  shareAdvice,
+  type AdviceShareSeatArea,
+  type AdviceShareTarget,
+} from "../share/adviceShare";
 import { AdviceBusDiagram } from "./AdviceBusDiagram";
 import { AdviceResultSheet } from "./AdviceResultSheet";
 import { Button } from "./Button";
@@ -32,6 +38,7 @@ type AdviceResultSurfaceProps = {
   onSelectTimeOffset?(offsetMinutes: AdviceTimeOffsetMinutes): void;
   route?: { code: string; name: string };
   selectedTimeOffsetMinutes?: AdviceTimeOffsetMinutes;
+  shareTarget?: AdviceShareTarget;
 };
 
 const ESTIMATE_NOTICE =
@@ -49,11 +56,13 @@ export function AdviceResultSurface({
   onSelectTimeOffset,
   route,
   selectedTimeOffsetMinutes = 0,
+  shareTarget,
 }: AdviceResultSurfaceProps) {
   const variant = adviceVariantCopy(advice, selectedTimeOffsetMinutes);
   const modeLabel = resultModeLabel(advice, context);
   const estimateContext = resolveEstimateContext(advice, context);
   const trustNotice = estimateNoticeCopy(advice);
+  const [shareStatus, setShareStatus] = useState<string | null>(null);
   const [activeSheet, setActiveSheet] = useState<"estimate" | "options" | null>(
     null
   );
@@ -152,6 +161,32 @@ export function AdviceResultSurface({
     onChangeRoute();
   }, [closeSheet, onChangeRoute]);
 
+  const shareResult = useCallback(async () => {
+    if (shareTarget === undefined) {
+      return;
+    }
+
+    const result = await shareAdvice({
+      payload: buildAdviceSharePayload({
+        origin: window.location.origin,
+        recommendedSeatArea: shareSeatArea(advice),
+        target: shareTarget,
+      }),
+      copyText:
+        typeof navigator.clipboard?.writeText === "function"
+          ? (text) => navigator.clipboard.writeText(text)
+          : undefined,
+      share:
+        typeof navigator.share === "function"
+          ? (data) => navigator.share(data)
+          : undefined,
+    });
+
+    if (result === "copied") {
+      setShareStatus("Copiado para colar no WhatsApp.");
+    }
+  }, [advice, shareTarget]);
+
   return (
     <>
       <div ref={backgroundRef} data-testid="advice-result-background">
@@ -164,6 +199,16 @@ export function AdviceResultSurface({
         >
           {modeLabel}. {variant.accessibleSummary}
         </p>
+        {shareStatus !== null ? (
+          <p
+            aria-live="polite"
+            className={styles.srOnly}
+            data-testid="advice-share-status"
+            role="status"
+          >
+            {shareStatus}
+          </p>
+        ) : null}
         <section
           className={styles.resultStack}
           data-testid="advice-result-screen"
@@ -257,14 +302,27 @@ export function AdviceResultSurface({
         <StickyActions>
           <div className={styles.actions} data-testid="advice-result-actions">
             <Button onClick={onRefresh}>Atualizar localização</Button>
-            <button
-              ref={optionsTriggerRef}
-              className={styles.optionsAction}
-              onClick={() => setActiveSheet("options")}
-              type="button"
-            >
-              Opções
-            </button>
+            <div className={styles.secondaryActions}>
+              {shareTarget !== undefined ? (
+                <button
+                  className={styles.optionsAction}
+                  onClick={() => {
+                    void shareResult();
+                  }}
+                  type="button"
+                >
+                  Compartilhar
+                </button>
+              ) : null}
+              <button
+                ref={optionsTriggerRef}
+                className={styles.optionsAction}
+                onClick={() => setActiveSheet("options")}
+                type="button"
+              >
+                Opções
+              </button>
+            </div>
           </div>
         </StickyActions>
       </div>
@@ -399,6 +457,16 @@ function directionalAdviceCopy(recommendedSeatArea: DirectionalExposure) {
           "Recomendação: sente mais atrás. O sol direto aparece mais forte na parte da frente do ônibus.",
       };
   }
+}
+
+function shareSeatArea(
+  advice: Exclude<UiAdviceState, { mode: "withheld" }>
+): AdviceShareSeatArea {
+  if (advice.mode === "neutralComputed") {
+    return "neutral";
+  }
+
+  return advice.recommendedSeatArea;
 }
 
 function previewDirectionalAdviceCopy(
